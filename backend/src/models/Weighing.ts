@@ -7,6 +7,8 @@ import {
   BelongsTo,
 } from "sequelize-typescript";
 import User from "./User";
+import Order from "./Order";
+import TypeWeight from "./TypeWeight";
 
 @Table({ tableName: "weighings", timestamps: true })
 export class Weighing extends Model {
@@ -37,11 +39,54 @@ export class Weighing extends Model {
   })
   declare weight: number;
 
+  //Lote
+  @Column({
+    type: DataType.STRING(50),
+    allowNull: true,
+  })
+  declare batch: string;
+
+  //Fardo
+  @Column({
+    type: DataType.STRING(50),
+    allowNull: true,
+  })
+  declare bale: string;
+
+  @Column({
+    type: DataType.FLOAT,
+    allowNull: true,
+  })
+  declare internalTare: number;
+
+  @Column({
+    type: DataType.FLOAT,
+    allowNull: true,
+  })
+  declare externalTare: number;
+
   @Column({
     type: DataType.STRING(255),
     allowNull: true,
   })
   declare notes: string;
+
+  @ForeignKey(() => TypeWeight)
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: false,
+  })
+  declare typeWeightId: number;
+
+  @ForeignKey(() => Order)
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: false,
+  })
+  declare orderId: number;
+
+  @BelongsTo(() => Order)
+  declare order: Order;
 
   @ForeignKey(() => User)
   @Column({

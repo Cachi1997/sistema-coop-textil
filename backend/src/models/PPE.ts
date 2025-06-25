@@ -1,5 +1,4 @@
 import { Table, Column, Model, DataType } from "sequelize-typescript";
-import User from "./User";
 
 @Table({ tableName: "ppe", timestamps: true })
 export class PPE extends Model {

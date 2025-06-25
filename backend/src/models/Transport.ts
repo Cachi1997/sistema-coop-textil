@@ -1,20 +1,22 @@
 import { Table, Column, Model, DataType, HasMany } from "sequelize-typescript";
-import DeliveryNote from "./DeliveryNote";
 import Shipment from "./Shipment";
 
-@Table({ tableName: "clients", timestamps: true })
-export class Client extends Model {
+@Table({ tableName: "transports", timestamps: true })
+export class Transport extends Model {
   @Column({
     type: DataType.STRING(50),
     allowNull: false,
   })
   declare name: string;
 
-  @HasMany(() => DeliveryNote)
-  declare deliveryNotes: DeliveryNote[];
+  @Column({
+    type: DataType.STRING(50),
+    allowNull: true,
+  })
+  declare direction: string;
 
   @HasMany(() => Shipment)
   declare shipments: Shipment[];
 }
 
-export default Client;
+export default Transport;

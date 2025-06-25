@@ -10,11 +10,11 @@ import {
 export class Color extends Model {
   @PrimaryKey
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.STRING,
     autoIncrement: false,
     allowNull: false,
   })
-  declare idColor: number;
+  declare idColor: string;
   @Column({
     type: DataType.STRING(20),
     allowNull: false,
