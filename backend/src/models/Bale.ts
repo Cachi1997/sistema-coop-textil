@@ -6,7 +6,7 @@ import {
   ForeignKey,
   HasMany,
 } from "sequelize-typescript";
-import FinishedProduct from "./FinishedProdcut";
+import FinishedProduct from "./FinishedProduct";
 
 //Tabla de fardos
 @Table({ tableName: "bales", timestamps: true })

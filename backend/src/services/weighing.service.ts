@@ -10,7 +10,7 @@ export function attachSocketServer(socket: Server) {
 
 export function startSerialReading() {
   const port = new SerialPort({
-    path: "COM3",
+    path: "COM1",
     baudRate: 9600,
   });
 
