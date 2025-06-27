@@ -1,7 +1,9 @@
+import WeightDisplay from "./components/display/WeightDisplay";
+
 function App() {
   return (
     <>
-      <h1 className="">Hola Mundo</h1>
+      <WeightDisplay />
     </>
   );
 }
