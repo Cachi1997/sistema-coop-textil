@@ -1,14 +1,20 @@
 import { useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
 
-const SOCKET_URL = "http://localhost:3000"; // Cambia por la URL real de tu backend
+type WeightDisplayProps = {
+  internalTare: number;
+  externalTare: number;
+};
 
-const WeightDisplay: React.FC = () => {
-  const [weight, setWeight] = useState<number | null>(null);
+const WeightDisplay: React.FC<WeightDisplayProps> = ({
+  internalTare,
+  externalTare,
+}) => {
+  const [grossWeight, setGrossWeight] = useState<number | null>(null);
   const [socket, setSocket] = useState<Socket | null>(null);
 
   useEffect(() => {
-    const socketIo = io(SOCKET_URL, {
+    const socketIo = io(import.meta.env.VITE_SOCKET_URL, {
       transports: ["websocket"],
     });
     setSocket(socketIo);
@@ -18,7 +24,7 @@ const WeightDisplay: React.FC = () => {
     });
 
     socketIo.on("weight", (data: number) => {
-      setWeight(data);
+      setGrossWeight(data);
     });
 
     socketIo.on("disconnect", () => {
@@ -30,11 +36,24 @@ const WeightDisplay: React.FC = () => {
     };
   }, []);
 
+  const netWeight =
+    grossWeight !== null ? grossWeight - internalTare - externalTare : null;
+
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
-      <h1 className="text-4xl font-bold mb-4">Peso en tiempo real</h1>
-      <div className="text-8xl font-mono text-green-600">
-        {weight !== null ? weight.toFixed(2) + " kg" : "Cargando..."}
+    <div className="flex-1 flex flex-col items-center justify-center gap-4">
+      <div className="bg-black border-4 border-green-500 rounded-lg p-6 text-center w-full">
+        <div className="text-5xl font-mono text-green-400 mb-2">
+          {grossWeight !== null
+            ? grossWeight.toFixed(2) + " kg"
+            : "Cargando..."}
+        </div>
+        <p className="text-lg text-green-300">Peso bruto</p>
+      </div>
+      <div className="bg-black border-4 border-blue-500 rounded-lg p-6 text-center w-full">
+        <div className="text-5xl font-mono text-blue-400 mb-2">
+          {netWeight !== null ? netWeight.toFixed(2) + " kg" : "-"}
+        </div>
+        <p className="text-lg text-blue-300">Peso neto</p>
       </div>
     </div>
   );
