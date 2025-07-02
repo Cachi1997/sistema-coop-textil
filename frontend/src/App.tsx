@@ -1,5 +1,5 @@
 import WeightDisplay from "./components/display/WeightDisplay";
-import { WeighingPage } from "./components/pages/WeighingPage";
+import { WeighingPage } from "./pages/WeighingPage";
 
 function App() {
   return (
