@@ -46,22 +46,58 @@ export const WeighingPage = () => {
     // Aquí iría la llamada al backend
   };
 
-  const handleEnterKey = (
+  const handleEnterKey = async (
     e: React.KeyboardEvent<HTMLInputElement>,
     index: number
   ) => {
     if (e.key === "Enter") {
       e.preventDefault();
 
+      const currentField = campos[index].name;
+
+      // Si estamos en el campo "batch", buscar datos
+      if (currentField === "batch") {
+        await buscarDatos(); // Ejecutamos la búsqueda antes de avanzar
+      }
+
       const nextFieldName = campos[index + 1]?.name;
 
       if (nextFieldName) {
         setFocus(nextFieldName as keyof WeightData);
       } else {
-        // Si no hay más campos, enfocar el botón de enviar
         submitButtonRef.current?.focus();
       }
     }
+  };
+
+  const buscarDatos = async () => {
+    const ppe = watch("ppe");
+    const batch = watch("batch");
+    const isYarn = watch("isYarn");
+
+    if (!ppe || !batch || isYarn === null || isYarn === undefined) {
+      alert("Complete los campos PPE, Partida y Hilado antes de buscar.");
+      return;
+    }
+
+    console.log("Buscando datos con:", { ppe, batch, isYarn });
+
+    // try {
+    //   const res = await fetch(
+    //     `/api/buscar?ppe=${ppe}&batch=${batch}&isYarn=${isYarn}`
+    //   );
+    //   const data = await res.json();
+    //   console.log("Resultado de búsqueda:", data);
+
+    //   if (data?.user) {
+    //     setValue("user", data.user);
+    //   } else {
+    //     alert("No se encontraron datos para los valores ingresados.");
+    //   }
+    // } catch (error) {
+    //   console.error("Error al buscar:", error);
+    //   alert("Hubo un error al buscar los datos.");
+    // }
   };
 
   const campos = [
