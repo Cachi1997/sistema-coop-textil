@@ -4,7 +4,9 @@ import {
   Model,
   DataType,
   PrimaryKey,
+  HasMany,
 } from "sequelize-typescript";
+import Order from "./Order";
 
 @Table({ tableName: "colors", timestamps: true })
 export class Color extends Model {
@@ -21,6 +23,9 @@ export class Color extends Model {
     unique: true,
   })
   declare name: string;
+
+  @HasMany(() => Order)
+  declare orders: Order[];
 }
 
 export default Color;
