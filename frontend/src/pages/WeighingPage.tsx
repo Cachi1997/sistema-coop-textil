@@ -1,15 +1,23 @@
 import { useEffect, useState, useRef } from "react";
 import { useForm } from "react-hook-form";
-import type { WeightData } from "../types";
+import type { WeightData, User } from "../types";
 import WeightDisplay from "../components/display/WeightDisplay";
 import { useWeightSocket } from "../hooks/useWeightSocket";
 import { LabelDisplay } from "../components/display/LabelDisplay";
+import axios from "../config/axiosInstance";
 
 export const WeighingPage = () => {
   const grossWeight = useWeightSocket();
 
   const inputRefs = useRef<(HTMLInputElement | HTMLSelectElement | null)[]>([]);
   const submitButtonRef = useRef<HTMLInputElement | null>(null);
+  const [user, setUser] = useState<User>({
+    id: 0,
+    name: "",
+    lastName: "",
+    dni: 0,
+    code: 0,
+  });
 
   const {
     register,
@@ -55,13 +63,24 @@ export const WeighingPage = () => {
 
       const currentField = campos[index].name;
 
-      // Si estamos en el campo "batch", buscar datos
-      if (currentField === "batch") {
-        await buscarDatos(); // Ejecutamos la búsqueda antes de avanzar
+      // Si estamos en el campo "user", verificar si existe
+      if (currentField === "user") {
+        const user = Number(watch("user"));
+        const usuarioExistente = await verificarUsuario(user);
+
+        if (!usuarioExistente || usuarioExistente.id === 0) {
+          console.log("El usuario no existe, no se avanza.");
+          return; // No avanzar al siguiente campo
+        }
       }
 
-      const nextFieldName = campos[index + 1]?.name;
+      // Si estamos en el campo "batch", buscar datos
+      if (currentField === "batch") {
+        await buscarDatos();
+      }
 
+      // Avanzar al siguiente campo si todo está OK
+      const nextFieldName = campos[index + 1]?.name;
       if (nextFieldName) {
         setFocus(nextFieldName as keyof WeightData);
       } else {
@@ -70,38 +89,30 @@ export const WeighingPage = () => {
     }
   };
 
+  const verificarUsuario = async (code: number): Promise<User> => {
+    try {
+      const res = await axios.get("/api/verificar-usuario", {
+        params: { code },
+      });
+      const userData: User = res.data;
+      setUser(userData);
+      return userData;
+    } catch (error) {
+      console.error("Error al verificar usuario:", error);
+      return { id: 0, name: "", lastName: "", dni: 0, code: 0 };
+    }
+  };
+
   const buscarDatos = async () => {
     const ppe = watch("ppe");
     const batch = watch("batch");
     const isYarn = watch("isYarn");
 
-    if (!ppe || !batch || isYarn === null || isYarn === undefined) {
-      alert("Complete los campos PPE, Partida y Hilado antes de buscar.");
-      return;
-    }
-
     console.log("Buscando datos con:", { ppe, batch, isYarn });
-
-    // try {
-    //   const res = await fetch(
-    //     `/api/buscar?ppe=${ppe}&batch=${batch}&isYarn=${isYarn}`
-    //   );
-    //   const data = await res.json();
-    //   console.log("Resultado de búsqueda:", data);
-
-    //   if (data?.user) {
-    //     setValue("user", data.user);
-    //   } else {
-    //     alert("No se encontraron datos para los valores ingresados.");
-    //   }
-    // } catch (error) {
-    //   console.error("Error al buscar:", error);
-    //   alert("Hubo un error al buscar los datos.");
-    // }
   };
 
   const campos = [
-    { name: "user", label: "Usuario", type: "text" },
+    { name: "user", label: "Usuario", type: "number" },
     { name: "isYarn", label: "Hilado (1) o Top (0)", type: "number" },
     { name: "ppe", label: "P.P.E", type: "number" },
     { name: "batch", label: "Partida", type: "number" },

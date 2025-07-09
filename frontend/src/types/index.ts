@@ -7,3 +7,11 @@ export type WeightData = {
   internalTare: number;
   externalTare: number;
 };
+
+export type User = {
+  id: number;
+  name: string;
+  lastName: string;
+  dni: number;
+  code: number;
+};
