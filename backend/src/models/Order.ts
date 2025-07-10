@@ -146,7 +146,7 @@ export class Order extends Model {
 
   @ForeignKey(() => Tone)
   @Column({
-    type: DataType.STRING,
+    type: DataType.INTEGER,
     allowNull: false,
   })
   declare toneId: string; //Tono

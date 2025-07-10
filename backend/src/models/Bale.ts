@@ -39,7 +39,7 @@ export class Bale extends Model {
     type: DataType.INTEGER,
     allowNull: false,
   })
-  declare baleNumber: number;
+  declare baleNumber: number; // Número de fardo
 }
 
 export default Bale;
