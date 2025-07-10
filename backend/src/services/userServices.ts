@@ -9,14 +9,14 @@ export const getAllUsers = async () => {
   }
 };
 
-export const getUserById = async (id: number) => {
+export const getUserByCode = async (code: number) => {
   try {
-    const user = await User.findByPk(id);
+    const user = await User.findOne({ where: { code } });
     if (!user) {
-      throw new Error(`User with ID ${id} not found`);
+      throw new Error(`User with ID ${code} not found`);
     }
     return user;
   } catch (error) {
-    throw new Error(`Error fetching user by ID: ${error.message}`);
+    throw new Error(`Error fetching user: ${error.message}`);
   }
 };

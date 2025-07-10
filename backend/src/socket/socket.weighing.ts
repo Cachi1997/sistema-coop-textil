@@ -5,6 +5,7 @@ import {
   attachSocketServer,
   startSerialReading,
 } from "../services/weighing.service";
+import colors from "colors";
 
 export function initializeSocketIO(server: HTTPServer) {
   const io = new Server(server, {
@@ -15,10 +16,9 @@ export function initializeSocketIO(server: HTTPServer) {
   startSerialReading();
 
   io.on("connection", (socket) => {
-    console.log(`🟢 Cliente conectado: ${socket.id}`);
-
+    console.log(colors.green(`🟢 Cliente conectado: ${socket.id}`));
     socket.on("disconnect", () => {
-      console.log(`🔴 Cliente desconectado: ${socket.id}`);
+      console.log(colors.red(`🔴 Cliente desconectado: ${socket.id}`));
     });
   });
 }

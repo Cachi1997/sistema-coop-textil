@@ -1,124 +1,26 @@
-import { useEffect, useState, useRef } from "react";
-import { useForm } from "react-hook-form";
-import type { WeightData, User } from "../types";
 import WeightDisplay from "../components/display/WeightDisplay";
 import { useWeightSocket } from "../hooks/useWeightSocket";
 import { LabelDisplay } from "../components/display/LabelDisplay";
-import axios from "../config/axiosInstance";
+import { useWeighingForm } from "../hooks/useWeighingForm";
+import { useWeightCalculations } from "../hooks/useWeightCalculations";
+import { ErrorModal } from "../components/display/ModalNotFound";
 
 export const WeighingPage = () => {
   const grossWeight = useWeightSocket();
+  const weighingForm = useWeighingForm();
 
-  const inputRefs = useRef<(HTMLInputElement | HTMLSelectElement | null)[]>([]);
-  const submitButtonRef = useRef<HTMLInputElement | null>(null);
-  const [user, setUser] = useState<User>({
-    id: 0,
-    name: "",
-    lastName: "",
-    dni: 0,
-    code: 0,
+  // Calcular peso neto
+  const internalTare = weighingForm.form.watch("internalTare") || 0;
+  const externalTare = weighingForm.form.watch("externalTare") || 0;
+  const { netWeight } = useWeightCalculations({
+    grossWeight,
+    internalTare,
+    externalTare,
   });
 
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-    setValue,
-    reset,
-    setFocus,
-  } = useForm<WeightData>({
-    defaultValues: {
-      user: "",
-      isYarn: 0,
-      ppe: 0,
-      batch: 0,
-      internalTare: 0,
-      externalTare: 0,
-    },
-  });
-
-  // Obtenemos los valores actuales del formulario para calcular el peso neto
-  const internalTare = watch("internalTare") || 0;
-  const externalTare = watch("externalTare") || 0;
-
-  const netWeight =
-    grossWeight !== null ? grossWeight - internalTare - externalTare : null;
-
-  const registerWeight = (data: WeightData) => {
-    const payload = {
-      ...data,
-      weight: netWeight || 0,
-    };
-    console.log("Datos del formulario:", payload);
-    // Aquí iría la llamada al backend
+  const onSubmit = (data: any) => {
+    weighingForm.registerWeight(data, netWeight);
   };
-
-  const handleEnterKey = async (
-    e: React.KeyboardEvent<HTMLInputElement>,
-    index: number
-  ) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-
-      const currentField = campos[index].name;
-
-      // Si estamos en el campo "user", verificar si existe
-      if (currentField === "user") {
-        const user = Number(watch("user"));
-        const usuarioExistente = await verificarUsuario(user);
-
-        if (!usuarioExistente || usuarioExistente.id === 0) {
-          console.log("El usuario no existe, no se avanza.");
-          return; // No avanzar al siguiente campo
-        }
-      }
-
-      // Si estamos en el campo "batch", buscar datos
-      if (currentField === "batch") {
-        await buscarDatos();
-      }
-
-      // Avanzar al siguiente campo si todo está OK
-      const nextFieldName = campos[index + 1]?.name;
-      if (nextFieldName) {
-        setFocus(nextFieldName as keyof WeightData);
-      } else {
-        submitButtonRef.current?.focus();
-      }
-    }
-  };
-
-  const verificarUsuario = async (code: number): Promise<User> => {
-    try {
-      const res = await axios.get("/api/verificar-usuario", {
-        params: { code },
-      });
-      const userData: User = res.data;
-      setUser(userData);
-      return userData;
-    } catch (error) {
-      console.error("Error al verificar usuario:", error);
-      return { id: 0, name: "", lastName: "", dni: 0, code: 0 };
-    }
-  };
-
-  const buscarDatos = async () => {
-    const ppe = watch("ppe");
-    const batch = watch("batch");
-    const isYarn = watch("isYarn");
-
-    console.log("Buscando datos con:", { ppe, batch, isYarn });
-  };
-
-  const campos = [
-    { name: "user", label: "Usuario", type: "number" },
-    { name: "isYarn", label: "Hilado (1) o Top (0)", type: "number" },
-    { name: "ppe", label: "P.P.E", type: "number" },
-    { name: "batch", label: "Partida", type: "number" },
-    { name: "internalTare", label: "Tara Interna", type: "number" },
-    { name: "externalTare", label: "Tara Externa", type: "number" },
-  ];
 
   return (
     <div className="h-screen bg-gray-900 text-white p-4 overflow-y-auto">
@@ -127,7 +29,7 @@ export const WeighingPage = () => {
         <h1 className="text-2xl font-bold text-green-400">SISTEMA DE PESAJE</h1>
         <div className="text-right text-sm">
           <div className="text-green-400">
-            {new Date().toLocaleTimeString()}
+            Usuario: {weighingForm.user.name} {weighingForm.user.lastName}
           </div>
         </div>
       </div>
@@ -146,8 +48,11 @@ export const WeighingPage = () => {
           <h2 className="text-lg font-semibold text-center mb-3 text-green-400">
             DATOS DE REGISTRO
           </h2>
-          <form onSubmit={handleSubmit(registerWeight)} className="space-y-3">
-            {campos.map((campo, index) => (
+          <form
+            onSubmit={weighingForm.form.handleSubmit(onSubmit)}
+            className="space-y-3"
+          >
+            {weighingForm.campos.map((campo, index) => (
               <div
                 key={index}
                 className="p-3 mb-2 rounded-lg border-2 border-gray-600 bg-gray-750"
@@ -158,36 +63,47 @@ export const WeighingPage = () => {
                 />
                 <input
                   type={campo.type}
-                  {...register(campo.name as keyof WeightData, {
+                  {...weighingForm.form.register(campo.name as any, {
                     required:
                       campo.name !== "internalTare" &&
                       campo.name !== "externalTare",
                     valueAsNumber: campo.type === "number",
                   })}
-                  onKeyDown={(e) => handleEnterKey(e, index)}
+                  onKeyDown={(e) => weighingForm.handleEnterKey(e, index)}
                   className={`w-full px-3 py-2 bg-gray-900 border border-gray-600 rounded text-white focus:border-green-500 focus:outline-none ${
-                    errors[campo.name as keyof WeightData]
+                    weighingForm.form.formState.errors[
+                      campo.name as keyof typeof weighingForm.form.formState.errors
+                    ]
                       ? "border-red-500"
                       : ""
                   }`}
                 />
-                {errors[campo.name as keyof WeightData] && (
+                {weighingForm.form.formState.errors[
+                  campo.name as keyof typeof weighingForm.form.formState.errors
+                ] && (
                   <span className="text-red-500 text-xs mt-1">
                     Este campo es obligatorio
                   </span>
                 )}
               </div>
             ))}
-
             <input
               type="submit"
-              ref={submitButtonRef}
+              ref={weighingForm.navigation.submitButtonRef}
               className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded w-full"
               value="Enviar"
             />
           </form>
         </div>
       </div>
+
+      {/* Modal de Error */}
+      <ErrorModal
+        isOpen={weighingForm.modal.modal.isOpen}
+        title={weighingForm.modal.modal.title}
+        message={weighingForm.modal.modal.message}
+        onClose={weighingForm.modal.closeModal}
+      />
     </div>
   );
 };
