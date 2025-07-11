@@ -1,4 +1,6 @@
+import { useState } from "react";
 import axios from "../config/axiosInstance";
+import type { orderWeightResponse } from "../types";
 
 interface DataValidationParams {
   ppe: number;
@@ -7,29 +9,37 @@ interface DataValidationParams {
 }
 
 export const useDataValidation = () => {
+  const [orderFindings, setOrderFindings] = useState<orderWeightResponse>({
+    ppe: 0,
+    batchNumber: 0,
+    orderNumber: 0,
+    idColor: "",
+    color: "",
+    denier: 0,
+    tone: "",
+    material: "",
+    product: "",
+    client: "",
+  });
+
   const buscarDatos = async ({
     ppe,
     batch,
     isYarn,
-  }: DataValidationParams): Promise<boolean> => {
+  }: DataValidationParams): Promise<void> => {
     try {
       const res = await axios.get(
-        `/data?ppe=${ppe}&batch=${batch}&isYarn=${isYarn}`
+        `/orders/orderWeight?ppe=${ppe}&batch=${batch}&isYarn=${isYarn}`
       );
-
-      if (!res.data || res.data.length === 0) {
-        return false;
-      }
-
-      console.log("Datos encontrados:", res.data);
-      return true;
+      setOrderFindings(res.data);
+      console.log("Datos encontrados:", orderFindings);
     } catch (error) {
       console.error("Error al buscar datos:", error);
-      return false;
     }
   };
 
   return {
     buscarDatos,
+    orderFindings,
   };
 };

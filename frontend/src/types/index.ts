@@ -15,3 +15,16 @@ export type User = {
   dni: number;
   code: number;
 };
+
+export type orderWeightResponse = {
+  ppe: number;
+  batchNumber: number;
+  orderNumber: number;
+  idColor: string;
+  color: string;
+  denier: number;
+  tone: string;
+  material: string;
+  product: string;
+  client: string;
+};

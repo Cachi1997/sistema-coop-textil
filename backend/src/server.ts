@@ -3,6 +3,7 @@ import cors from "cors";
 import db from "./config/db";
 import colors from "colors";
 import userRouter from "./routes/userRoutes";
+import orderRouter from "./routes/orderRoutes";
 //import weighingRoutes from "./routes/weighing.routes";
 const app = express();
 
@@ -11,11 +12,12 @@ app.use(express.json());
 //app.use("/api/weighings", weighingRoutes);
 
 app.use("/api/users", userRouter);
+app.use("/api/orders", orderRouter);
 
 const connectDB = async () => {
   try {
     await db.authenticate();
-    //db.sync();
+    //await db.sync();
     console.log(colors.bgGreen.bold.italic("Database connected successfully"));
   } catch (error) {
     console.log(colors.red.bold("Unable to connect to the database:"));

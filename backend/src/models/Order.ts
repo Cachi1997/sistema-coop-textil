@@ -107,7 +107,7 @@ export class Order extends Model {
   @ForeignKey(() => Product)
   @Column({
     type: DataType.INTEGER,
-    allowNull: false,
+    allowNull: true,
   })
   declare productId: number;
 
@@ -117,7 +117,7 @@ export class Order extends Model {
   @ForeignKey(() => Client)
   @Column({
     type: DataType.INTEGER,
-    allowNull: false,
+    allowNull: true,
   })
   declare clientId: number;
 
@@ -127,7 +127,7 @@ export class Order extends Model {
   @ForeignKey(() => Color)
   @Column({
     type: DataType.STRING,
-    allowNull: false,
+    allowNull: true,
   })
   declare colorId: string;
 
@@ -137,7 +137,7 @@ export class Order extends Model {
   @ForeignKey(() => Denier)
   @Column({
     type: DataType.INTEGER,
-    allowNull: false,
+    allowNull: true,
   })
   declare denierId: number;
 
@@ -147,7 +147,7 @@ export class Order extends Model {
   @ForeignKey(() => Tone)
   @Column({
     type: DataType.INTEGER,
-    allowNull: false,
+    allowNull: true,
   })
   declare toneId: string; //Tono
 
@@ -157,7 +157,7 @@ export class Order extends Model {
   @ForeignKey(() => RawMaterial)
   @Column({
     type: DataType.INTEGER,
-    allowNull: false,
+    allowNull: true,
   })
   declare rawMaterialId: number;
 
