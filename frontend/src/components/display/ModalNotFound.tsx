@@ -54,7 +54,7 @@ export const ErrorModal = ({
           <div
             className="bg-red-500 h-full"
             style={{
-              animation: "progress 2s linear forwards",
+              animation: "progress 3s linear forwards",
             }}
           />
         </div>
