@@ -11,7 +11,10 @@ export const getAllUsers = async () => {
 
 export const getUserByCode = async (code: number) => {
   try {
-    const user = await User.findOne({ where: { code } });
+    const user = await User.findOne({
+      where: { code },
+      attributes: ["idUser", "firstName", "lastName", "dni", "code"],
+    });
     if (!user) {
       throw new Error(`User with ID ${code} not found`);
     }
