@@ -27,7 +27,7 @@ export const WeighingPage = () => {
       {/* Header */}
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold text-green-400">SISTEMA DE PESAJE</h1>
-        <div className="text-right text-sm">
+        <div className="text-right text-xl">
           <div className="text-green-400">
             Usuario: {weighingForm.user.name} {weighingForm.user.lastName}
           </div>
@@ -97,7 +97,49 @@ export const WeighingPage = () => {
         </div>
         {/* Columna 3: Datos encontrados */}
         <div className="bg-gray-800 rounded-lg p-4">
-          {weighingForm.orderData?.ppe}
+          <h2 className="text-lg font-semibold text-center mb-3 text-green-400">
+            DETALLES DE LA ORDEN
+          </h2>
+          <div className="space-y-2 text-sm">
+            <div className="flex justify-between border-b border-gray-700 pb-1">
+              <span className="font-medium text-gray-300">PPE:</span>
+              <span>{weighingForm.orderData?.ppe}</span>
+            </div>
+            <div className="flex justify-between border-b border-gray-700 pb-1">
+              <span className="font-medium text-gray-300">Partida:</span>
+              <span>{weighingForm.orderData?.batchNumber}</span>
+            </div>
+            <div className="flex justify-between border-b border-gray-700 pb-1">
+              <span className="font-medium text-gray-300">Id Color:</span>
+              <span>{weighingForm.orderData?.idColor}</span>
+            </div>
+            <div className="flex justify-between border-b border-gray-700 pb-1">
+              <span className="font-medium text-gray-300">Color:</span>
+              <span>{weighingForm.orderData?.color}</span>
+            </div>
+            <div className="flex justify-between border-b border-gray-700 pb-1">
+              <span className="font-medium text-gray-300">Lustre:</span>
+              <span>{weighingForm.orderData?.denier}</span>
+            </div>
+            <div className="flex justify-between border-b border-gray-700 pb-1">
+              <span className="font-medium text-gray-300">Tono:</span>
+              <span>{weighingForm.orderData?.tone}</span>
+            </div>
+
+            <div className="flex justify-between border-b border-gray-700 pb-1">
+              <span className="font-medium text-gray-300">Origen:</span>
+              <span>{weighingForm.orderData?.material}</span>
+            </div>
+            <div className="flex justify-between border-b border-gray-700 pb-1">
+              <span className="font-medium text-gray-300">Producto:</span>
+              <span>{weighingForm.orderData?.product}</span>
+            </div>
+            <div className="flex justify-between border-b border-gray-700 pb-1">
+              <span className="font-medium text-gray-300">Cliente:</span>
+              <span>{weighingForm.orderData?.client}</span>
+            </div>
+            {/* Repetir lo mismo con el resto */}
+          </div>
         </div>
       </div>
 
