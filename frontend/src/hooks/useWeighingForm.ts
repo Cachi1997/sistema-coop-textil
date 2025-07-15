@@ -73,9 +73,9 @@ export const useWeighingForm = () => {
           modal.showModal(
             "Datos No Encontrados",
             `No se encontraron datos para:
-P.P.E: ${ppe}
-Partida: ${batch}
-Hilado: ${isYarn ? "Sí" : "No"}`
+              P.P.E: ${ppe}
+              Partida: ${batch}
+              Hilado: ${isYarn ? "Sí" : "No"}`
           );
           return;
         }
@@ -90,9 +90,15 @@ Hilado: ${isYarn ? "Sí" : "No"}`
     const payload = {
       ...data,
       weight: netWeight || 0,
+      batchData: dataValidation.orderData, // Incluir los datos de la partida
     };
     console.log("Datos del formulario:", payload);
     // Aquí iría la llamada al backend
+  };
+
+  const resetForm = () => {
+    form.reset();
+    dataValidation.clearOrderData();
   };
 
   return {
@@ -100,8 +106,11 @@ Hilado: ${isYarn ? "Sí" : "No"}`
     modal,
     user: userValidation.user,
     navigation,
+    orderData: dataValidation.orderData,
+    isLoadingBatchData: dataValidation.isLoading,
     campos,
     handleEnterKey,
     registerWeight,
+    resetForm,
   };
 };

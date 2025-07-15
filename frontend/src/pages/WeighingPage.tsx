@@ -95,6 +95,10 @@ export const WeighingPage = () => {
             />
           </form>
         </div>
+        {/* Columna 3: Datos encontrados */}
+        <div className="bg-gray-800 rounded-lg p-4">
+          {weighingForm.orderData?.ppe}
+        </div>
       </div>
 
       {/* Modal de Error */}

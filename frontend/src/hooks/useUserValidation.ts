@@ -14,7 +14,13 @@ export const useUserValidation = () => {
   const verificarUsuario = async (code: number): Promise<User> => {
     try {
       const res = await axios.get(`/users/${code}`);
-      const userData: User = res.data;
+      const userData: User = {
+        id: res.data.idUser,
+        name: res.data.firstName,
+        lastName: res.data.lastName,
+        dni: res.data.dni,
+        code: res.data.code,
+      };
       setUser(userData);
       return userData;
     } catch (error) {
