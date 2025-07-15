@@ -19,20 +19,29 @@ export const useDataValidation = () => {
   }: DataValidationParams): Promise<boolean> => {
     setIsLoading(true);
     try {
-      const res = await axios.get(
+      const { data } = await axios.get(
         `/orders/orderWeight?ppe=${ppe}&batch=${batch}&isYarn=${isYarn}`
       );
 
-      if (!res.data || res.data.length === 0) {
+      if (!data || data.length === 0) {
         setOrderData(null);
         setIsLoading(false);
         return false;
       }
+      console.log(data);
 
-      // Asumiendo que el backend retorna los datos en el formato esperado
-      const data: orderWeightResponse = res.data;
-      setOrderData(data);
-      console.log("Datos encontrados:", data);
+      setOrderData({
+        ppe: data.ppe,
+        batchNumber: data.batchNumber,
+        orderNumber: data.orderNumber,
+        idColor: data.color.idColor,
+        color: data.color.name,
+        denier: data.denier.denier,
+        tone: data.tone.name,
+        material: data.rawMaterial.name,
+        product: data.product.name,
+        client: data.client.name,
+      });
       setIsLoading(false);
       return true;
     } catch (error) {
