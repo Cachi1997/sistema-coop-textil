@@ -102,6 +102,7 @@ export const useWeighingForm = () => {
     // Volver a enfocar el primer campo después de limpiar
     setTimeout(() => {
       form.setFocus("user");
+      navigation.setActiveFieldIndex(0); // Resetear el índice del campo activo
     }, 100);
   };
 
@@ -116,5 +117,6 @@ export const useWeighingForm = () => {
     handleEnterKey,
     registerWeight,
     resetForm,
+    activeFieldIndex: navigation.activeFieldIndex, // Exponer el índice del campo activo
   };
 };

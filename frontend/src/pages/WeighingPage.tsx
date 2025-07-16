@@ -68,7 +68,11 @@ export const WeighingPage = () => {
             {weighingForm.campos.map((campo, index) => (
               <div
                 key={index}
-                className="p-2 sm:p-3 mb-1 sm:mb-2 rounded-lg border-2 border-gray-600 bg-gray-750"
+                className={`p-2 sm:p-3 mb-1 sm:mb-2 rounded-lg border-2 transition-all ${
+                  weighingForm.activeFieldIndex === index
+                    ? "border-green-500 bg-gray-700 shadow-lg" // Estilos para el div activo
+                    : "border-gray-600 bg-gray-750" // Estilos por defecto
+                }`}
               >
                 <LabelDisplay
                   message={campo.label}
@@ -89,7 +93,7 @@ export const WeighingPage = () => {
                         : undefined,
                   })}
                   onKeyDown={(e) => weighingForm.handleEnterKey(e, index)}
-                  className={`w-full px-2 py-1 sm:px-3 sm:py-2 bg-gray-900 border border-gray-600 rounded text-sm sm:text-base text-white focus:border-green-500 focus:outline-none ${
+                  className={`w-full px-2 py-1 sm:px-3 sm:py-2 bg-gray-900 border border-gray-600 rounded text-sm sm:text-base text-white focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50 ${
                     weighingForm.form.formState.errors[
                       campo.name as keyof typeof weighingForm.form.formState.errors
                     ]
@@ -111,14 +115,14 @@ export const WeighingPage = () => {
             <input
               type="submit"
               ref={weighingForm.navigation.submitButtonRef}
-              className="bg-green-500 hover:bg-green-600 text-white font-bold mt-2 py-2 px-4 rounded w-full text-sm sm:text-base"
+              className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded w-full text-sm sm:text-base"
               value="Enviar"
             />
             {/* Nuevo botón de Reset */}
             <button
               type="button" // Importante: type="button" para evitar que envíe el formulario
               onClick={weighingForm.resetForm}
-              className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded w-full text-sm sm:text-base mt-1"
+              className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded w-full text-sm sm:text-base mt-2"
             >
               Resetear Formulario
             </button>
