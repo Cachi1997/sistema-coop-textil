@@ -4,6 +4,7 @@ import { LabelDisplay } from "../components/display/LabelDisplay";
 import { useWeighingForm } from "../hooks/useWeighingForm";
 import { useWeightCalculations } from "../hooks/useWeightCalculations";
 import { ErrorModal } from "../components/display/ModalNotFound";
+import { OrderDataWeightDisplay } from "../components/display/OrderDataWeightDisplay";
 
 export const WeighingPage = () => {
   const grossWeight = useWeightSocket();
@@ -23,43 +24,55 @@ export const WeighingPage = () => {
   };
 
   return (
-    <div className="h-screen bg-gray-900 text-white p-4 overflow-y-auto">
+    <div className="min-h-screen bg-gray-900 text-white p-2 sm:p-4 flex flex-col">
       {/* Header */}
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold text-green-400">SISTEMA DE PESAJE</h1>
-        <div className="text-right text-xl">
+      <div className="flex justify-between items-center mb-2 sm:mb-4">
+        <h1 className="text-xl sm:text-2xl font-bold text-green-400">
+          SISTEMA DE PESAJE
+        </h1>
+        <div className="text-sm sm:text-xl text-right">
           <div className="text-green-400">
             Usuario: {weighingForm.user.name} {weighingForm.user.lastName}
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-4 h-[calc(100vh-120px)]">
-        {/* Columna 1: Peso actual */}
-        <div className="bg-gray-800 rounded-lg p-4 flex flex-col">
-          <h2 className="text-lg font-semibold text-center mb-3 text-green-400">
+      {/* Main Content Grid */}
+      <div className="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4">
+        {/* Columna 1: Peso actual y, condicionalmente, Detalles de la Orden */}
+        <div className="bg-gray-800 rounded-lg p-2 sm:p-4 flex flex-col">
+          <h2 className="text-base sm:text-lg font-semibold text-center mb-2 text-green-400">
             PESO ACTUAL
           </h2>
           <WeightDisplay grossWeight={grossWeight} netWeight={netWeight} />
+
+          {/* Detalles de la Orden para monitores 4:3 (md y abajo) */}
+          {/* Se muestra en pantallas pequeñas/medianas y se oculta en pantallas grandes */}
+          <div className="mt-4 lg:hidden">
+            <h2 className="text-base sm:text-lg font-semibold text-center mb-2 text-green-400">
+              DETALLES DE LA ORDEN
+            </h2>
+            <OrderDataWeightDisplay orderData={weighingForm.orderData} />
+          </div>
         </div>
 
         {/* Columna 2: Formulario */}
-        <div className="bg-gray-800 rounded-lg p-4">
-          <h2 className="text-lg font-semibold text-center mb-3 text-green-400">
+        <div className="bg-gray-800 rounded-lg p-2 sm:p-4">
+          <h2 className="text-base sm:text-lg font-semibold text-center mb-2 text-green-400">
             DATOS DE REGISTRO
           </h2>
           <form
             onSubmit={weighingForm.form.handleSubmit(onSubmit)}
-            className="space-y-3"
+            className="space-y-2 sm:space-y-3"
           >
             {weighingForm.campos.map((campo, index) => (
               <div
                 key={index}
-                className="p-3 mb-2 rounded-lg border-2 border-gray-600 bg-gray-750"
+                className="p-2 sm:p-3 mb-1 sm:mb-2 rounded-lg border-2 border-gray-600 bg-gray-750"
               >
                 <LabelDisplay
                   message={campo.label}
-                  className="block text-sm font-medium mb-1 text-gray-300"
+                  className="block text-xs sm:text-sm font-medium mb-1 text-gray-300"
                 />
                 <input
                   type={campo.type}
@@ -68,9 +81,15 @@ export const WeighingPage = () => {
                       campo.name !== "internalTare" &&
                       campo.name !== "externalTare",
                     valueAsNumber: campo.type === "number",
+                    min:
+                      (campo.name === "internalTare" ||
+                        campo.name === "externalTare") &&
+                      campo.type === "number"
+                        ? { value: 0, message: "No puede ser negativo" }
+                        : undefined,
                   })}
                   onKeyDown={(e) => weighingForm.handleEnterKey(e, index)}
-                  className={`w-full px-3 py-2 bg-gray-900 border border-gray-600 rounded text-white focus:border-green-500 focus:outline-none ${
+                  className={`w-full px-2 py-1 sm:px-3 sm:py-2 bg-gray-900 border border-gray-600 rounded text-sm sm:text-base text-white focus:border-green-500 focus:outline-none ${
                     weighingForm.form.formState.errors[
                       campo.name as keyof typeof weighingForm.form.formState.errors
                     ]
@@ -82,7 +101,9 @@ export const WeighingPage = () => {
                   campo.name as keyof typeof weighingForm.form.formState.errors
                 ] && (
                   <span className="text-red-500 text-xs mt-1">
-                    Este campo es obligatorio
+                    {weighingForm.form.formState.errors[
+                      campo.name as keyof typeof weighingForm.form.formState.errors
+                    ]?.message || "Este campo es obligatorio"}
                   </span>
                 )}
               </div>
@@ -90,56 +111,27 @@ export const WeighingPage = () => {
             <input
               type="submit"
               ref={weighingForm.navigation.submitButtonRef}
-              className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded w-full"
+              className="bg-green-500 hover:bg-green-600 text-white font-bold mt-2 py-2 px-4 rounded w-full text-sm sm:text-base"
               value="Enviar"
             />
+            {/* Nuevo botón de Reset */}
+            <button
+              type="button" // Importante: type="button" para evitar que envíe el formulario
+              onClick={weighingForm.resetForm}
+              className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded w-full text-sm sm:text-base mt-1"
+            >
+              Resetear Formulario
+            </button>
           </form>
         </div>
-        {/* Columna 3: Datos encontrados */}
-        <div className="bg-gray-800 rounded-lg p-4">
-          <h2 className="text-lg font-semibold text-center mb-3 text-green-400">
+
+        {/* Columna 3: Detalles de la Orden para monitores anchos (lg y arriba) */}
+        {/* Se oculta en pantallas pequeñas/medianas y se muestra en pantallas grandes */}
+        <div className="bg-gray-800 rounded-lg p-2 sm:p-4 hidden lg:block">
+          <h2 className="text-base sm:text-lg font-semibold text-center mb-2 text-green-400">
             DETALLES DE LA ORDEN
           </h2>
-          <div className="space-y-2 text-sm">
-            <div className="flex justify-between border-b border-gray-700 pb-1">
-              <span className="font-medium text-gray-300">PPE:</span>
-              <span>{weighingForm.orderData?.ppe}</span>
-            </div>
-            <div className="flex justify-between border-b border-gray-700 pb-1">
-              <span className="font-medium text-gray-300">Partida:</span>
-              <span>{weighingForm.orderData?.batchNumber}</span>
-            </div>
-            <div className="flex justify-between border-b border-gray-700 pb-1">
-              <span className="font-medium text-gray-300">Id Color:</span>
-              <span>{weighingForm.orderData?.idColor}</span>
-            </div>
-            <div className="flex justify-between border-b border-gray-700 pb-1">
-              <span className="font-medium text-gray-300">Color:</span>
-              <span>{weighingForm.orderData?.color}</span>
-            </div>
-            <div className="flex justify-between border-b border-gray-700 pb-1">
-              <span className="font-medium text-gray-300">Lustre:</span>
-              <span>{weighingForm.orderData?.denier}</span>
-            </div>
-            <div className="flex justify-between border-b border-gray-700 pb-1">
-              <span className="font-medium text-gray-300">Tono:</span>
-              <span>{weighingForm.orderData?.tone}</span>
-            </div>
-
-            <div className="flex justify-between border-b border-gray-700 pb-1">
-              <span className="font-medium text-gray-300">Origen:</span>
-              <span>{weighingForm.orderData?.material}</span>
-            </div>
-            <div className="flex justify-between border-b border-gray-700 pb-1">
-              <span className="font-medium text-gray-300">Producto:</span>
-              <span>{weighingForm.orderData?.product}</span>
-            </div>
-            <div className="flex justify-between border-b border-gray-700 pb-1">
-              <span className="font-medium text-gray-300">Cliente:</span>
-              <span>{weighingForm.orderData?.client}</span>
-            </div>
-            {/* Repetir lo mismo con el resto */}
-          </div>
+          <OrderDataWeightDisplay orderData={weighingForm.orderData} />
         </div>
       </div>
 
