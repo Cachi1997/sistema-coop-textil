@@ -28,7 +28,6 @@ export const useDataValidation = () => {
         setIsLoading(false);
         return false;
       }
-      console.log(data);
 
       setOrderData({
         ppe: data.ppe,
