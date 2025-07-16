@@ -99,6 +99,10 @@ export const useWeighingForm = () => {
   const resetForm = () => {
     form.reset();
     dataValidation.clearOrderData();
+    // Volver a enfocar el primer campo después de limpiar
+    setTimeout(() => {
+      form.setFocus("user");
+    }, 100);
   };
 
   return {
