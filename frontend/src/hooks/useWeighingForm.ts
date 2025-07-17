@@ -1,6 +1,6 @@
 import type React from "react";
 import { useForm } from "react-hook-form";
-import type { WeightData } from "../types";
+import type { ExtendedWeightData, WeightData } from "../types";
 import { useModal } from "./useModal";
 import { useUserValidation } from "./useUserValidation";
 import { useDataValidation } from "./useDataValidation";
@@ -86,14 +86,10 @@ export const useWeighingForm = () => {
     }
   };
 
-  const registerWeight = (data: WeightData, netWeight: number | null) => {
-    const payload = {
-      ...data,
-      weight: netWeight || 0,
-      batchData: dataValidation.orderData, // Incluir los datos de la partida
-    };
-    console.log("Datos del formulario:", payload);
-    // Aquí iría la llamada al backend
+  const registerWeight = (data: ExtendedWeightData) => {
+    try {
+      console.log("Datos llegados", data);
+    } catch (error) {}
   };
 
   const resetForm = () => {

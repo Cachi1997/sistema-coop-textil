@@ -3,12 +3,16 @@ import { useWeightSocket } from "../hooks/useWeightSocket";
 import { LabelDisplay } from "../components/display/LabelDisplay";
 import { useWeighingForm } from "../hooks/useWeighingForm";
 import { useWeightCalculations } from "../hooks/useWeightCalculations";
-import { ErrorModal } from "../components/display/ModalNotFound";
+import { ErrorModal } from "../components/display/ModalNotFound"; // Este es el modal de error auto-cerrable
+import { NotificationModal } from "../components/display/NotificationModal"; // Nuevo modal de notificación
+import { useNotificationModal } from "../hooks/useNotificationModal"; // Nuevo hook para el modal de notificación
 import { OrderDataWeightDisplay } from "../components/display/OrderDataWeightDisplay";
+import type { WeightData } from "../types";
 
 export const WeighingPage = () => {
   const grossWeight = useWeightSocket();
   const weighingForm = useWeighingForm();
+  const notificationModal = useNotificationModal(); // Inicializar el nuevo hook
 
   // Calcular peso neto
   const internalTare = weighingForm.form.watch("internalTare") || 0;
@@ -19,8 +23,52 @@ export const WeighingPage = () => {
     externalTare,
   });
 
-  const onSubmit = (data: any) => {
-    weighingForm.registerWeight(data, netWeight);
+  const onSubmit = async (data: WeightData) => {
+    if (grossWeight === null) {
+      weighingForm.modal.showModal(
+        "Error de Peso",
+        "El peso bruto no está disponible."
+      );
+      return;
+    }
+    if (internalTare + externalTare >= grossWeight) {
+      weighingForm.modal.showModal(
+        "Error de Taras",
+        "La suma de las taras no puede ser mayor o igual al peso bruto. Verifique las taras ingresadas."
+      );
+      return;
+    }
+
+    // Simulación de llamada al backend
+    try {
+      const registroPesaje = {
+        ...data,
+        grossWeight,
+        netWeight,
+      };
+
+      await weighingForm.registerWeight(registroPesaje);
+      notificationModal.showNotification(
+        "Registro Exitoso",
+        `Pesaje registrado correctamente!\n\nUsuario: ${
+          weighingForm.user.name
+        } ${weighingForm.user.lastName}\nPeso Neto: ${netWeight?.toFixed(
+          2
+        )} kg\nPartida: ${data.batch}`,
+        "success",
+        5000 // Auto-cerrar después de 5 segundos para éxito
+      );
+      weighingForm.resetForm(); // Resetear el formulario al éxito
+    } catch (error: any) {
+      console.error("Error al registrar pesaje:", error);
+      notificationModal.showNotification(
+        "Error del Sistema",
+        `Ocurrió un error: ${
+          error.message || "Error desconocido"
+        }. Contacte al administrador.`,
+        "error"
+      );
+    }
   };
 
   return (
@@ -93,7 +141,7 @@ export const WeighingPage = () => {
                         : undefined,
                   })}
                   onKeyDown={(e) => weighingForm.handleEnterKey(e, index)}
-                  className={`w-full px-2 py-1 sm:px-3 sm:py-2 bg-gray-900 border border-gray-600 rounded text-sm sm:text-base text-white focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50 ${
+                  className={`w-full px-2 py-1 sm:px-3 sm:py-2 bg-gray-900 border border-gray-600 rounded text-sm sm:text-base text-white focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 ${
                     weighingForm.form.formState.errors[
                       campo.name as keyof typeof weighingForm.form.formState.errors
                     ]
@@ -139,12 +187,22 @@ export const WeighingPage = () => {
         </div>
       </div>
 
-      {/* Modal de Error */}
+      {/* Modal de Error (para validaciones rápidas) */}
       <ErrorModal
         isOpen={weighingForm.modal.modal.isOpen}
         title={weighingForm.modal.modal.title}
         message={weighingForm.modal.modal.message}
         onClose={weighingForm.modal.closeModal}
+      />
+
+      {/* Nuevo Modal de Notificación (para respuestas de backend) */}
+      <NotificationModal
+        isOpen={notificationModal.notification.isOpen}
+        title={notificationModal.notification.title}
+        message={notificationModal.notification.message}
+        type={notificationModal.notification.type}
+        duration={notificationModal.notification.duration}
+        onClose={notificationModal.closeNotification}
       />
     </div>
   );

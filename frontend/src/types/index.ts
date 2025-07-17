@@ -1,11 +1,15 @@
 export type WeightData = {
-  weight: number;
   user: string;
   isYarn: number;
   ppe: number;
   batch: number;
   internalTare: number;
   externalTare: number;
+};
+
+export type ExtendedWeightData = WeightData & {
+  grossWeight: number | null;
+  netWeight: number | null;
 };
 
 export type User = {
