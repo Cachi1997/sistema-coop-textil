@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "../config/axiosInstance";
-import type { orderWeightResponse } from "../types";
+import type { orderWeightResponse, WeightData } from "../types";
 
 interface DataValidationParams {
   ppe: number;

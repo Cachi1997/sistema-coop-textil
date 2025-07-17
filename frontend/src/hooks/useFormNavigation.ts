@@ -1,6 +1,4 @@
-"use client";
-
-import { useRef, useEffect, useState } from "react"; // Import useState
+import { useRef, useEffect, useState } from "react";
 import type { UseFormSetFocus } from "react-hook-form";
 import type { WeightData } from "../types";
 
@@ -14,7 +12,7 @@ export const useFormNavigation = ({
   campos,
 }: UseFormNavigationProps) => {
   const submitButtonRef = useRef<HTMLInputElement | null>(null);
-  const [activeFieldIndex, setActiveFieldIndex] = useState<number>(0); // Nuevo estado para el índice activo
+  const [activeFieldIndex, setActiveFieldIndex] = useState<number>(0);
 
   // Auto-focus en el primer campo cuando se monta el componente
   useEffect(() => {
@@ -22,27 +20,29 @@ export const useFormNavigation = ({
     if (firstFieldName) {
       setTimeout(() => {
         setFocus(firstFieldName as keyof WeightData);
-        setActiveFieldIndex(0); // Establecer el primer campo como activo inicialmente
+        setActiveFieldIndex(0);
       }, 100);
     }
   }, [setFocus, campos]);
 
   const navigateToNextField = (currentIndex: number) => {
-    const nextIndex = (currentIndex + 1) % campos.length; // Calcular el siguiente índice
-    const nextFieldName = campos[nextIndex]?.name;
-    if (nextFieldName) {
+    if (currentIndex + 1 < campos.length) {
+      // Si hay un siguiente campo en el array
+      const nextIndex = currentIndex + 1;
+      const nextFieldName = campos[nextIndex]?.name;
       setFocus(nextFieldName as keyof WeightData);
-      setActiveFieldIndex(nextIndex); // Actualizar el índice del campo activo
+      setActiveFieldIndex(nextIndex);
     } else {
+      // Si es el último campo, enfocar el botón de enviar
       submitButtonRef.current?.focus();
-      setActiveFieldIndex(-1); // Indicar que ningún campo está activo (ej. el botón de enviar)
+      setActiveFieldIndex(-1); // Indicar que ningún campo de formulario está activo, sino el botón
     }
   };
 
   return {
     submitButtonRef,
     navigateToNextField,
-    activeFieldIndex, // Exponer el índice del campo activo
-    setActiveFieldIndex, // Exponer el setter para casos como el reset
+    activeFieldIndex,
+    setActiveFieldIndex,
   };
 };

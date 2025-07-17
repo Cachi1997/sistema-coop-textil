@@ -17,7 +17,7 @@ export const ErrorModal = ({
     if (isOpen) {
       const timer = setTimeout(() => {
         onClose();
-      }, 2000); // 2 segundos
+      }, 3000); // 3 segundos
 
       return () => clearTimeout(timer);
     }
@@ -33,9 +33,9 @@ export const ErrorModal = ({
       {/* Modal */}
       <div className="relative bg-gray-800 border-4 border-red-500 rounded-lg shadow-2xl max-w-md w-full mx-4">
         {/* Header */}
-        <div className="bg-red-600 px-4 py-3 sm:px-6 sm:py-4 rounded-t-lg">
+        <div className="bg-red-500 px-4 py-3 sm:px-6 sm:py-4 ">
           <div className="flex items-center">
-            <div className="w-6 h-6 sm:w-8 sm:h-8 bg-white rounded-full flex items-center justify-center mr-2 sm:mr-3">
+            <div className="w-6 h-6 sm:w-8 sm:h-8 bg-white rounded-lg flex items-center justify-center mr-2 sm:mr-3">
               <span className="text-red-600 font-bold text-lg sm:text-xl">
                 !
               </span>
@@ -56,7 +56,7 @@ export const ErrorModal = ({
           <div
             className="bg-red-500 h-full"
             style={{
-              animation: "progress 2s linear forwards",
+              animation: "progress 3s linear forwards",
             }}
           />
         </div>
