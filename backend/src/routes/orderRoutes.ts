@@ -1,8 +1,12 @@
 import { Router } from "express";
-import { getOrderForWeighing } from "../controllers/orderControllers";
+import {
+  getOrderForWeighing,
+  createWeight,
+} from "../controllers/orderControllers";
 
 const orderRouter = Router();
 
 orderRouter.get("/orderWeight", getOrderForWeighing);
+orderRouter.post("/orderWeight", createWeight);
 
 export default orderRouter;

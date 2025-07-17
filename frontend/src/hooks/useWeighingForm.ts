@@ -88,8 +88,9 @@ export const useWeighingForm = () => {
 
   const registerWeight = (data: ExtendedWeightData) => {
     try {
-      console.log("Datos llegados", data);
-    } catch (error) {}
+    } catch (error) {
+      throw new { error }();
+    }
   };
 
   const resetForm = () => {

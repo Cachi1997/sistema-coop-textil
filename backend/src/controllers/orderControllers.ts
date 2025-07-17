@@ -16,3 +16,14 @@ export const getOrderForWeighing = async (req: Request, res: Response) => {
     res.status(404).json({ message: error.message });
   }
 };
+
+export const createWeight = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
