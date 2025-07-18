@@ -5,6 +5,7 @@ import { useModal } from "./useModal";
 import { useUserValidation } from "./useUserValidation";
 import { useDataValidation } from "./useDataValidation";
 import { useFormNavigation } from "./useFormNavigation";
+import axios from "../config/axiosInstance";
 
 const campos = [
   { name: "user", label: "Usuario", type: "number" },
@@ -86,10 +87,18 @@ export const useWeighingForm = () => {
     }
   };
 
-  const registerWeight = (data: ExtendedWeightData) => {
+  const registerWeight = async (data: WeightData) => {
     try {
-    } catch (error) {
-      throw new { error }();
+      const resp = await axios.post("/orders/orderWeight", data);
+    } catch (error: any) {
+      console.error(
+        "Error al enviar los datos:",
+        error.response?.data || error.message
+      );
+      throw new Error(
+        error.response?.data?.message ||
+          "Error desconocido al registrar el pesaje."
+      );
     }
   };
 

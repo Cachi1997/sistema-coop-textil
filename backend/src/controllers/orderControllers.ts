@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import orderServices from "../services/orderServices";
+import { WeightData } from "../types";
 
 export const getOrderForWeighing = async (req: Request, res: Response) => {
   try {
@@ -22,6 +23,8 @@ export const createWeight = async (
   res: Response
 ): Promise<void> => {
   try {
+    const weight: WeightData = req.body;
+
     res.json({ success: true });
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });

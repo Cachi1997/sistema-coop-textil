@@ -48,6 +48,8 @@ export const WeighingPage = () => {
       };
 
       await weighingForm.registerWeight(registroPesaje);
+
+      // Si la promesa se resuelve (éxito)
       notificationModal.showNotification(
         "Registro Exitoso",
         `Pesaje registrado correctamente!\n\nUsuario: ${
@@ -60,6 +62,7 @@ export const WeighingPage = () => {
       );
       weighingForm.resetForm(); // Resetear el formulario al éxito
     } catch (error: any) {
+      // Si la promesa se rechaza (error)
       console.error("Error al registrar pesaje:", error);
       notificationModal.showNotification(
         "Error del Sistema",
@@ -70,7 +73,6 @@ export const WeighingPage = () => {
       );
     }
   };
-
   return (
     <div className="min-h-screen bg-gray-900 text-white p-2 sm:p-4 flex flex-col">
       {/* Header */}
