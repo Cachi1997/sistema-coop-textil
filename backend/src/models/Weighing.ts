@@ -37,7 +37,16 @@ export class Weighing extends Model {
       isFloat: true,
     },
   })
-  declare weight: number;
+  declare grossWeight: number;
+
+  @Column({
+    type: DataType.FLOAT,
+    allowNull: false,
+    validate: {
+      isFloat: true,
+    },
+  })
+  declare netWeight: number;
 
   //Lote
   @Column({
