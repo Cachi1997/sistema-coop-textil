@@ -1,6 +1,6 @@
 import type React from "react";
 import { useForm } from "react-hook-form";
-import type { ExtendedWeightData, WeightData } from "../types";
+import type { WeightData } from "../types";
 import { useModal } from "./useModal";
 import { useUserValidation } from "./useUserValidation";
 import { useDataValidation } from "./useDataValidation";
@@ -89,7 +89,7 @@ export const useWeighingForm = () => {
 
   const registerWeight = async (data: WeightData) => {
     try {
-      const resp = await axios.post("/orders/orderWeight", data);
+      await axios.post("/orders/orderWeight", data);
     } catch (error: any) {
       console.error(
         "Error al enviar los datos:",
