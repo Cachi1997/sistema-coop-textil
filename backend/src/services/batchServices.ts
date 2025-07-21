@@ -1,32 +1,45 @@
 import Batch from "../models/Batch";
+import { getTodayDate, getTodayCutoffDate } from "../utils/date.utils";
 
-export const generarLoteDelDia = async () => {
+export const generateDailyBatch = async () => {
   const hoy = new Date();
-  const diaSemana = hoy.getDay(); // 0 = Domingo, 6 = Sábado
+  const diaSemana = hoy.getDay();
 
-  if (diaSemana === 0) return null; // Si es domingo, no se genera lote
+  if (diaSemana === 0) return null; // No se genera lote en domingo
 
-  const fechaHoy = hoy.toISOString().split("T")[0]; // YYYY-MM-DD
+  const fechaHoy = getTodayDate(); // ← Usas la función reutilizable
 
   const loteExistente = await Batch.findOne({ where: { date: fechaHoy } });
 
   if (loteExistente) {
-    return loteExistente; // Ya existe lote para hoy
+    return loteExistente;
   }
 
   const ultimoLote = await Batch.findOne({
     order: [["batchNumber", "DESC"]],
   });
 
-  const nuevoNumeroLote = ultimoLote
-    ? parseInt(ultimoLote.batchNumber, 10) + 1
-    : 4001; // Lógica inicial
+  const nuevoNumeroLote = ultimoLote ? ultimoLote.batchNumber + 1 : 4001;
 
   const nuevoLote = await Batch.create({
-    batchNumber: nuevoNumeroLote.toString(),
+    batchNumber: nuevoNumeroLote,
     date: fechaHoy,
-    isYarn: false, // o el valor que corresponda según tu lógica
+    isYarn: false,
   });
 
   return nuevoLote;
+};
+
+export const getCurrentBatchNumber = async (): Promise<number> => {
+  const fechaCorte = getTodayCutoffDate();
+
+  const batch = await Batch.findOne({
+    where: { date: fechaCorte },
+  });
+
+  if (!batch) {
+    throw new Error("No se encontró el lote del día.");
+  }
+
+  return batch.batchNumber;
 };
