@@ -5,13 +5,13 @@ import FinishedProduct from "./FinishedProduct";
 @Table({ tableName: "batches", timestamps: true })
 export class Batch extends Model {
   @Column({
-    type: DataType.STRING(50),
+    type: DataType.INTEGER(),
     allowNull: false,
     validate: {
       notEmpty: true,
     },
   })
-  declare batchNumber: string;
+  declare batchNumber: number;
 
   @Column({
     type: DataType.DATEONLY,
