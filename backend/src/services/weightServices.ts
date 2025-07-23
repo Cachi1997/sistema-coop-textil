@@ -31,6 +31,7 @@ const createWeight = async (weightData: WeightData) => {
       externalTare: weightData.externalTare,
       typeWeightId,
       orderId,
+      userId,
     });
     return newWeigth;
   } catch (error) {
