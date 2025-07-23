@@ -1,9 +1,9 @@
-import { getUserByCode, getAllUsers } from "../services/userServices";
 import { Request, Response } from "express";
+import userServices from "../services/userServices";
 
 export const getUsers = async (req: Request, res: Response) => {
   try {
-    const users = await getAllUsers();
+    const users = await userServices.getAllUsers();
     res.status(200).json(users);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -11,10 +11,10 @@ export const getUsers = async (req: Request, res: Response) => {
 };
 
 export const getUser = async (req: Request, res: Response) => {
-  const { id } = req.params;
+  const { code } = req.params;
 
   try {
-    const user = await getUserByCode(Number(id));
+    const user = await userServices.getFullUserByCode(Number(code));
     res.status(200).json(user);
   } catch (error) {
     res.status(404).json({ message: error.message });

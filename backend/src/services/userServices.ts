@@ -1,6 +1,6 @@
 import User from "../models/User";
 
-export const getAllUsers = async () => {
+const getAllUsers = async () => {
   try {
     const users = await User.findAll();
     return users;
@@ -9,7 +9,7 @@ export const getAllUsers = async () => {
   }
 };
 
-export const getUserByCode = async (code: number) => {
+const getFullUserByCode = async (code: number) => {
   try {
     const user = await User.findOne({
       where: { code },
@@ -22,4 +22,27 @@ export const getUserByCode = async (code: number) => {
   } catch (error) {
     throw new Error(`Error fetching user: ${error.message}`);
   }
+};
+
+const getUserIdByCode = async (code: string): Promise<number> => {
+  try {
+    const codeNumber = Number(code);
+    const user = await User.findOne({
+      where: { code: codeNumber },
+      attributes: ["idUser"],
+    });
+    if (!user) {
+      throw new Error(`Usuario con codigo; ${code} no encontrado`);
+    }
+    return user.idUser;
+  } catch (error) {
+    console.error("Error al buscar el usuario:", error);
+    throw new Error("No fue posible encontrar el usuario.");
+  }
+};
+
+export default {
+  getAllUsers,
+  getFullUserByCode,
+  getUserIdByCode,
 };
