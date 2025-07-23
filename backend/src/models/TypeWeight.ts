@@ -9,10 +9,10 @@ export class TypeWeight extends Model {
   declare type: "hilado" | "top";
 
   @Column({
-    type: DataType.STRING(50),
+    type: DataType.INTEGER,
     allowNull: false,
   })
-  declare type_number: string;
+  declare type_number: number;
 }
 
 export default TypeWeight;
