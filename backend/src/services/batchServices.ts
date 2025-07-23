@@ -31,10 +31,10 @@ export const generateDailyBatch = async () => {
 };
 
 export const getCurrentBatchNumber = async (): Promise<number> => {
-  const fechaCorte = getTodayCutoffDate();
+  const cutOffDate = getTodayCutoffDate();
 
   const batch = await Batch.findOne({
-    where: { date: fechaCorte },
+    where: { date: cutOffDate },
   });
 
   if (!batch) {
