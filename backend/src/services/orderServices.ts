@@ -1,3 +1,4 @@
+import { or } from "sequelize";
 import Client from "../models/Client";
 import Color from "../models/Color";
 import { Denier } from "../models/Denier";
@@ -61,7 +62,25 @@ const getOrderId = async (ppe: number, batch: number): Promise<number> => {
   }
 };
 
+const updateKilosProcesed = async (
+  orderId: number,
+  kilos: number
+): Promise<void> => {
+  try {
+    const order = await Order.findByPk(orderId);
+    if (!order) {
+      throw new Error("Orden no encontrada");
+    }
+    order.processedKilos += kilos;
+    await order.save();
+  } catch (error) {
+    console.error("Error al actualizar kilos procesados:", error);
+    throw new Error("No fue posible actualizar los kilos procesados.");
+  }
+};
+
 export default {
   getOrderForWeighing,
   getOrderId,
+  updateKilosProcesed,
 };

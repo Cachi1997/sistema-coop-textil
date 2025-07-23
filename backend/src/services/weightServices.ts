@@ -7,6 +7,12 @@ import { getCurrentBatchNumber } from "./batchServices";
 import orderServices from "./orderServices";
 import userServices from "./userServices";
 
+/**
+ * Crea un nuevo registro de pesaje en la base de datos.
+ * @param weightData - Datos del pesaje a crear.
+ * @returns El objeto Weighing creado.
+ * @throws Error si ocurre un problema al crear el pesaje.
+ */
 const createWeight = async (weightData: WeightData) => {
   const dateNow = new Date().toISOString().split("T")[0];
   const timeNow = new Date().toTimeString().slice(0, 5);
@@ -33,6 +39,8 @@ const createWeight = async (weightData: WeightData) => {
       orderId,
       userId,
     });
+    // Update kilos in the order
+    await orderServices.updateKilosProcesed(orderId, weightData.netWeight);
     return newWeigth;
   } catch (error) {
     console.error("Error al crear el pesaje:", error);
@@ -40,6 +48,12 @@ const createWeight = async (weightData: WeightData) => {
   }
 };
 
+/**
+ * Obtiene el siguiente número de fardo para el pesaje.
+ * @param isYarn - Indica si es hilo (1) o tela (0).
+ * @returns El siguiente número de fardo.
+ * @throws Error si ocurre un problema al obtener el número de fardo.
+ */
 const getNextBaleNumber = async (isYarn: number): Promise<number> => {
   // 1. Buscar el TypeWeight correspondiente
 
@@ -76,6 +90,12 @@ const getNextBaleNumber = async (isYarn: number): Promise<number> => {
   return lastBaleNumber;
 };
 
+/**
+ * Obtiene el ID del tipo de peso basado en el número de tipo.
+ * @param typeNumber - Número del tipo de peso.
+ * @returns El ID del tipo de peso.
+ * @throws Error si no se encuentra el tipo de peso.
+ */
 const getTypeWeightId = async (typeNumber: number): Promise<number> => {
   try {
     const typeWeight = await TypeWeight.findOne({
