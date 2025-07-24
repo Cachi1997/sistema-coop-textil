@@ -4,7 +4,8 @@ import db from "./config/db";
 import colors from "colors";
 import userRouter from "./routes/userRoutes";
 import orderRouter from "./routes/orderRoutes";
-//import weighingRoutes from "./routes/weighing.routes";
+import weighingRouter from "./routes/weighingRoutes";
+
 const app = express();
 
 app.use(cors());
@@ -13,6 +14,7 @@ app.use(express.json());
 
 app.use("/api/users", userRouter);
 app.use("/api/orders", orderRouter);
+app.use("/api/weighings", weighingRouter);
 
 const connectDB = async () => {
   try {

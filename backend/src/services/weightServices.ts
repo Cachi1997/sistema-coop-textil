@@ -39,8 +39,6 @@ const createWeight = async (weightData: WeightData) => {
       orderId,
       userId,
     });
-    // Update kilos in the order
-    await orderServices.updateKilosProcesed(orderId, weightData.netWeight);
     return newWeigth;
   } catch (error) {
     console.error("Error al crear el pesaje:", error);
@@ -50,7 +48,7 @@ const createWeight = async (weightData: WeightData) => {
 
 /**
  * Obtiene el siguiente número de fardo para el pesaje.
- * @param isYarn - Indica si es hilo (1) o tela (0).
+ * @param isYarn - Indica si es hilo (1) o top (0).
  * @returns El siguiente número de fardo.
  * @throws Error si ocurre un problema al obtener el número de fardo.
  */

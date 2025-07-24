@@ -1,7 +1,5 @@
 import { Request, Response } from "express";
 import orderServices from "../services/orderServices";
-import { WeightData } from "../types";
-import weightServices from "../services/weightServices";
 
 export const getOrderForWeighing = async (req: Request, res: Response) => {
   try {
@@ -16,18 +14,5 @@ export const getOrderForWeighing = async (req: Request, res: Response) => {
   } catch (error) {
     console.log({ error });
     res.status(404).json({ message: error.message });
-  }
-};
-
-export const createWeight = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
-  try {
-    const weight: WeightData = req.body;
-    const newWeight = await weightServices.createWeight(weight);
-    res.status(201).json(newWeight);
-  } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
   }
 };
