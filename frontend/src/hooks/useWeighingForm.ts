@@ -89,7 +89,7 @@ export const useWeighingForm = () => {
 
   const registerWeight = async (data: WeightData) => {
     try {
-      await axios.post("/orders/orderWeight", data);
+      await axios.post("/weighings/saveWeight", data);
     } catch (error: any) {
       console.error(
         "Error al enviar los datos:",
