@@ -2,6 +2,8 @@ import { WeightData } from "../types";
 import { Request, Response } from "express";
 import weightServices from "../services/weightServices";
 import orderServices from "../services/orderServices";
+import { imprimirEnUSB } from "../printers/printerServices";
+import { generarComandoSBPL } from "../printers/sato";
 
 export const createWeight = async (
   req: Request,
@@ -15,6 +17,8 @@ export const createWeight = async (
       return;
     }
     await saveWeightInOrder(newWeight.orderId, weight.netWeight);
+    // await generarComandoSBPL()
+    // await imprimirEnUSB();
     res.status(201).json(newWeight);
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
