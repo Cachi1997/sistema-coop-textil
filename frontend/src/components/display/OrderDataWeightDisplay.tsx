@@ -19,6 +19,10 @@ export const OrderDataWeightDisplay = ({
           <span className="font-mono">{orderData?.batchNumber}</span>
         </div>
         <div className="flex justify-between border-b border-gray-700 pb-1">
+          <span className="font-medium text-gray-300">Orden:</span>
+          <span className="font-mono">{orderData?.orderNumber}</span>
+        </div>
+        <div className="flex justify-between border-b border-gray-700 pb-1">
           <span className="font-medium text-gray-300">Id Color:</span>
           <span className="font-mono">{orderData?.idColor}</span>
         </div>
