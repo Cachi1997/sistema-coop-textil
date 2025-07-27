@@ -1,5 +1,5 @@
 import Batch from "../models/Batch";
-import { getTodayDate, getTodayCutoffDate } from "../utils/date.utils";
+import { getTodayCutoffDate } from "../utils/date.utils";
 
 export const generateDailyBatch = async () => {
   const today = new Date();
@@ -7,9 +7,7 @@ export const generateDailyBatch = async () => {
 
   if (weekDay === 0) return null;
 
-  const todayStr = getTodayDate();
-
-  const existingBatch = await Batch.findOne({ where: { date: todayStr } });
+  const existingBatch = await Batch.findOne({ where: { date: today } });
 
   if (existingBatch) {
     return existingBatch;
@@ -20,10 +18,9 @@ export const generateDailyBatch = async () => {
   });
 
   const newBatchNumber = lastBatch ? lastBatch.batchNumber + 1 : 4001;
-
   const newBatch = await Batch.create({
     batchNumber: newBatchNumber,
-    date: todayStr,
+    date: today,
     isYarn: false,
   });
 
@@ -33,12 +30,12 @@ export const generateDailyBatch = async () => {
 export const getCurrentBatchNumber = async (): Promise<number> => {
   const cutOffDate = getTodayCutoffDate();
 
-  const batch = await Batch.findOne({
+  let batch = await Batch.findOne({
     where: { date: cutOffDate },
   });
 
   if (!batch) {
-    throw new Error("No se encontró el lote del día.");
+    batch = await generateDailyBatch();
   }
 
   return batch.batchNumber;
