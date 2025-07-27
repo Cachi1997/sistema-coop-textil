@@ -1,9 +1,9 @@
-import { WeightData } from "../types";
+import { TicketData, WeightData } from "../types";
 import { Request, Response } from "express";
 import weightServices from "../services/weightServices";
 import orderServices from "../services/orderServices";
-import { imprimirEnUSB } from "../printers/printerServices";
-import { generarComandoSBPL } from "../printers/sato";
+import Weighing from "../models/Weighing";
+import pdfPrinterServices from "../services/pdfPrinterServices";
 
 export const createWeight = async (
   req: Request,
@@ -17,8 +17,7 @@ export const createWeight = async (
       return;
     }
     await saveWeightInOrder(newWeight.orderId, weight.netWeight);
-    // await generarComandoSBPL()
-    // await imprimirEnUSB();
+    await imprimirEtiqueta(newWeight, weight.ppe, weight.batch, weight.isYarn);
     res.status(201).json(newWeight);
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
@@ -34,5 +33,35 @@ const saveWeightInOrder = async (
   } catch (error) {
     console.error("Error al actualizar kilos procesados:", error);
     throw new Error("No fue posible actualizar los kilos procesados.");
+  }
+};
+
+const imprimirEtiqueta = async (
+  weight: Weighing,
+  ppe: number,
+  batch: number,
+  isYarn: number
+): Promise<void> => {
+  try {
+    const order = await orderServices.getOrderForWeighing(ppe, batch, isYarn);
+    const pdfData: TicketData = {
+      product: order.dataValues.product.dataValues.name.toUpperCase(),
+      denier: order.dataValues.denier.denier,
+      tone: order.dataValues.tone.name.toUpperCase(),
+      rawMaterial: order.dataValues.rawMaterial.name.toUpperCase(),
+      colorId: order.dataValues.color.dataValues.idColor,
+      ppe: order.ppe,
+      orderNumber: order.orderNumber,
+      colorName: order.dataValues.color.dataValues.name.toUpperCase(),
+      client: order.dataValues.client.name.toUpperCase(),
+      batchNumber: order.batchNumber,
+      batch: Number(weight.batch),
+      bale: weight.bale,
+      netWeight: weight.netWeight,
+    };
+    await pdfPrinterServices.generarPDF(pdfData);
+    await pdfPrinterServices.imprimirPDF();
+  } catch (error) {
+    console.error("❌ Error al imprimir etiqueta:", error);
   }
 };
