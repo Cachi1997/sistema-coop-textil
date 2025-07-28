@@ -10,7 +10,6 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-//app.use("/api/weighings", weighingRoutes);
 
 app.use("/api/users", userRouter);
 app.use("/api/orders", orderRouter);
