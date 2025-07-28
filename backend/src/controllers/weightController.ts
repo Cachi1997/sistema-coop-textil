@@ -52,7 +52,7 @@ const imprimirEtiqueta = async (
       colorId: order.dataValues.color.dataValues.idColor,
       ppe: order.ppe,
       orderNumber: order.orderNumber,
-      colorName: order.dataValues.color.dataValues.name.toUpperCase(),
+      colorName: order.dataValues.color.dataValues.colorName.toUpperCase(),
       client: order.dataValues.client.name.toUpperCase(),
       batchNumber: order.batchNumber,
       batch: Number(weight.batch),

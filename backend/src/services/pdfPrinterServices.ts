@@ -25,21 +25,32 @@ const generarPDF = async (data: TicketData) => {
 
   const lines = [
     { texto: `${data.product}`, fuente: fontBold, size: 26 },
-    { texto: `${data.colorName}`, fuente: fontBold, size: 26 },
-    { texto: "", fuente: fontBold, size: 18 },
+    {
+      texto: `${data.colorId === "tpco" ? " " : data.colorName}`,
+      fuente: fontBold,
+      size: 22,
+    },
+    { texto: " ", fuente: fontBold, size: 6 },
     {
       texto: `${data.denier} - ${data.tone} - ${data.rawMaterial}`,
       fuente: fontBold,
       size: 22,
     },
+    { texto: " ", fuente: fontBold, size: 12 },
     {
       texto: `PPE/ Orden: ${data.ppe}/${data.orderNumber}`,
       fuente: fontBold,
       size: 22,
     },
-    { texto: `Cliente: ${data.client}`, fuente: fontBold, size: 22 },
+    {
+      texto: `Cliente: ${data.colorId === "tpco" ? " " : data.client}`,
+      fuente: fontBold,
+      size: 22,
+    },
     { texto: `Color: ${data.colorId}`, fuente: fontBold, size: 22 },
+    { texto: " ", fuente: fontBold, size: 6 },
     { texto: `Partida: ${data.batchNumber}`, fuente: fontBold, size: 22 },
+    { texto: " ", fuente: fontBold, size: 6 },
     {
       texto: `L: ${data.batch}      F:${data.bale}     N: ${Math.floor(
         data.netWeight
@@ -57,11 +68,10 @@ const generarPDF = async (data: TicketData) => {
       font: fontBold,
       color: rgb(0, 0, 0),
     });
-    y -= linea.size + 4; // espaciado vertical
+    y -= linea.size + 4;
   }
   const pdfBytes = await pdfDoc.save();
   fs.writeFileSync(rutaPDF, pdfBytes);
-  console.log(`✅ PDF generado en: ${rutaPDF}`);
 };
 
 const imprimirPDF = async () => {
