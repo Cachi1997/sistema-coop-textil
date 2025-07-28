@@ -126,10 +126,10 @@ export class Order extends Model {
 
   @ForeignKey(() => Color)
   @Column({
-    type: DataType.STRING,
+    type: DataType.INTEGER,
     allowNull: true,
   })
-  declare colorId: string;
+  declare colorId: number;
 
   @BelongsTo(() => Color)
   declare color: Color;
