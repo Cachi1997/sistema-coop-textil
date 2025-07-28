@@ -25,7 +25,7 @@ export type orderWeightResponse = {
   batchNumber: number;
   orderNumber: number;
   idColor: string;
-  color: string;
+  colorName: string;
   denier: number;
   tone: string;
   material: string;

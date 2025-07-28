@@ -28,7 +28,7 @@ export const OrderDataWeightDisplay = ({
         </div>
         <div className="flex justify-between border-b border-gray-700 pb-1">
           <span className="font-medium text-gray-300">Color:</span>
-          <span className="font-mono">{orderData?.color}</span>
+          <span className="font-mono">{orderData?.colorName}</span>
         </div>
         <div className="flex justify-between border-b border-gray-700 pb-1">
           <span className="font-medium text-gray-300">Lustre:</span>

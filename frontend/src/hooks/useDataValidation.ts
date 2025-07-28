@@ -34,7 +34,7 @@ export const useDataValidation = () => {
         batchNumber: data.batchNumber,
         orderNumber: data.orderNumber,
         idColor: data.color.idColor,
-        color: data.color.name,
+        colorName: data.color.colorName,
         denier: data.denier.denier,
         tone: data.tone.name,
         material: data.rawMaterial.name,
