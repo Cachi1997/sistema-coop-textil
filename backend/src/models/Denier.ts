@@ -1,4 +1,5 @@
-import { Table, Column, Model, DataType } from "sequelize-typescript";
+import { Table, Column, Model, DataType, HasMany } from "sequelize-typescript";
+import Order from "./Order";
 
 @Table({ tableName: "deniers", timestamps: true })
 export class Denier extends Model {
@@ -22,4 +23,7 @@ export class Denier extends Model {
     type: DataType.FLOAT(10),
   })
   declare coefficient: number;
+
+  @HasMany(() => Order)
+  declare orders: Order[];
 }

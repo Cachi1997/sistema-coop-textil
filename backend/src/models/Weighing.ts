@@ -31,36 +31,45 @@ export class Weighing extends Model {
   declare time: string;
 
   @Column({
-    type: DataType.FLOAT,
+    type: DataType.DECIMAL(10, 2),
     allowNull: false,
     validate: {
-      isFloat: true,
+      isDecimal: true,
     },
   })
-  declare weight: number;
+  declare grossWeight: number;
+
+  @Column({
+    type: DataType.DECIMAL(10, 2),
+    allowNull: false,
+    validate: {
+      isDecimal: true,
+    },
+  })
+  declare netWeight: number;
 
   //Lote
   @Column({
-    type: DataType.STRING(50),
+    type: DataType.INTEGER(),
     allowNull: true,
   })
   declare batch: string;
 
   //Fardo
   @Column({
-    type: DataType.STRING(50),
+    type: DataType.INTEGER(),
     allowNull: true,
   })
-  declare bale: string;
+  declare bale: number;
 
   @Column({
-    type: DataType.FLOAT,
+    type: DataType.DECIMAL(10, 2),
     allowNull: true,
   })
   declare internalTare: number;
 
   @Column({
-    type: DataType.FLOAT,
+    type: DataType.DECIMAL(20, 2),
     allowNull: true,
   })
   declare externalTare: number;

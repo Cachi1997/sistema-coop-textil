@@ -6,7 +6,7 @@ import {
   ForeignKey,
   HasMany,
 } from "sequelize-typescript";
-import FinishedProduct from "./FinishedProdcut";
+import FinishedProduct from "./FinishedProduct";
 
 //Tabla de fardos
 @Table({ tableName: "bales", timestamps: true })
@@ -39,7 +39,7 @@ export class Bale extends Model {
     type: DataType.INTEGER,
     allowNull: false,
   })
-  declare baleNumber: number;
+  declare baleNumber: number; // Número de fardo
 }
 
 export default Bale;

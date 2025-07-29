@@ -1,10 +1,4 @@
-import {
-  Table,
-  Column,
-  Model,
-  DataType,
-  PrimaryKey,
-} from "sequelize-typescript";
+import { Table, Column, Model, DataType } from "sequelize-typescript";
 
 @Table({ tableName: "type_weights", timestamps: true })
 export class TypeWeight extends Model {
@@ -15,10 +9,10 @@ export class TypeWeight extends Model {
   declare type: "hilado" | "top";
 
   @Column({
-    type: DataType.STRING(50),
+    type: DataType.INTEGER,
     allowNull: false,
   })
-  declare type_number: string;
+  declare type_number: number;
 }
 
 export default TypeWeight;

@@ -1,8 +1,8 @@
 import { Table, Column, Model, DataType, HasMany } from "sequelize-typescript";
 import Order from "./Order";
 
-@Table({ tableName: "products", timestamps: true })
-export class Product extends Model {
+@Table({ tableName: "raw_materials", timestamps: true })
+export class RawMaterial extends Model {
   @Column({
     type: DataType.STRING(50),
     allowNull: false,
@@ -13,4 +13,4 @@ export class Product extends Model {
   declare orders: Order[];
 }
 
-export default Product;
+export default RawMaterial;

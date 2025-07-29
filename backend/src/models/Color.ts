@@ -3,24 +3,45 @@ import {
   Column,
   Model,
   DataType,
-  PrimaryKey,
+  ForeignKey,
+  BelongsTo,
+  HasMany,
 } from "sequelize-typescript";
+import Order from "./Order";
+import Client from "./Client";
 
 @Table({ tableName: "colors", timestamps: true })
 export class Color extends Model {
-  @PrimaryKey
   @Column({
-    type: DataType.STRING,
-    autoIncrement: false,
-    allowNull: false,
+    type: DataType.STRING(50),
+    allowNull: true,
   })
   declare idColor: string;
+
   @Column({
-    type: DataType.STRING(20),
-    allowNull: false,
-    unique: true,
+    type: DataType.STRING(50),
+    allowNull: true,
   })
-  declare name: string;
+  declare colorName: string;
+
+  @Column({
+    type: DataType.STRING(50),
+    allowNull: true,
+  })
+  declare originalColorName: string;
+
+  @ForeignKey(() => Client)
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: true,
+  })
+  declare clientId: number;
+
+  @BelongsTo(() => Client)
+  declare client: Client;
+
+  @HasMany(() => Order)
+  declare orders: Order[];
 }
 
 export default Color;

@@ -1,7 +1,10 @@
+import WeightDisplay from "./components/display/WeightDisplay";
+import { WeighingPage } from "./pages/WeighingPage";
+
 function App() {
   return (
     <>
-      <h1 className="">Hola Mundo</h1>
+      <WeighingPage />
     </>
   );
 }

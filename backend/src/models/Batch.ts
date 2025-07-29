@@ -1,17 +1,17 @@
 import { Table, Column, Model, DataType, HasMany } from "sequelize-typescript";
-import FinishedProduct from "./FinishedProdcut";
+import FinishedProduct from "./FinishedProduct";
 
 // Tabla de lotes
 @Table({ tableName: "batches", timestamps: true })
-export class Bale extends Model {
+export class Batch extends Model {
   @Column({
-    type: DataType.STRING(50),
+    type: DataType.INTEGER(),
     allowNull: false,
     validate: {
       notEmpty: true,
     },
   })
-  declare batchNumber: string;
+  declare batchNumber: number;
 
   @Column({
     type: DataType.DATEONLY,
@@ -29,3 +29,5 @@ export class Bale extends Model {
   @HasMany(() => FinishedProduct)
   declare finishedProducts: FinishedProduct[];
 }
+
+export default Batch;

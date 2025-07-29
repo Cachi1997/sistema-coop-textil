@@ -20,14 +20,12 @@ export class User extends Model {
   @Column({
     type: DataType.STRING(50),
     allowNull: false,
-    unique: true,
   })
   declare firstName: string;
 
   @Column({
     type: DataType.STRING(50),
     allowNull: false,
-    unique: true,
   })
   declare lastName: string;
 
@@ -40,6 +38,7 @@ export class User extends Model {
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
+    unique: true,
   })
   declare dni: number;
 
