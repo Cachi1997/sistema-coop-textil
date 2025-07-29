@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
-import db from "./config/db";
 import colors from "colors";
+import db from "./config/db";
 import userRouter from "./routes/userRoutes";
 import orderRouter from "./routes/orderRoutes";
 import weighingRouter from "./routes/weighingRoutes";
@@ -15,17 +15,22 @@ app.use("/api/users", userRouter);
 app.use("/api/orders", orderRouter);
 app.use("/api/weighings", weighingRouter);
 
+// Middleware de errores globales
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ message: "Internal server error" });
+});
+
 const connectDB = async () => {
   try {
     await db.authenticate();
-    //await db.sync();
+    // await db.sync(); // Solo si necesitás sincronizar tablas
     console.log(colors.bgGreen.bold.italic("Database connected successfully"));
   } catch (error) {
     console.log(colors.red.bold("Unable to connect to the database:"));
     console.error(colors.red.bold(error));
+    throw error; // importante para que el server no continúe si falla
   }
 };
 
-connectDB();
-
-export default app;
+export { app as default, connectDB };
