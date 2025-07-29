@@ -1,12 +1,7 @@
-import WeightDisplay from "./components/display/WeightDisplay";
-import { WeighingPage } from "./pages/WeighingPage";
+import { AppRouter } from "./router/AppRouter";
 
 function App() {
-  return (
-    <>
-      <WeighingPage />
-    </>
-  );
+  return <AppRouter />;
 }
 
 export default App;
