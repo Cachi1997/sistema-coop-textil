@@ -1,4 +1,4 @@
 node_modules/
 dist
 /backend/.env
-/backend/etiqueta.pdf
+/backend/ticket.pdf
