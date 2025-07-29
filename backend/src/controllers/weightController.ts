@@ -17,7 +17,7 @@ export const createWeight = async (
       return;
     }
     await saveWeightInOrder(newWeight.orderId, weight.netWeight);
-    await imprimirEtiqueta(newWeight, weight.ppe, weight.batch, weight.isYarn);
+    await printTicket(newWeight, weight.ppe, weight.batch, weight.isYarn);
     res.status(201).json(newWeight);
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
@@ -36,7 +36,7 @@ const saveWeightInOrder = async (
   }
 };
 
-const imprimirEtiqueta = async (
+const printTicket = async (
   weight: Weighing,
   ppe: number,
   batch: number,
@@ -59,8 +59,8 @@ const imprimirEtiqueta = async (
       bale: weight.bale,
       netWeight: weight.netWeight,
     };
-    await pdfPrinterServices.generarPDF(pdfData);
-    await pdfPrinterServices.imprimirPDF();
+    await pdfPrinterServices.generatePDF(pdfData);
+    await pdfPrinterServices.printPDF();
   } catch (error) {
     console.error("❌ Error al imprimir etiqueta:", error);
   }
