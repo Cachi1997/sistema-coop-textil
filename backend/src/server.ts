@@ -5,6 +5,7 @@ import db from "./config/db";
 import userRouter from "./routes/userRoutes";
 import orderRouter from "./routes/orderRoutes";
 import weighingRouter from "./routes/weighingRoutes";
+import utilityRouter from "./routes/utilityRoutes";
 
 const app = express();
 
@@ -14,6 +15,7 @@ app.use(express.json());
 app.use("/api/users", userRouter);
 app.use("/api/orders", orderRouter);
 app.use("/api/weighings", weighingRouter);
+app.use("/api/utilities", utilityRouter);
 
 // Middleware de errores globales
 app.use((err, req, res, next) => {
