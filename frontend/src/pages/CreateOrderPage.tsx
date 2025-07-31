@@ -53,14 +53,16 @@ export const CreateOrderPage = () => {
     <div className="min-h-screen bg-gray-900 text-white p-4 flex flex-col">
       {/* Header */}
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold text-green-400">NUEVA ÓRDEN</h1>
+        <h1 className="text-2xl font-bold text-green-400">
+          CREACIÓN DE ÓRDENES
+        </h1>
         <div className="text-right">
           <div className="text-green-400">
             Próximo PPE:{" "}
             {orderForm.isLoadingPPE ? "Cargando..." : orderForm.nextPPE}
           </div>
           <div className="text-gray-400 text-sm">
-            (Último PPE registrado: {orderForm.currentPPE})
+            (Último PPE del backend: {orderForm.currentPPE})
           </div>
           {orderForm.ppeError && (
             <div className="text-red-400 text-sm">
@@ -99,10 +101,10 @@ export const CreateOrderPage = () => {
       {/* Main Content - Single Container with 2 Columns */}
       {!orderForm.isLoadingSelectors && !orderForm.selectorsError && (
         <div className="flex-1 flex justify-center">
-          <div className="bg-gray-800 rounded-lg p-6 w-3/5 max-w-6xl">
-            {/* <h2 className="text-xl font-semibold text-center mb-6 text-green-400">
+          <div className="bg-gray-800 rounded-lg p-6 w-2/3 max-w-6xl">
+            <h2 className="text-xl font-semibold text-center mb-6 text-green-400">
               CREACIÓN DE ORDEN
-            </h2> */}
+            </h2>
 
             <form
               onSubmit={orderForm.form.handleSubmit(onSubmit)}
@@ -111,9 +113,9 @@ export const CreateOrderPage = () => {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Columna Izquierda */}
                 <div className="space-y-4">
-                  {/* <h3 className="text-lg font-semibold text-center text-blue-400 border-b border-blue-400 pb-2">
+                  <h3 className="text-lg font-semibold text-center text-blue-400 border-b border-blue-400 pb-2">
                     DATOS PRINCIPALES
-                  </h3> */}
+                  </h3>
                   <div className="space-y-3">
                     {orderForm.campos.slice(0, 7).map((campo, index) => (
                       <OrderFormField
@@ -132,11 +134,12 @@ export const CreateOrderPage = () => {
 
                 {/* Columna Derecha */}
                 <div className="space-y-4">
-                  {/* <h3 className="text-lg font-semibold text-center text-purple-400 border-b border-purple-400 pb-2">
+                  <h3 className="text-lg font-semibold text-center text-purple-400 border-b border-purple-400 pb-2">
                     ESPECIFICACIONES Y DETALLES
-                  </h3> */}
+                  </h3>
                   <div className="space-y-3">
-                    {orderForm.campos.slice(7).map((campo, index) => {
+                    {/* Campos normales de la columna derecha (sin observaciones) */}
+                    {orderForm.campos.slice(7, 14).map((campo, index) => {
                       const actualIndex = index + 7;
                       return (
                         <OrderFormField
@@ -155,19 +158,33 @@ export const CreateOrderPage = () => {
                 </div>
               </div>
 
-              <div className="mt-4 border-t border-gray-700 pt-4">
+              {/* Campo Observaciones - Ancho completo */}
+              <div className="mt-6">
+                <OrderFormField
+                  campo={orderForm.campos[14]} // Observaciones es el último campo (índice 14)
+                  index={14}
+                  isActive={orderForm.activeFieldIndex === 14}
+                  register={orderForm.form.register}
+                  errors={orderForm.form.formState.errors}
+                  onKeyDown={orderForm.handleEnterKey}
+                  selectorsData={orderForm.selectorsData}
+                />
+              </div>
+
+              {/* Controles Centrados */}
+              <div className="mt-8 border-t border-gray-700 pt-6">
                 <div className="flex justify-center">
                   <div className="flex gap-6">
                     <button
                       type="submit"
-                      className="bg-green-600 hover:bg-green-700 py-3 px-8 rounded-lg font-bold transition-colors text-lg"
+                      className="bg-green-600 hover:bg-green-700 py-3 px-8 rounded-lg font-bold transition-colors text-lg cursor-pointer"
                     >
                       CREAR ORDEN
                     </button>
                     <button
                       type="button"
                       onClick={orderForm.resetForm}
-                      className="bg-red-600 hover:bg-red-700 py-3 px-8 rounded-lg font-bold transition-colors text-lg"
+                      className="bg-red-600 hover:bg-red-700 py-3 px-8 cursor-pointer rounded-lg font-bold transition-colors text-lg"
                     >
                       LIMPIAR
                     </button>

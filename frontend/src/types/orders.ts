@@ -56,7 +56,8 @@ export type OrderFormData = {
   rawMaterialId: number;
   kilos: number;
   kilosPasados: number;
-  camiones: string;
+  camion1: string;
+  camion2: string;
   observaciones: string;
 };
 

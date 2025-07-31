@@ -88,6 +88,8 @@ export const OrderFormField = ({
             {...register(campo.name, {
               required: `${campo.label} es requerido`,
               valueAsNumber: true,
+              validate: (value: number) =>
+                value > 0 || `Debe seleccionar un ${campo.label.toLowerCase()}`,
             })}
             onKeyDown={(e) => onKeyDown(e, index)}
             className={baseClassName}
@@ -107,10 +109,10 @@ export const OrderFormField = ({
           <textarea
             {...register(campo.name)}
             onKeyDown={(e) => onKeyDown(e, index)}
-            className={`${baseClassName} min-h-[80px] resize-vertical`}
+            className={`${baseClassName} min-h-[60px] resize-vertical`}
             autoFocus={isActive}
             placeholder={`Ingrese ${campo.label.toLowerCase()}`}
-            rows={3}
+            rows={2}
           />
         );
 
@@ -132,11 +134,31 @@ export const OrderFormField = ({
           <input
             {...register(campo.name, {
               required:
-                campo.name !== "kilosPasados"
-                  ? `${campo.label} es requerido`
-                  : false,
-              valueAsNumber: true,
-              min: { value: 0, message: "Debe ser mayor o igual a 0" },
+                campo.name === "kilosPasados"
+                  ? false
+                  : `${campo.label} es requerido`,
+              setValueAs: (value: string) => {
+                // Convertir string vacío a undefined, otros valores a number
+                if (value === "" || value === null || value === undefined) {
+                  return undefined;
+                }
+                const numValue = Number.parseFloat(value);
+                return isNaN(numValue) ? undefined : numValue;
+              },
+              validate: (value: number | undefined) => {
+                // Solo validar si el campo es obligatorio
+                if (campo.name !== "kilosPasados") {
+                  if (
+                    value === undefined ||
+                    value === null ||
+                    isNaN(value) ||
+                    value <= 0
+                  ) {
+                    return `${campo.label} debe ser mayor a 0`;
+                  }
+                }
+                return true;
+              },
             })}
             type="number"
             step={campo.name.includes("kilos") ? "0.01" : "1"}
@@ -153,7 +175,9 @@ export const OrderFormField = ({
           <input
             {...register(campo.name, {
               required:
-                campo.name !== "camiones" && campo.name !== "observaciones"
+                campo.name !== "camion1" &&
+                campo.name !== "camion2" &&
+                campo.name !== "observaciones"
                   ? `${campo.label} es requerido`
                   : false,
             })}

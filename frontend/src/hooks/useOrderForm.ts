@@ -20,7 +20,8 @@ const campos = [
   { name: "rawMaterialId", label: "Origen", type: "select" },
   { name: "kilos", label: "Kilos", type: "number" },
   { name: "kilosPasados", label: "Kilos Pasados", type: "number" },
-  { name: "camiones", label: "Camiones", type: "text" },
+  { name: "camion1", label: "Camión 1", type: "text" },
+  { name: "camion2", label: "Camión 2", type: "text" },
   { name: "observaciones", label: "Observaciones", type: "textarea" },
 ];
 
@@ -28,8 +29,8 @@ export const useOrderForm = () => {
   const form = useForm<OrderFormData>({
     defaultValues: {
       ppe: 0,
-      partOriginal: 0,
-      orderNumber: 0,
+      partOriginal: undefined, // Vacío
+      orderNumber: undefined, // Vacío
       date: new Date().toISOString().split("T")[0], // Fecha actual por defecto
       clientId: 0,
       denierId: 0,
@@ -37,9 +38,10 @@ export const useOrderForm = () => {
       productId: 0,
       colorId: 0,
       rawMaterialId: 0,
-      kilos: 0,
-      kilosPasados: 0,
-      camiones: "",
+      kilos: undefined, // Vacío
+      kilosPasados: undefined, // Vacío
+      camion1: "",
+      camion2: "",
       observaciones: "",
     },
   });
@@ -80,7 +82,7 @@ export const useOrderForm = () => {
       // Aquí es donde se hace la llamada real al backend
       console.log("Enviando datos al backend:", data);
 
-      const resp = await axios.post("/api/orders", data);
+      const resp = await axios.post("/orders/order", data);
       console.log("Respuesta del backend (éxito):", resp.data);
     } catch (error: any) {
       console.error(
@@ -99,8 +101,8 @@ export const useOrderForm = () => {
     const nextPPE = ppeData.currentPPE >= 0 ? ppeData.currentPPE + 1 : 1;
     form.reset({
       ppe: nextPPE,
-      partOriginal: 0,
-      orderNumber: 0,
+      partOriginal: undefined, // Vacío al resetear
+      orderNumber: undefined, // Vacío al resetear
       date: new Date().toISOString().split("T")[0],
       clientId: 0,
       denierId: 0,
@@ -108,9 +110,10 @@ export const useOrderForm = () => {
       productId: 0,
       colorId: 0,
       rawMaterialId: 0, // Origen
-      kilos: 0,
-      kilosPasados: 0,
-      camiones: "",
+      kilos: undefined, // Vacío al resetear
+      kilosPasados: undefined, // Vacío al resetear
+      camion1: "",
+      camion2: "",
       observaciones: "",
     });
     // Volver a enfocar el primer campo después de limpiar
