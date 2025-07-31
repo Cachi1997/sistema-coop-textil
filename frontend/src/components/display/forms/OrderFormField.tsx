@@ -10,7 +10,7 @@ interface OrderFormFieldProps {
   index: number;
   isActive: boolean;
   register: any;
-  errors: any;
+  errors: Record<string, { message?: string }>;
   onKeyDown: (
     e: React.KeyboardEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
@@ -35,7 +35,7 @@ export const OrderFormField = ({
     }`;
 
     switch (campo.type) {
-      case "select":
+      case "select": {
         let options: { id: number; name: string; display?: string }[] = [];
 
         switch (campo.name) {
@@ -103,6 +103,7 @@ export const OrderFormField = ({
             ))}
           </select>
         );
+      }
 
       case "textarea":
         return (
@@ -134,7 +135,7 @@ export const OrderFormField = ({
           <input
             {...register(campo.name, {
               required:
-                campo.name === "kilosPasados"
+                campo.name === "passedKilos"
                   ? false
                   : `${campo.label} es requerido`,
               setValueAs: (value: string) => {
@@ -147,7 +148,7 @@ export const OrderFormField = ({
               },
               validate: (value: number | undefined) => {
                 // Solo validar si el campo es obligatorio
-                if (campo.name !== "kilosPasados") {
+                if (campo.name !== "passedKilos") {
                   if (
                     value === undefined ||
                     value === null ||
@@ -175,9 +176,9 @@ export const OrderFormField = ({
           <input
             {...register(campo.name, {
               required:
-                campo.name !== "camion1" &&
-                campo.name !== "camion2" &&
-                campo.name !== "observaciones"
+                campo.name !== "truck1" &&
+                campo.name !== "truck2" &&
+                campo.name !== "notes"
                   ? `${campo.label} es requerido`
                   : false,
             })}

@@ -9,7 +9,7 @@ import { useSelectorsData } from "./useSelectorsData";
 
 const campos = [
   { name: "ppe", label: "PPE", type: "number" },
-  { name: "partOriginal", label: "Part Original", type: "number" },
+  { name: "originalBatch", label: "Part Original", type: "number" },
   { name: "orderNumber", label: "N° Orden", type: "number" },
   { name: "date", label: "Fecha", type: "date" },
   { name: "clientId", label: "Cliente", type: "select" },
@@ -19,17 +19,17 @@ const campos = [
   { name: "colorId", label: "Color", type: "select" },
   { name: "rawMaterialId", label: "Origen", type: "select" },
   { name: "kilos", label: "Kilos", type: "number" },
-  { name: "kilosPasados", label: "Kilos Pasados", type: "number" },
-  { name: "camion1", label: "Camión 1", type: "text" },
-  { name: "camion2", label: "Camión 2", type: "text" },
-  { name: "observaciones", label: "Observaciones", type: "textarea" },
+  { name: "passedKilos", label: "Kilos Pasados", type: "number" },
+  { name: "truck1", label: "Camión 1", type: "text" },
+  { name: "truck2", label: "Camión 2", type: "text" },
+  { name: "notes", label: "Observaciones", type: "textarea" },
 ];
 
 export const useOrderForm = () => {
   const form = useForm<OrderFormData>({
     defaultValues: {
       ppe: 0,
-      partOriginal: undefined, // Vacío
+      originalBacth: undefined, // Vacío
       orderNumber: undefined, // Vacío
       date: new Date().toISOString().split("T")[0], // Fecha actual por defecto
       clientId: 0,
@@ -39,10 +39,10 @@ export const useOrderForm = () => {
       colorId: 0,
       rawMaterialId: 0,
       kilos: undefined, // Vacío
-      kilosPasados: undefined, // Vacío
-      camion1: "",
-      camion2: "",
-      observaciones: "",
+      passedKilos: undefined, // Vacío
+      truck1: "",
+      truck2: "",
+      notes: "",
     },
   });
 
@@ -63,7 +63,10 @@ export const useOrderForm = () => {
     }
   }, [ppeData.currentPPE, ppeData.isLoading, form]);
 
-  const handleEnterKey = async (e: any, index: number) => {
+  const handleEnterKey = async (
+    e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>,
+    index: number
+  ) => {
     if (e.key === "Enter") {
       e.preventDefault();
 
@@ -101,20 +104,20 @@ export const useOrderForm = () => {
     const nextPPE = ppeData.currentPPE >= 0 ? ppeData.currentPPE + 1 : 1;
     form.reset({
       ppe: nextPPE,
-      partOriginal: undefined, // Vacío al resetear
-      orderNumber: undefined, // Vacío al resetear
-      date: new Date().toISOString().split("T")[0],
+      originalBacth: undefined, // Vacío
+      orderNumber: undefined, // Vacío
+      date: new Date().toISOString().split("T")[0], // Fecha actual por defecto
       clientId: 0,
       denierId: 0,
-      toneId: 0, //Lustre
+      toneId: 0,
       productId: 0,
       colorId: 0,
-      rawMaterialId: 0, // Origen
-      kilos: undefined, // Vacío al resetear
-      kilosPasados: undefined, // Vacío al resetear
-      camion1: "",
-      camion2: "",
-      observaciones: "",
+      rawMaterialId: 0,
+      kilos: undefined, // Vacío
+      passedKilos: undefined, // Vacío
+      truck1: "",
+      truck2: "",
+      notes: "",
     });
     // Volver a enfocar el primer campo después de limpiar
     setTimeout(() => {

@@ -79,6 +79,14 @@ const updateKilosProcesed = async (
   }
 };
 
+// const createOrder = async (data) => {
+//   try {
+
+//   } catch (error) {
+
+//   }
+// }
+
 export default {
   getOrderForWeighing,
   getOrderId,

@@ -45,7 +45,7 @@ export type SelectorsData = {
 
 export type OrderFormData = {
   ppe: number;
-  partOriginal: number;
+  originalBacth: number;
   orderNumber: number;
   date: string;
   clientId: number;
@@ -55,10 +55,10 @@ export type OrderFormData = {
   colorId: number;
   rawMaterialId: number;
   kilos: number;
-  kilosPasados: number;
-  camion1: string;
-  camion2: string;
-  observaciones: string;
+  passedKilos: number;
+  truck1: string;
+  truck2: string;
+  notes: string;
 };
 
 export type OrderPayload = OrderFormData & {
