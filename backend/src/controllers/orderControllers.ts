@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import orderServices from "../services/orderServices";
+import { OrderData } from "../types";
 
 export const getOrderForWeighing = async (req: Request, res: Response) => {
   try {
@@ -19,12 +20,10 @@ export const getOrderForWeighing = async (req: Request, res: Response) => {
 
 export const createOrder = async (req: Request, res: Response) => {
   try {
-    const order = req.body;
-    console.log("Received order creation request:", order);
-
-    res
-      .status(201)
-      .json({ message: "Order created successfully", data: order });
+    const order: OrderData = req.body;
+    console.log("Creating order:", order);
+    const newOrder = await orderServices.createOrder(order);
+    res.status(201).json(newOrder);
   } catch (error) {
     console.log({ error });
     res.status(404).json({ message: error.message });

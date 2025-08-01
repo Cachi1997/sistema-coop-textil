@@ -6,6 +6,8 @@ import Order from "../models/Order";
 import Product from "../models/Product";
 import RawMaterial from "../models/RawMaterial";
 import Tone from "../models/Tone";
+import { OrderData } from "../types";
+import ppeServices from "./ppeServices";
 
 const getOrderForWeighing = async (
   ppe: number,
@@ -79,16 +81,42 @@ const updateKilosProcesed = async (
   }
 };
 
-// const createOrder = async (data) => {
-//   try {
-
-//   } catch (error) {
-
-//   }
-// }
+const createOrder = async (data: OrderData) => {
+  try {
+    const newOrder = await Order.create({
+      ppe: data.ppe,
+      orderNumber: data.orderNumber,
+      date: data.date,
+      kilos: data.kilos,
+      passedKilos: data.passedKilos,
+      batchNumber: data.originalBatch,
+      cicle: 0,
+      endDate: null,
+      lastKG: 0,
+      observation: data.notes || "",
+      isCanceled: false,
+      isPrinted: false,
+      firstTruck: data.truck1 || "",
+      secondTruck: data.truck2 || "",
+      processedKilos: 0,
+      productId: data.productId,
+      clientId: data.clientId,
+      colorId: data.colorId,
+      denierId: data.denierId,
+      toneId: data.toneId,
+      rawMaterialId: data.rawMaterialId,
+    });
+    await ppeServices.updatePPE();
+    return newOrder;
+  } catch (error: any) {
+    console.error("Error creating order:", error);
+    throw new Error(`Error creating order: ${error.message}`);
+  }
+};
 
 export default {
   getOrderForWeighing,
   getOrderId,
   updateKilosProcesed,
+  createOrder,
 };
