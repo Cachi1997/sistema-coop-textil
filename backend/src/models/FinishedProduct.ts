@@ -27,7 +27,7 @@ export class FinishedProduct extends Model {
   @ForeignKey(() => Order)
   @Column({
     type: DataType.INTEGER,
-    allowNull: false,
+    allowNull: true,
   })
   declare orderId: number;
 }
