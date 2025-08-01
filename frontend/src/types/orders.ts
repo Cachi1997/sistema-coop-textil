@@ -45,7 +45,7 @@ export type SelectorsData = {
 
 export type OrderFormData = {
   ppe: number;
-  originalBacth: number;
+  originalBatch: number;
   orderNumber: number;
   date: string;
   clientId: number;

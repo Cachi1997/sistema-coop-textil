@@ -36,6 +36,9 @@ export const CreateOrderPage = () => {
         "success",
         5000
       );
+
+      // Resetear el formulario después del éxito
+      // Nota: El PPE ya se habrá actualizado automáticamente en createOrder
       orderForm.resetForm();
     } catch (error: any) {
       console.error("Error al crear orden:", error);
@@ -100,7 +103,7 @@ export const CreateOrderPage = () => {
 
       {/* Main Content - Single Container with 2 Columns */}
       {!orderForm.isLoadingSelectors && !orderForm.selectorsError && (
-        <div className="flex-1 flex justify-center">
+        <div className="flex-1 flex justify-center pb-8">
           <div className="bg-gray-800 rounded-lg p-6 w-2/3 max-w-6xl">
             <h2 className="text-xl font-semibold text-center mb-6 text-green-400">
               CREACIÓN DE ORDEN

@@ -1,11 +1,11 @@
 import { useForm } from "react-hook-form";
 import type { OrderFormData, OrderPayload } from "../types/orders";
 import { useModal } from "./useModal";
+import { useSelectorsData } from "./useSelectorsData";
 import { usePPEData } from "./usePPEData";
 import { useFormNavigation } from "./useFormNavigation";
 import axios from "../config/axiosInstance";
 import { useEffect } from "react";
-import { useSelectorsData } from "./useSelectorsData";
 
 const campos = [
   { name: "ppe", label: "PPE", type: "number" },
@@ -14,10 +14,10 @@ const campos = [
   { name: "date", label: "Fecha", type: "date" },
   { name: "clientId", label: "Cliente", type: "select" },
   { name: "denierId", label: "Denier", type: "select" },
-  { name: "toneId", label: "Lustre", type: "select" },
+  { name: "toneId", label: "Tono", type: "select" },
   { name: "productId", label: "Producto", type: "select" },
   { name: "colorId", label: "Color", type: "select" },
-  { name: "rawMaterialId", label: "Origen", type: "select" },
+  { name: "rawMaterialId", label: "Material", type: "select" },
   { name: "kilos", label: "Kilos", type: "number" },
   { name: "passedKilos", label: "Kilos Pasados", type: "number" },
   { name: "truck1", label: "Camión 1", type: "text" },
@@ -28,8 +28,8 @@ const campos = [
 export const useOrderForm = () => {
   const form = useForm<OrderFormData>({
     defaultValues: {
-      ppe: 0,
-      originalBacth: undefined, // Vacío
+      ppe: undefined, // Comenzar vacío, se llenará automáticamente
+      originalBatch: undefined, // Corregido el typo
       orderNumber: undefined, // Vacío
       date: new Date().toISOString().split("T")[0], // Fecha actual por defecto
       clientId: 0,
@@ -54,7 +54,7 @@ export const useOrderForm = () => {
     campos,
   });
 
-  // Actualizar el PPE en el formulario cuando se carga
+  // Actualizar el PPE en el formulario cuando se carga (sumando 1 al valor del backend)
   useEffect(() => {
     // Cambiar la condición para que funcione incluso cuando currentPPE es 0
     if (ppeData.currentPPE >= 0 && !ppeData.isLoading) {
@@ -64,7 +64,9 @@ export const useOrderForm = () => {
   }, [ppeData.currentPPE, ppeData.isLoading, form]);
 
   const handleEnterKey = async (
-    e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>,
+    e: React.KeyboardEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
     index: number
   ) => {
     if (e.key === "Enter") {
@@ -82,11 +84,8 @@ export const useOrderForm = () => {
 
   const createOrder = async (data: OrderPayload) => {
     try {
-      // Aquí es donde se hace la llamada real al backend
-      console.log("Enviando datos al backend:", data);
-
-      const resp = await axios.post("/orders/order", data);
-      console.log("Respuesta del backend (éxito):", resp.data);
+      await axios.post("/orders/order", data);
+      await ppeData.refreshPPE();
     } catch (error: any) {
       console.error(
         "Error al enviar orden al backend:",
@@ -101,20 +100,22 @@ export const useOrderForm = () => {
   };
 
   const resetForm = () => {
+    // Al resetear, también usar el PPE + 1 (incluso si currentPPE es 0)
     const nextPPE = ppeData.currentPPE >= 0 ? ppeData.currentPPE + 1 : 1;
+
     form.reset({
       ppe: nextPPE,
-      originalBacth: undefined, // Vacío
-      orderNumber: undefined, // Vacío
-      date: new Date().toISOString().split("T")[0], // Fecha actual por defecto
+      originalBatch: undefined, // Corregido el typo
+      orderNumber: undefined, // Vacío al resetear
+      date: new Date().toISOString().split("T")[0],
       clientId: 0,
       denierId: 0,
       toneId: 0,
       productId: 0,
       colorId: 0,
       rawMaterialId: 0,
-      kilos: undefined, // Vacío
-      passedKilos: undefined, // Vacío
+      kilos: undefined, // Vacío al resetear
+      passedKilos: undefined, // Vacío al resetear
       truck1: "",
       truck2: "",
       notes: "",
@@ -124,10 +125,6 @@ export const useOrderForm = () => {
       form.setFocus("ppe");
       navigation.setActiveFieldIndex(0);
     }, 100);
-  };
-
-  const refreshPPE = () => {
-    ppeData.refreshPPE();
   };
 
   return {
@@ -145,7 +142,6 @@ export const useOrderForm = () => {
     handleEnterKey,
     createOrder,
     resetForm,
-    refreshPPE,
     refetchSelectorsData: selectorsData.refetchData,
     activeFieldIndex: navigation.activeFieldIndex,
   };
