@@ -109,7 +109,7 @@ export const OrderFormField = ({
           <textarea
             {...register(campo.name)}
             onKeyDown={(e) => onKeyDown(e, index)}
-            className={`${baseClassName} min-h-[60px] resize-vertical`}
+            className={`${baseClassName} min-h-[60px] max-h-[150px] resize-vertical`}
             autoFocus={isActive}
             placeholder={`Ingrese ${campo.label.toLowerCase()}`}
             rows={2}

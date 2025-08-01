@@ -2,14 +2,14 @@ import { useOrderForm } from "../hooks/useOrderForm";
 import { ErrorModal } from "../components/display/ModalNotFound";
 import { NotificationModal } from "../components/display/NotificationModal";
 import { useNotificationModal } from "../hooks/useNotificationModal";
-import type { OrderPayload } from "../types/orders";
+import type { OrderFormData, OrderPayload } from "../types/orders";
 import { OrderFormField } from "../components/display/forms/OrderFormField";
 
 export const CreateOrderPage = () => {
   const orderForm = useOrderForm();
   const notificationModal = useNotificationModal();
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: OrderFormData) => {
     try {
       // Validaciones adicionales si es necesario
       if (data.kilos <= 0) {
@@ -106,7 +106,7 @@ export const CreateOrderPage = () => {
         <div className="flex-1 flex justify-center pb-8">
           <div className="bg-gray-800 rounded-lg p-6 w-2/3 max-w-6xl">
             <h2 className="text-xl font-semibold text-center mb-6 text-green-400">
-              CREACIÓN DE ORDEN
+              NUEVA ÓRDEN
             </h2>
 
             <form
