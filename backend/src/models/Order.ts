@@ -155,7 +155,7 @@ export class Order extends Model {
     type: DataType.INTEGER,
     allowNull: true,
   })
-  declare toneId: string; //Tono
+  declare toneId: number; //Tono
 
   @BelongsTo(() => Tone)
   declare tone: Tone;
