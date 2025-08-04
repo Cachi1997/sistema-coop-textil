@@ -110,6 +110,19 @@ const getTypeWeightId = async (typeNumber: number): Promise<number> => {
   }
 };
 
+const getWeighingByOrderId = async (orderId: number) => {
+  try {
+    const weighing = await Weighing.findOne({
+      where: { orderId },
+    });
+    return weighing;
+  } catch (error) {
+    console.error("Error al obtener el pesaje por ID de orden:", error);
+    throw new Error("No fue posible obtener el pesaje por ID de orden.");
+  }
+};
+
 export default {
   createWeight,
+  getWeighingByOrderId,
 };

@@ -24,3 +24,27 @@ export type TicketData = {
   bale: number;
   netWeight: number;
 };
+
+export type OrderData = {
+  ppe: number;
+  originalBatch: number;
+  orderNumber: number;
+  date: string;
+  clientId: number;
+  denierId: number;
+  toneId: number;
+  productId: number;
+  colorId: number;
+  rawMaterialId: number;
+  kilos: number;
+  passedKilos: number;
+  truck1: string;
+  truck2: string;
+  notes: string;
+};
+
+export type FinishedProductData = {
+  productCode: string;
+  batchId: number;
+  orderId: number;
+};

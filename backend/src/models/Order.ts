@@ -37,10 +37,16 @@ export class Order extends Model {
   declare date: Date;
 
   @Column({
-    type: DataType.INTEGER,
-    allowNull: false,
+    type: DataType.DECIMAL(10, 2),
+    allowNull: true,
   })
   declare kilos: number;
+
+  @Column({
+    type: DataType.DECIMAL(10, 2),
+    allowNull: true,
+  })
+  declare passedKilos: number;
 
   @Column({
     type: DataType.INTEGER,
@@ -84,7 +90,7 @@ export class Order extends Model {
     allowNull: false,
     defaultValue: false,
   })
-  declare idPrinted: boolean; //Impreso
+  declare isPrinted: boolean; //Impreso
 
   @Column({
     type: DataType.STRING(50),
@@ -99,10 +105,10 @@ export class Order extends Model {
   declare secondTruck: string; //Camion2
 
   @Column({
-    type: DataType.FLOAT,
+    type: DataType.DECIMAL(10, 2),
     allowNull: true,
   })
-  declare processedKilos: number; //KilosPasados
+  declare processedKilos: number; //Kilos Procesados
 
   @ForeignKey(() => Product)
   @Column({
@@ -149,7 +155,7 @@ export class Order extends Model {
     type: DataType.INTEGER,
     allowNull: true,
   })
-  declare toneId: string; //Tono
+  declare toneId: number; //Tono
 
   @BelongsTo(() => Tone)
   declare tone: Tone;
