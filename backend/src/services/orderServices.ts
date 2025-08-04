@@ -8,6 +8,7 @@ import RawMaterial from "../models/RawMaterial";
 import Tone from "../models/Tone";
 import { OrderData } from "../types";
 import ppeServices from "./ppeServices";
+import weightServices from "./weightServices";
 
 const getOrderForWeighing = async (
   ppe: number,
@@ -38,6 +39,41 @@ const getOrderForWeighing = async (
           model: Client,
         },
       ],
+    });
+    if (!resp) {
+      throw new Error("Orden no encontrada");
+    }
+    return resp;
+  } catch (error) {
+    throw new Error(`Error al buscar la orden: ${error.message}`);
+  }
+};
+
+const getOrderById = async (id: number): Promise<Order> => {
+  try {
+    const resp = await Order.findOne({
+      where: { id },
+      include: [
+        {
+          model: Color,
+        },
+        {
+          model: Denier,
+        },
+        {
+          model: Tone,
+        },
+        {
+          model: RawMaterial,
+        },
+        {
+          model: Product,
+        },
+        {
+          model: Client,
+        },
+      ],
+      attributes: { exclude: ["createdAt", "updatedAt"] },
     });
     if (!resp) {
       throw new Error("Orden no encontrada");
@@ -81,7 +117,7 @@ const updateKilosProcesed = async (
   }
 };
 
-const createOrder = async (data: OrderData) => {
+const createOrder = async (data: OrderData): Promise<Order> => {
   try {
     const newOrder = await Order.create({
       ppe: data.ppe,
@@ -109,8 +145,76 @@ const createOrder = async (data: OrderData) => {
     await ppeServices.updatePPE();
     return newOrder;
   } catch (error: any) {
-    console.error("Error creating order:", error);
-    throw new Error(`Error creating order: ${error.message}`);
+    console.error("Error creando la orden:", error);
+    throw new Error(`Ocurrió un error al crear la orden: ${error.message}`);
+  }
+};
+
+const updateOrder = async (id: number, data: OrderData): Promise<Order> => {
+  try {
+    const order = await verifyExistingOrder(id);
+    if (!order) {
+      throw new Error("Orden no encontrada");
+    }
+    const weighing = await weightServices.getWeighingByOrderId(id);
+    if (weighing) {
+      throw new Error(
+        `No fue posible actualizar la orden, ya se ha realizado un pesaje PPE:${order.ppe} Partida: ${order.batchNumber}.`
+      );
+    }
+    order.orderNumber = data.orderNumber;
+    order.date = order.dataValues.date;
+    order.kilos = data.kilos;
+    order.passedKilos = data.passedKilos;
+    order.batchNumber = data.originalBatch;
+    order.endDate = null;
+    order.lastKG = 0;
+    order.observation = data.notes || "";
+    order.firstTruck = data.truck1 || "";
+    order.secondTruck = data.truck2 || "";
+    order.productId = data.productId;
+    order.clientId = data.clientId;
+    order.colorId = data.colorId;
+    order.denierId = data.denierId;
+    order.toneId = data.toneId;
+    order.rawMaterialId = data.rawMaterialId;
+
+    await order.save();
+    return order;
+  } catch (error: any) {
+    console.error("Error al actualizar la orden:", error);
+    throw new Error(`Error al actualizar la orden: ${error.message}`);
+  }
+};
+
+const deleteOrder = async (id: number): Promise<void> => {
+  try {
+    const order = await verifyExistingOrder(id);
+    if (!order) {
+      throw new Error("Orden no encontrada");
+    }
+    const weighing = await weightServices.getWeighingByOrderId(id);
+    if (weighing) {
+      throw new Error(
+        `No fue posible eliminar la orden, ya se ha realizado un pesaje PPE:${order.ppe} Partida: ${order.batchNumber}.`
+      );
+    }
+    order.isCanceled = true;
+    order.endDate = new Date();
+    await order.save();
+  } catch (error: any) {
+    console.error("Error al cancelar la orden:", error);
+    throw new Error(`Error al cancelar la orden: ${error.message}`);
+  }
+};
+
+const verifyExistingOrder = async (id: number): Promise<Order> => {
+  try {
+    const order = await Order.findByPk(id);
+    return order;
+  } catch (error) {
+    console.error("Error al verificar la orden existente:", error);
+    throw new Error("No fue posible verificar la orden existente.");
   }
 };
 
@@ -119,4 +223,6 @@ export default {
   getOrderId,
   updateKilosProcesed,
   createOrder,
+  updateOrder,
+  deleteOrder,
 };
