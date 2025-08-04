@@ -42,3 +42,9 @@ export type OrderData = {
   truck2: string;
   notes: string;
 };
+
+export type FinishedProductData = {
+  productCode: string;
+  batchId: number;
+  orderId: number;
+};

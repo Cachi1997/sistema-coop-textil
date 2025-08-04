@@ -1,4 +1,4 @@
-import { or } from "sequelize";
+import { or, Op } from "sequelize";
 import Client from "../models/Client";
 import Color from "../models/Color";
 import { Denier } from "../models/Denier";
@@ -6,9 +6,44 @@ import Order from "../models/Order";
 import Product from "../models/Product";
 import RawMaterial from "../models/RawMaterial";
 import Tone from "../models/Tone";
-import { OrderData } from "../types";
+import { FinishedProductData, OrderData } from "../types";
 import ppeServices from "./ppeServices";
 import weightServices from "./weightServices";
+import FinishedProduct from "../models/FinishedProduct";
+import finishedProduct from "./finishedProduct";
+
+const getCurrentOrders = async (): Promise<Order[]> => {
+  try {
+    // Get all finished order IDs
+    const finishedOrders = await finishedProduct.getFinishedProducts();
+    const finishedOrderIds = finishedOrders.map(
+      (fp: FinishedProductData) => fp.orderId
+    );
+
+    // Find orders that are not canceled and not finished
+    const orders = await Order.findAll({
+      where: {
+        isCanceled: false,
+        id: {
+          [Op.notIn]: finishedOrderIds.length ? finishedOrderIds : [0],
+        },
+      },
+      include: [
+        { model: Client },
+        { model: Color },
+        { model: Denier },
+        { model: Tone },
+        { model: RawMaterial },
+        { model: Product },
+      ],
+      order: [["id", "DESC"]],
+    });
+    return orders;
+  } catch (error) {
+    console.error("Error fetching current orders:", error);
+    throw new Error("No fue posible obtener las órdenes actuales.");
+  }
+};
 
 const getOrderForWeighing = async (
   ppe: number,
@@ -221,6 +256,8 @@ const verifyExistingOrder = async (id: number): Promise<Order> => {
 export default {
   getOrderForWeighing,
   getOrderId,
+  getOrderById,
+  getCurrentOrders,
   updateKilosProcesed,
   createOrder,
   updateOrder,
