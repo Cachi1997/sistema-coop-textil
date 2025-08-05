@@ -9,7 +9,6 @@ import Tone from "../models/Tone";
 import { FinishedProductData, OrderData } from "../types";
 import ppeServices from "./ppeServices";
 import weightServices from "./weightServices";
-import FinishedProduct from "../models/FinishedProduct";
 import finishedProduct from "./finishedProduct";
 
 const getCurrentOrders = async (): Promise<Order[]> => {
