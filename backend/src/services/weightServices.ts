@@ -1,4 +1,4 @@
-import { Op } from "sequelize";
+import { Op, fn, col } from "sequelize";
 import Weighing from "../models/Weighing";
 import { WeightData } from "../types";
 import TypeWeight from "../models/TypeWeight";
@@ -6,6 +6,7 @@ import { getTodayCutoffDate } from "../utils/date.utils";
 import { getCurrentBatchNumber } from "./batchServices";
 import orderServices from "./orderServices";
 import userServices from "./userServices";
+import { startOfMonth, endOfMonth, startOfWeek, endOfWeek } from "date-fns";
 
 /**
  * Crea un nuevo registro de pesaje en la base de datos.
@@ -110,6 +111,12 @@ const getTypeWeightId = async (typeNumber: number): Promise<number> => {
   }
 };
 
+/**
+ * Obtiene un pesaje por el ID de la orden.
+ * @param orderId - ID de la orden.
+ * @returns El objeto Weighing correspondiente a la orden.
+ * @throws Error si ocurre un problema al obtener el pesaje.
+ */
 const getWeighingByOrderId = async (orderId: number) => {
   try {
     const weighing = await Weighing.findOne({
@@ -122,7 +129,53 @@ const getWeighingByOrderId = async (orderId: number) => {
   }
 };
 
+/**
+ *
+ * @returns La suma total del peso neto semanal.
+ * @throws Error si ocurre un problema al calcular la suma.
+ */
+const getWeeklyNetWeightSum = async (): Promise<number> => {
+  const start = startOfWeek(new Date(), { weekStartsOn: 1 }); // Lunes
+  const end = endOfWeek(new Date(), { weekStartsOn: 1 }); // Domingo
+
+  const result = await Weighing.findOne({
+    attributes: [[fn("SUM", col("netWeight")), "total"]],
+    where: {
+      date: {
+        [Op.between]: [start, end],
+      },
+    },
+    raw: true,
+  });
+
+  return parseFloat((result as any)?.total || "0");
+};
+
+/**
+ * Obtiene la suma total del peso neto mensual.
+ * @returns La suma total del peso neto mensual.
+ * @throws Error si ocurre un problema al calcular la suma.
+ */
+const getMonthlyNetWeightSum = async (): Promise<number> => {
+  const start = startOfMonth(new Date());
+  const end = endOfMonth(new Date());
+
+  const result = await Weighing.findOne({
+    attributes: [[fn("SUM", col("netWeight")), "total"]],
+    where: {
+      date: {
+        [Op.between]: [start, end],
+      },
+    },
+    raw: true,
+  });
+
+  return parseFloat((result as any)?.total || "0");
+};
+
 export default {
   createWeight,
   getWeighingByOrderId,
+  getWeeklyNetWeightSum,
+  getMonthlyNetWeightSum,
 };
