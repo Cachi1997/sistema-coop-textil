@@ -6,9 +6,11 @@ import { getProducts } from "../controllers/productController";
 import { getRawMaterials } from "../controllers/rawMaterialController";
 import { getTones } from "../controllers/toneController";
 import { getLastPPE } from "../controllers/ppeController";
+import { getDashboardData } from "../controllers/dashboardController";
 
 const utilityRouter = Router();
 
+utilityRouter.get("/dashboard/summary", getDashboardData);
 utilityRouter.get("/clients", getClients);
 utilityRouter.get("/colors", getColors);
 utilityRouter.get("/deniers", getDeniers);

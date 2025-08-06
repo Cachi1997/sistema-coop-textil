@@ -1,9 +1,22 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDashboardData } from "../hooks/useDashboardData";
+import { useDashboardHelpers } from "../hooks/useDashboardHelpers";
 
 export const HomePage = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const navigate = useNavigate();
+
+  const { data: apiResponse, loading: isLoading, error } = useDashboardData();
+
+  const data = apiResponse?.data || null;
+
+  const {
+    formattedStats,
+    formattedSystemStatus,
+    formatPercentage,
+    getPercentageColor,
+  } = useDashboardHelpers(data);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -13,41 +26,36 @@ export const HomePage = () => {
     return () => clearInterval(timer);
   }, []);
 
-  const stats = [
-    {
-      title: "Órdenes Activas",
-      value: "18",
-      icon: "📋",
-      color: "text-blue-400",
-      bgColor: "bg-blue-900/20",
-      borderColor: "border-blue-500",
-    },
-    {
-      title: "Materiales en Stock",
-      value: "156",
-      icon: "📦",
-      color: "text-green-400",
-      bgColor: "bg-green-900/20",
-      borderColor: "border-green-500",
-    },
-    {
-      title: "Kilos Procesados",
-      value: "2,847.5",
-      icon: "⚖️",
-      color: "text-yellow-400",
-      bgColor: "bg-yellow-900/20",
-      borderColor: "border-yellow-500",
-    },
-    {
-      title: "Despachos Pendientes",
-      value: "6",
-      icon: "🚚",
-      color: "text-purple-400",
-      bgColor: "bg-purple-900/20",
-      borderColor: "border-purple-500",
-    },
-  ];
+  if (isLoading && !data) {
+    return (
+      <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-green-400 mx-auto mb-4"></div>
+          <h2 className="text-xl font-semibold text-green-400 mb-2">
+            Cargando página
+          </h2>
+          <p className="text-gray-400">Obteniendo datos del sistema...</p>
+        </div>
+      </div>
+    );
+  }
 
+  // Solo mostrar error si no hay datos en absoluto
+  if (error && !data) {
+    return (
+      <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
+        <div className="text-center max-w-md">
+          <div className="text-red-400 text-6xl mb-4">⚠️</div>
+          <h2 className="text-xl font-bold text-red-400 mb-2">
+            No se pudo cargar la página, error de servidor
+          </h2>
+          <p className="text-gray-400 mb-6">{error}</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Actividades recientes mock (ya que el backend devuelve array vacío)
   const recentActivities = [
     {
       id: 1,
@@ -73,25 +81,9 @@ export const HomePage = () => {
       icon: "🚚",
       color: "text-orange-400",
     },
-    {
-      id: 4,
-      type: "order-completed",
-      message: "Orden PPE: 1043 marcada como finalizada",
-      time: "Hace 25 minutos",
-      icon: "✅",
-      color: "text-green-400",
-    },
-    {
-      id: 5,
-      type: "inventory",
-      message: "Actualización de inventario completada",
-      time: "Hace 32 minutos",
-      icon: "📊",
-      color: "text-purple-400",
-    },
   ];
 
-  // Secciones principales organizadas por categorías (sin pesaje)
+  // Secciones principales
   const mainSections = [
     {
       title: "Gestión de Órdenes",
@@ -143,7 +135,7 @@ export const HomePage = () => {
     },
   ];
 
-  // Acciones rápidas más utilizadas (sin pesaje)
+  // Acciones rápidas
   const quickActions = [
     {
       title: "Crear Orden",
@@ -175,35 +167,6 @@ export const HomePage = () => {
     },
   ];
 
-  // Sección especial para acceso al pesaje (solo visible en ciertas condiciones)
-  const showWeighingAccess = () => {
-    // Aquí puedes agregar lógica para mostrar el acceso al pesaje
-    // Por ejemplo, basado en la configuración del sistema o la URL
-    return (
-      <div className="bg-gray-800 border-2 border-yellow-500 rounded-lg p-6 mb-8">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center">
-            <span className="text-4xl mr-4">⚖️</span>
-            <div>
-              <h3 className="text-xl font-semibold text-yellow-400">
-                Estación de Pesaje
-              </h3>
-              <p className="text-gray-400">
-                Acceso directo al sistema de pesaje
-              </p>
-            </div>
-          </div>
-          <button
-            onClick={() => navigate("/weighing")}
-            className="bg-yellow-600 hover:bg-yellow-700 px-6 py-3 rounded-lg font-bold transition-colors"
-          >
-            ACCEDER AL PESAJE
-          </button>
-        </div>
-      </div>
-    );
-  };
-
   return (
     <div className="min-h-screen bg-gray-900 text-white p-4 sm:p-6">
       {/* Header */}
@@ -233,33 +196,36 @@ export const HomePage = () => {
         </div>
       </div>
 
-      {/* Acceso especial al pesaje (condicional) */}
-      {/* Descomenta la siguiente línea si quieres mostrar el acceso al pesaje en ciertas condiciones */}
-      {/* {showWeighingAccess()} */}
-
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        {stats.map((stat, index) => (
+        {formattedStats?.map((stat, index) => (
           <div
             key={index}
             className={`${stat.bgColor} ${stat.borderColor} border-2 rounded-lg p-6 transition-transform hover:scale-105 cursor-pointer`}
-            onClick={() => {
-              if (stat.title.includes("Órdenes")) navigate("/orders");
-              if (stat.title.includes("Materiales"))
-                navigate("/materials/inventory");
-              if (stat.title.includes("Despachos")) navigate("/dispatch/new");
-            }}
+            onClick={() => navigate(stat.clickPath)}
           >
             <div className="flex items-center justify-between">
-              <div>
+              <div className="flex-1">
                 <p className="text-gray-400 text-sm font-medium">
                   {stat.title}
                 </p>
+                {stat.subtitle && (
+                  <p className="text-gray-500 text-xs mt-1">{stat.subtitle}</p>
+                )}
                 <p className={`text-3xl font-bold ${stat.color} mt-2`}>
                   {stat.value}
                 </p>
+                {/* {stat.change !== undefined && (
+                  <p
+                    className={`text-sm mt-1 ${getPercentageColor(
+                      stat.change
+                    )}`}
+                  >
+                    {formatPercentage(stat.change)} vs anterior
+                  </p>
+                )} */}
               </div>
-              <div className="text-4xl">{stat.icon}</div>
+              <div className="text-4xl ml-2">{stat.icon}</div>
             </div>
           </div>
         ))}
@@ -329,8 +295,7 @@ export const HomePage = () => {
       </div>
 
       {/* Grid de Actividad Reciente y Reportes */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-        {/* Recent Activity */}
+      {/* <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         <div className="bg-gray-800 rounded-lg p-6">
           <h2 className="text-xl font-semibold text-green-400 mb-6">
             Actividad Reciente
@@ -357,7 +322,6 @@ export const HomePage = () => {
           </button>
         </div>
 
-        {/* Reportes Rápidos */}
         <div className="bg-gray-800 rounded-lg p-6">
           <h2 className="text-xl font-semibold text-green-400 mb-6">
             Reportes Rápidos
@@ -411,7 +375,7 @@ export const HomePage = () => {
             Ver todos los reportes →
           </button>
         </div>
-      </div>
+      </div> */}
 
       {/* System Status */}
       <div className="bg-gray-800 rounded-lg p-6">
@@ -419,34 +383,30 @@ export const HomePage = () => {
           Estado del Sistema
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="flex items-center space-x-3">
-            <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-            <div>
-              <p className="text-white font-medium">Base de Datos</p>
-              <p className="text-green-400 text-sm">Operativa</p>
+          {formattedSystemStatus?.map((status, index) => (
+            <div key={index} className="flex items-center space-x-3">
+              <div
+                className={`w-3 h-3 ${status.color} rounded-full animate-pulse`}
+              ></div>
+              <div>
+                <p className="text-white font-medium">{status.name}</p>
+                <p
+                  className={`text-sm ${
+                    status.status === "online"
+                      ? "text-green-400"
+                      : status.status === "warning"
+                      ? "text-yellow-400"
+                      : "text-red-400"
+                  }`}
+                >
+                  {status.message}
+                </p>
+                {status.details && (
+                  <p className="text-gray-400 text-xs">{status.details}</p>
+                )}
+              </div>
             </div>
-          </div>
-          <div className="flex items-center space-x-3">
-            <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-            <div>
-              <p className="text-white font-medium">Servidor</p>
-              <p className="text-green-400 text-sm">Estable</p>
-            </div>
-          </div>
-          <div className="flex items-center space-x-3">
-            <div className="w-3 h-3 bg-yellow-500 rounded-full animate-pulse"></div>
-            <div>
-              <p className="text-white font-medium">Red</p>
-              <p className="text-yellow-400 text-sm">Carga Media</p>
-            </div>
-          </div>
-          <div className="flex items-center space-x-3">
-            <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-            <div>
-              <p className="text-white font-medium">Almacenamiento</p>
-              <p className="text-green-400 text-sm">Disponible</p>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
     </div>
