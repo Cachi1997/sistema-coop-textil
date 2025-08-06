@@ -9,7 +9,7 @@ import Tone from "../models/Tone";
 import { FinishedProductData, OrderData } from "../types";
 import ppeServices from "./ppeServices";
 import weightServices from "./weightServices";
-import finishedProduct from "./finishedProduct";
+import finishedProduct from "./finishedProductServices";
 
 const getCurrentOrders = async (): Promise<Order[]> => {
   try {
@@ -252,6 +252,21 @@ const verifyExistingOrder = async (id: number): Promise<Order> => {
   }
 };
 
+const getActiveOrders = async (): Promise<number> => {
+  try {
+    const activeOrdersCount = await Order.count({
+      where: {
+        isCanceled: false,
+        endDate: null,
+      },
+    });
+    return activeOrdersCount;
+  } catch (error) {
+    console.error("Error al obtener órdenes activas:", error);
+    throw new Error("No fue posible obtener el conteo de órdenes activas.");
+  }
+};
+
 export default {
   getOrderForWeighing,
   getOrderId,
@@ -261,4 +276,5 @@ export default {
   createOrder,
   updateOrder,
   deleteOrder,
+  getActiveOrders,
 };
