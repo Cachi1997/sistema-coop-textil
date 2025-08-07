@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "../config/axiosInstance";
-import type { DashboardApiResponse, DashboardData } from "../types/dashboard";
+import type { DashboardApiResponse } from "../types/dashboard";
 
 export const useDashboardData = () => {
   const [data, setData] = useState<DashboardApiResponse | null>(null);
@@ -30,7 +30,7 @@ export const useDashboardData = () => {
       }
     };
     fetchStatus();
-  }, []); // Dependencia para re-ejecutar si useMockData cambia
+  }, []);
 
   return { data, loading, error };
 };

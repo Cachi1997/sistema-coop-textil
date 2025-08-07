@@ -4,7 +4,6 @@ export interface DashboardStats {
   weeklyKilos: {
     value: number;
     weekRange: string;
-    percentageChange: number;
     dailyAverage?: number;
     activeDays?: number;
   };
@@ -12,7 +11,6 @@ export interface DashboardStats {
     value: number;
     month: string;
     year: number;
-    percentageChange: number;
     dailyAverage?: number;
     monthlyGoal?: number;
   };

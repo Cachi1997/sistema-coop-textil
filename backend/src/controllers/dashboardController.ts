@@ -13,7 +13,7 @@ export const getDashboardData = async (req: Request, res: Response) => {
   try {
     const dashboardData = {
       stats: {
-        activeOrders: await orderServices.getActiveOrders(),
+        activeOrders: await orderServices.getTotalActiveOrders(),
         materialsInStock:
           await finishedProductServices.getCountFinishedProducts(),
         weeklyKilos: {
@@ -28,12 +28,8 @@ export const getDashboardData = async (req: Request, res: Response) => {
           percentageChange: 8.3,
         },
       },
-      production: {
-        // Completar con lo que necesites
-      },
-      recentActivities: [
-        // Últimas acciones de usuarios, pesajes, órdenes, etc.
-      ],
+      production: {},
+      recentActivities: [],
       systemStatus: {
         dataBase: await systemStatusServices.checkDatabaseStatus(),
         server: await systemStatusServices.getServerStatus(),

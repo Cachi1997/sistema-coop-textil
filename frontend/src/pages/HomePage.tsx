@@ -181,9 +181,6 @@ export const HomePage = () => {
             </p>
           </div>
           <div className="mt-4 sm:mt-0 text-right">
-            <div className="text-2xl font-mono text-green-400">
-              {currentTime.toLocaleTimeString()}
-            </div>
             <div className="text-gray-400">
               {currentTime.toLocaleDateString("es-ES", {
                 weekday: "long",
