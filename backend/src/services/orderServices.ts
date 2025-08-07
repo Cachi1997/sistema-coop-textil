@@ -197,7 +197,6 @@ const updateOrder = async (id: number, data: OrderData): Promise<Order> => {
       );
     }
     order.orderNumber = data.orderNumber;
-    order.date = order.dataValues.date;
     order.kilos = data.kilos;
     order.passedKilos = data.passedKilos;
     order.batchNumber = data.originalBatch;
@@ -252,7 +251,7 @@ const verifyExistingOrder = async (id: number): Promise<Order> => {
   }
 };
 
-const getActiveOrders = async (): Promise<number> => {
+const getTotalActiveOrders = async (): Promise<number> => {
   try {
     const activeOrdersCount = await Order.count({
       where: {
@@ -276,5 +275,5 @@ export default {
   createOrder,
   updateOrder,
   deleteOrder,
-  getActiveOrders,
+  getTotalActiveOrders,
 };

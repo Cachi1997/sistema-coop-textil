@@ -29,3 +29,15 @@ export const createOrder = async (req: Request, res: Response) => {
     res.status(404).json({ message: error.message });
   }
 };
+
+export const updateOrder = async (req: Request, res: Response) => {
+  try {
+    const idOrder = Number(req.params.id);
+    const order: OrderData = req.body;
+    const updatedOrder = await orderServices.updateOrder(idOrder, order);
+    res.status(200).json(updatedOrder);
+  } catch (error) {
+    console.log({ error });
+    res.status(404).json({ message: error.message });
+  }
+};
