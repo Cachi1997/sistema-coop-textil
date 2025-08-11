@@ -5,6 +5,7 @@ import { HomePage } from "../pages/HomePage";
 import { Layout } from "../components/display/layout/Layout";
 import { OrdersPage } from "../pages/OrdersPage";
 import { OrderDetailPage } from "../pages/OrderDetailPage";
+import { OrderEditPage } from "../pages/OrderEditPage";
 
 export const AppRouter = () => {
   return (
@@ -17,6 +18,7 @@ export const AppRouter = () => {
           <Route path="/create-order" element={<CreateOrderPage />} />
           <Route path="/orders" element={<OrdersPage />} />
           <Route path="/orders/:id" element={<OrderDetailPage />} />
+          <Route path="/orders/:id/edit" element={<OrderEditPage />} />
           <Route path="*" element={<HomePage />} />
         </Routes>
       </Layout>

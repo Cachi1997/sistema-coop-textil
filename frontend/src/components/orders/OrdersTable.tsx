@@ -226,7 +226,10 @@ export const OrdersTable = ({
                   >
                     Ver
                   </button>
-                  <button className="text-yellow-400 hover:text-yellow-300 mr-3">
+                  <button
+                    onClick={() => navigate(`/orders/${order.id}/edit`)}
+                    className="text-yellow-400 hover:text-yellow-300 mr-3"
+                  >
                     Editar
                   </button>
                   <button className="text-red-400 hover:text-red-300">
