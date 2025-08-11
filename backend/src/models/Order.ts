@@ -107,8 +107,19 @@ export class Order extends Model {
   @Column({
     type: DataType.DECIMAL(10, 2),
     allowNull: true,
+    get() {
+      const value = this.getDataValue("processedKilos");
+      return value !== null ? parseFloat(value) : null;
+    },
   })
-  declare processedKilos: number; //Kilos Procesados
+  declare processedKilos: number;
+
+  @Column({
+    type: DataType.ENUM("pendiente", "en progreso", "completada", "cancelada"),
+    allowNull: true,
+    defaultValue: "pendiente",
+  })
+  declare status: "pendiente" | "en progreso" | "completada" | "cancelada";
 
   @ForeignKey(() => Product)
   @Column({

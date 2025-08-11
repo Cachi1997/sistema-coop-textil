@@ -10,6 +10,47 @@ import { FinishedProductData, OrderData } from "../types";
 import ppeServices from "./ppeServices";
 import weightServices from "./weightServices";
 import finishedProduct from "./finishedProductServices";
+import Weighing from "../models/Weighing";
+import User from "../models/User";
+
+const getAllOrders = async (): Promise<Order[]> => {
+  try {
+    const orders = await Order.findAll({
+      attributes: { exclude: ["createdAt", "updatedAt"] },
+      include: [
+        {
+          model: Client,
+          attributes: { exclude: ["createdAt", "updatedAt"] },
+        },
+        {
+          model: Color,
+          attributes: { exclude: ["createdAt", "updatedAt"] },
+        },
+        {
+          model: Denier,
+          attributes: { exclude: ["createdAt", "updatedAt"] },
+        },
+        {
+          model: Tone,
+          attributes: { exclude: ["createdAt", "updatedAt"] },
+        },
+        {
+          model: RawMaterial,
+          attributes: { exclude: ["createdAt", "updatedAt"] },
+        },
+        {
+          model: Product,
+          attributes: { exclude: ["createdAt", "updatedAt"] },
+        },
+      ],
+      order: [["id", "DESC"]],
+    });
+    return orders;
+  } catch (error) {
+    console.error("Error fetching current orders:", error);
+    throw new Error("No fue posible obtener las órdenes.");
+  }
+};
 
 const getCurrentOrders = async (): Promise<Order[]> => {
   try {
@@ -90,21 +131,46 @@ const getOrderById = async (id: number): Promise<Order> => {
       include: [
         {
           model: Color,
+          attributes: { exclude: ["createdAt", "updatedAt"] },
         },
         {
           model: Denier,
+          attributes: { exclude: ["createdAt", "updatedAt"] },
         },
         {
           model: Tone,
+          attributes: { exclude: ["createdAt", "updatedAt"] },
         },
         {
           model: RawMaterial,
+          attributes: { exclude: ["createdAt", "updatedAt"] },
         },
         {
           model: Product,
+          attributes: { exclude: ["createdAt", "updatedAt"] },
         },
         {
           model: Client,
+          attributes: { exclude: ["createdAt", "updatedAt"] },
+        },
+        {
+          model: Weighing,
+          attributes: { exclude: ["createdAt", "updatedAt"] },
+          include: [
+            {
+              model: User,
+              attributes: {
+                exclude: [
+                  "password",
+                  "dni",
+                  "code",
+                  "isActive",
+                  "createdAt",
+                  "updatedAt",
+                ],
+              },
+            },
+          ],
         },
       ],
       attributes: { exclude: ["createdAt", "updatedAt"] },
@@ -143,7 +209,15 @@ const updateKilosProcesed = async (
     if (!order) {
       throw new Error("Orden no encontrada");
     }
+    console.log(order.processedKilos);
+
+    if (order.processedKilos === 0) {
+      await updateStateOrder(order.id, "en progreso");
+    }
     order.processedKilos += kilos;
+    if (order.processedKilos >= order.kilos) {
+      await updateStateOrder(order.id, "completada");
+    }
     await order.save();
   } catch (error) {
     console.error("Error al actualizar kilos procesados:", error);
@@ -232,6 +306,7 @@ const deleteOrder = async (id: number): Promise<void> => {
         `No fue posible eliminar la orden, ya se ha realizado un pesaje PPE:${order.ppe} Partida: ${order.batchNumber}.`
       );
     }
+    await updateStateOrder(order.id, "cancelada");
     order.isCanceled = true;
     order.endDate = new Date();
     await order.save();
@@ -266,7 +341,36 @@ const getTotalActiveOrders = async (): Promise<number> => {
   }
 };
 
+const updateStateOrder = async (
+  idOrder: number,
+  state: string
+): Promise<void> => {
+  try {
+    if (
+      state === "pendiente" ||
+      state === "en progreso" ||
+      state === "completada" ||
+      state === "cancelada"
+    ) {
+      const order = await verifyExistingOrder(idOrder);
+      if (!order) {
+        throw new Error("Orden no encontrada");
+      }
+      order.status = state;
+      await order.save();
+    } else {
+      throw new Error("Estado incorrecto");
+    }
+  } catch (error: any) {
+    console.error("Error al actualizar la orden:", error);
+    throw new Error(
+      `Error al actualizar el estado de la orden: ${error.message}`
+    );
+  }
+};
+
 export default {
+  getAllOrders,
   getOrderForWeighing,
   getOrderId,
   getOrderById,
@@ -276,4 +380,5 @@ export default {
   updateOrder,
   deleteOrder,
   getTotalActiveOrders,
+  updateStateOrder,
 };

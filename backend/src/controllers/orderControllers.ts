@@ -2,6 +2,16 @@ import { Request, Response } from "express";
 import orderServices from "../services/orderServices";
 import { OrderData } from "../types";
 
+export const getAllOrders = async (req: Request, res: Response) => {
+  try {
+    const orders = await orderServices.getAllOrders();
+    res.status(201).json(orders);
+  } catch (error) {
+    console.log({ error });
+    res.status(404).json({ message: error.message });
+  }
+};
+
 export const getOrderForWeighing = async (req: Request, res: Response) => {
   try {
     const { ppe, batch, isYarn } = req.query;
@@ -12,6 +22,17 @@ export const getOrderForWeighing = async (req: Request, res: Response) => {
       Number(isYarn)
     );
     res.status(201).json(resp);
+  } catch (error) {
+    console.log({ error });
+    res.status(404).json({ message: error.message });
+  }
+};
+
+export const getOrderById = async (req: Request, res: Response) => {
+  try {
+    const idOrder = Number(req.params.id);
+    const order = await orderServices.getOrderById(idOrder);
+    res.status(201).json(order);
   } catch (error) {
     console.log({ error });
     res.status(404).json({ message: error.message });
