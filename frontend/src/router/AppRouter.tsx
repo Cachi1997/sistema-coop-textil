@@ -3,6 +3,8 @@ import { WeighingPage } from "../pages/WeighingPage";
 import { CreateOrderPage } from "../pages/CreateOrderPage";
 import { HomePage } from "../pages/HomePage";
 import { Layout } from "../components/display/layout/Layout";
+import { OrdersPage } from "../pages/OrdersPage";
+import { OrderDetailPage } from "../pages/OrderDetailPage";
 
 export const AppRouter = () => {
   return (
@@ -13,6 +15,8 @@ export const AppRouter = () => {
           <Route path="/weighing" element={<WeighingPage />} />
           <Route path="/home" element={<HomePage />} />
           <Route path="/create-order" element={<CreateOrderPage />} />
+          <Route path="/orders" element={<OrdersPage />} />
+          <Route path="/orders/:id" element={<OrderDetailPage />} />
           <Route path="*" element={<HomePage />} />
         </Routes>
       </Layout>
