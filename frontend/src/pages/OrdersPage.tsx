@@ -1,8 +1,10 @@
+import { useNavigate } from "react-router-dom";
 import { useOrdersList } from "../hooks/useOrdersList";
 import { OrdersFilters } from "../components/orders/OrdersFilters";
 import { OrdersTable } from "../components/orders/OrdersTable";
 
 export const OrdersPage = () => {
+  const navigate = useNavigate();
   const {
     orders,
     isLoading,
@@ -19,9 +21,17 @@ export const OrdersPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-4 sm:p-6">
-      <h1 className="text-3xl font-bold text-green-400 mb-6">
-        Gestión de Órdenes
-      </h1>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+        <h1 className="text-3xl font-bold text-green-400">
+          Gestión de Órdenes
+        </h1>
+        <button
+          onClick={() => navigate("/create-order")}
+          className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 cursor-pointer rounded-md"
+        >
+          + Nueva Orden
+        </button>
+      </div>
 
       {error && (
         <div className="bg-red-900 border border-red-500 rounded-lg p-4 mb-6 text-red-300">
