@@ -191,13 +191,13 @@ export const OrdersFilters = ({
       <div className="mt-6 flex justify-end space-x-4">
         <button
           onClick={applyFilters}
-          className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md transition-colors"
+          className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 cursor-pointer rounded-md transition-colors"
         >
           Aplicar Filtros
         </button>
         <button
           onClick={resetAll}
-          className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-md transition-colors"
+          className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 cursor-pointer rounded-md transition-colors"
         >
           Limpiar Filtros
         </button>
