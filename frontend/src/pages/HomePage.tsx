@@ -7,16 +7,13 @@ export const HomePage = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const navigate = useNavigate();
 
+  // Updated to use the simpler useDashboardData hook
   const { data: apiResponse, loading: isLoading, error } = useDashboardData();
 
   const data = apiResponse?.data || null;
 
-  const {
-    formattedStats,
-    formattedSystemStatus,
-    formatPercentage,
-    getPercentageColor,
-  } = useDashboardHelpers(data);
+  const { formattedStats, formatPercentage, getPercentageColor } =
+    useDashboardHelpers(data);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -26,13 +23,15 @@ export const HomePage = () => {
     return () => clearInterval(timer);
   }, []);
 
+  // BLOQUEAR RENDERIZADO hasta que tengamos datos o error definitivo
   if (isLoading && !data) {
+    console.log("HomePage: Mostrando pantalla de carga.");
     return (
       <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-green-400 mx-auto mb-4"></div>
           <h2 className="text-xl font-semibold text-green-400 mb-2">
-            Cargando página
+            Cargando inicio...
           </h2>
           <p className="text-gray-400">Obteniendo datos del sistema...</p>
         </div>
@@ -40,14 +39,13 @@ export const HomePage = () => {
     );
   }
 
-  // Solo mostrar error si no hay datos en absoluto
   if (error && !data) {
     return (
       <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
         <div className="text-center max-w-md">
           <div className="text-red-400 text-6xl mb-4">⚠️</div>
           <h2 className="text-xl font-bold text-red-400 mb-2">
-            No se pudo cargar la página, error de servidor
+            Error al cargar la página
           </h2>
           <p className="text-gray-400 mb-6">{error}</p>
         </div>
@@ -167,6 +165,7 @@ export const HomePage = () => {
     },
   ];
 
+  // SOLO RENDERIZAR CUANDO TENGAMOS DATOS
   return (
     <div className="min-h-screen bg-gray-900 text-white p-4 sm:p-6">
       {/* Header */}
@@ -179,8 +178,30 @@ export const HomePage = () => {
             <p className="text-gray-400">
               Sistema Integral de Gestión de Producción
             </p>
+            {apiResponse?.timestamp && (
+              <p className="text-gray-500 text-sm mt-1">
+                Última actualización:{" "}
+                {new Date(apiResponse.timestamp).toLocaleTimeString()}
+                {isLoading && (
+                  <span className="ml-2 text-yellow-400">
+                    🔄 Actualizando...
+                  </span>
+                )}
+                <span className="ml-2 text-green-400">
+                  🌐 Datos de la base de datos
+                </span>
+              </p>
+            )}
+            {error && data && (
+              <p className="text-red-400 text-sm mt-1">
+                ⚠️ Error en última actualización: {error}
+              </p>
+            )}
           </div>
           <div className="mt-4 sm:mt-0 text-right">
+            <div className="text-2xl font-mono text-green-400">
+              {currentTime.toLocaleTimeString()}
+            </div>
             <div className="text-gray-400">
               {currentTime.toLocaleDateString("es-ES", {
                 weekday: "long",
@@ -212,7 +233,7 @@ export const HomePage = () => {
                 <p className={`text-3xl font-bold ${stat.color} mt-2`}>
                   {stat.value}
                 </p>
-                {/* {stat.change !== undefined && (
+                {stat.change !== undefined && (
                   <p
                     className={`text-sm mt-1 ${getPercentageColor(
                       stat.change
@@ -220,7 +241,7 @@ export const HomePage = () => {
                   >
                     {formatPercentage(stat.change)} vs anterior
                   </p>
-                )} */}
+                )}
               </div>
               <div className="text-4xl ml-2">{stat.icon}</div>
             </div>
@@ -292,7 +313,8 @@ export const HomePage = () => {
       </div>
 
       {/* Grid de Actividad Reciente y Reportes */}
-      {/* <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        {/* Recent Activity */}
         <div className="bg-gray-800 rounded-lg p-6">
           <h2 className="text-xl font-semibold text-green-400 mb-6">
             Actividad Reciente
@@ -319,6 +341,7 @@ export const HomePage = () => {
           </button>
         </div>
 
+        {/* Reportes Rápidos */}
         <div className="bg-gray-800 rounded-lg p-6">
           <h2 className="text-xl font-semibold text-green-400 mb-6">
             Reportes Rápidos
@@ -371,39 +394,6 @@ export const HomePage = () => {
           >
             Ver todos los reportes →
           </button>
-        </div>
-      </div> */}
-
-      {/* System Status */}
-      <div className="bg-gray-800 rounded-lg p-6">
-        <h2 className="text-xl font-semibold text-green-400 mb-6">
-          Estado del Sistema
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {formattedSystemStatus?.map((status, index) => (
-            <div key={index} className="flex items-center space-x-3">
-              <div
-                className={`w-3 h-3 ${status.color} rounded-full animate-pulse`}
-              ></div>
-              <div>
-                <p className="text-white font-medium">{status.name}</p>
-                <p
-                  className={`text-sm ${
-                    status.status === "online"
-                      ? "text-green-400"
-                      : status.status === "warning"
-                      ? "text-yellow-400"
-                      : "text-red-400"
-                  }`}
-                >
-                  {status.message}
-                </p>
-                {status.details && (
-                  <p className="text-gray-400 text-xs">{status.details}</p>
-                )}
-              </div>
-            </div>
-          ))}
         </div>
       </div>
     </div>
