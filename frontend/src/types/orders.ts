@@ -224,3 +224,26 @@ export type OrderDetail = {
   };
   weighings: WeighingDetail[]; // Array de pesajes
 };
+
+export type MaterialFormData = {
+  entryDate: string; // fecha de ingreso
+  clientId: number; // Cliente (selector del backend)
+  rawMaterialId: number; // Origen (select de RawMaterial)
+  truck: string; // Camion
+  batch: number | undefined; // Lote (batch en backend)
+  baleNumber: string; // Nro Fardo
+  kilos: number | undefined; // Kilos
+  batchNumber: number | undefined; // Partida (batchNumber en backend)
+  colorId: number;
+  color: string;
+  product: string;
+  denier: string;
+  denierTotal: string;
+  luster: string;
+  merge: string;
+};
+
+// Tipo para el payload que se envía al backend
+export type MaterialPayload = MaterialFormData & {
+  timestamp: string;
+};

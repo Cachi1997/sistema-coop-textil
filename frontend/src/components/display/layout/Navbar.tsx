@@ -1,15 +1,10 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom"; // Importa Link y useLocation de react-router-dom
 
-interface NavbarProps {
-  currentPath: string;
-}
-
-export const Navbar = ({ currentPath }: NavbarProps) => {
+export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const navigate = useNavigate();
+  const currentPath = useLocation().pathname; // Usa useLocation para obtener la ruta actual
 
-  // Removido "weighing" del menú principal
   const menuItems = [
     { id: "home", label: "Inicio", icon: "🏠", path: "/" },
     { id: "orders", label: "Órdenes", icon: "📋", path: "/orders" },
@@ -17,17 +12,20 @@ export const Navbar = ({ currentPath }: NavbarProps) => {
       id: "materials",
       label: "Materiales",
       icon: "📦",
-      path: "/materials/inventory",
-    },
+      path: "/materials/create",
+    }, // Cambiar la ruta de materiales para apuntar a crear materiales
     { id: "dispatch", label: "Despachos", icon: "🚚", path: "/dispatch/new" },
     { id: "reports", label: "Reportes", icon: "📈", path: "/reports" },
     { id: "settings", label: "Configuración", icon: "⚙️", path: "/settings" },
+    { id: "weighing", label: "Pesaje", icon: "⚖️", path: "/weighing" }, // Añadido de nuevo para que sea accesible
   ];
 
   const isActive = (path: string, id: string) => {
-    if (path === "/" && (currentPath === "/" || currentPath === "/home")) {
+    // Para la ruta raíz, verifica si la ruta actual es exactamente '/'
+    if (path === "/" && currentPath === "/") {
       return true;
     }
+    // Para otras rutas, verifica si la ruta actual comienza con la ruta del elemento
     if (id === "orders" && currentPath.startsWith("/orders")) {
       return true;
     }
@@ -37,6 +35,16 @@ export const Navbar = ({ currentPath }: NavbarProps) => {
     if (id === "dispatch" && currentPath.startsWith("/dispatch")) {
       return true;
     }
+    if (id === "reports" && currentPath.startsWith("/reports")) {
+      return true;
+    }
+    if (id === "settings" && currentPath.startsWith("/settings")) {
+      return true;
+    }
+    if (id === "weighing" && currentPath.startsWith("/weighing")) {
+      return true;
+    }
+    // Para rutas exactas que no son la raíz
     return currentPath === path;
   };
 

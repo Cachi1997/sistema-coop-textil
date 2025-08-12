@@ -45,6 +45,7 @@ export class MaterialReceipt extends Model {
   })
   declare baleKilos: number;
 
+  //batchNumber
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
