@@ -9,6 +9,7 @@ import {
 } from "sequelize-typescript";
 import Order from "./Order";
 import Client from "./Client";
+import { MaterialReceipt } from "./MaterialReceipts";
 
 @Table({ tableName: "colors", timestamps: true })
 export class Color extends Model {
@@ -42,6 +43,9 @@ export class Color extends Model {
 
   @HasMany(() => Order)
   declare orders: Order[];
+
+  @HasMany(() => MaterialReceipt)
+  declare materialReceipts: MaterialReceipt[];
 }
 
 export default Color;

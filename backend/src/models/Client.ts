@@ -3,6 +3,7 @@ import DeliveryNote from "./DeliveryNote";
 import Shipment from "./Shipment";
 import Order from "./Order";
 import Color from "./Color";
+import { MaterialReceipt } from "./MaterialReceipts";
 
 @Table({ tableName: "clients", timestamps: true })
 export class Client extends Model {
@@ -23,6 +24,9 @@ export class Client extends Model {
 
   @HasMany(() => Shipment)
   declare shipments: Shipment[];
+
+  @HasMany(() => MaterialReceipt)
+  declare materialReceipts: MaterialReceipt[];
 }
 
 export default Client;
