@@ -1,39 +1,61 @@
+// Tipos para el formulario de órdenes
+export type OrderFormData = {
+  ppe: number | undefined;
+  originalBatch: number | undefined; // Corregido el nombre
+  orderNumber: number | undefined;
+  date: string;
+  clientId: number;
+  denierId: number;
+  toneId: number;
+  productId: number;
+  colorId: number;
+  rawMaterialId: number;
+  kilos: number | undefined;
+  passedKilos: number | undefined;
+  truck1: string;
+  truck2: string;
+  notes: string;
+};
+
+// Tipos para los datos de los selectores que vienen del backend
 export type Client = {
   id: number;
   name: string;
-};
-
-export type Color = {
-  id: number;
-  idColor: string;
-  colorName: string;
-  originalColorName: string;
-  clientId: number;
+  code?: string;
 };
 
 export type Denier = {
   id: number;
-  denier: string;
-  key: number;
-  coefficient: number;
-};
-
-export type Product = {
-  id: number;
-  name: string;
-};
-
-export type RawMaterial = {
-  id: number;
-  name: string;
+  denier: number;
+  description?: string;
 };
 
 export type Tone = {
   id: number;
   name: string;
-  description: string;
+  code?: string;
 };
 
+export type Product = {
+  id: number;
+  name: string;
+  code?: string;
+};
+
+export type Color = {
+  id: number;
+  colorName: string;
+  code?: string;
+  hexCode?: string;
+};
+
+export type RawMaterial = {
+  id: number;
+  name: string;
+  description?: string;
+};
+
+// Tipo para los datos de selectores agrupados
 export type SelectorsData = {
   clients: Client[];
   deniers: Denier[];
@@ -43,28 +65,14 @@ export type SelectorsData = {
   rawMaterials: RawMaterial[];
 };
 
-export type OrderFormData = {
-  ppe: number;
-  originalBatch: number;
-  orderNumber: number;
-  date: string;
-  clientId: number;
-  denierId: number;
-  toneId: number;
-  productId: number;
-  colorId: number;
-  rawMaterialId: number;
-  kilos: number;
-  passedKilos: number;
-  truck1: string;
-  truck2: string;
-  notes: string;
-};
-
+// Tipo para el payload que se envía al backend
 export type OrderPayload = OrderFormData & {
   timestamp: string;
 };
 
+// --- Tipos para la lista de órdenes (ajustados al backend) ---
+
+// Tipo para los estados de orden tal como vienen del backend
 export type BackendOrderStatus =
   | "pendiente"
   | "completada"
@@ -135,8 +143,9 @@ export type OrdersFilter = {
   status: OrderStatus | "all"; // El filtro usa el tipo de frontend
   clientId: number | "all";
   startDate: string | null;
-  endDate: string | null;
 };
+
+// --- Nuevos tipos para el detalle de una orden ---
 
 export type WeighingDetail = {
   id: number;
