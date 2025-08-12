@@ -19,6 +19,19 @@ const getFinishedProducts = async (): Promise<FinishedProduct[]> => {
   }
 };
 
+const getCountFinishedProducts = async (): Promise<number> => {
+  try {
+    const count = await FinishedProduct.count({
+      where: { is_available: true },
+    });
+    return count;
+  } catch (error) {
+    console.error("Error counting finished products:", error);
+    throw new Error("No fue posible contar los productos terminados.");
+  }
+};
+
 export default {
   getFinishedProducts,
+  getCountFinishedProducts,
 };

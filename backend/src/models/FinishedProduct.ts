@@ -17,6 +17,13 @@ export class FinishedProduct extends Model {
   })
   declare productCode: string;
 
+  @Column({
+    type: DataType.BOOLEAN,
+    allowNull: false,
+    defaultValue: false,
+  })
+  declare is_available: boolean;
+
   @ForeignKey(() => Batch)
   @Column({
     type: DataType.INTEGER,
