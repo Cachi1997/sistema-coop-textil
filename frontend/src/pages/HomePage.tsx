@@ -25,7 +25,6 @@ export const HomePage = () => {
 
   // BLOQUEAR RENDERIZADO hasta que tengamos datos o error definitivo
   if (isLoading && !data) {
-    console.log("HomePage: Mostrando pantalla de carga.");
     return (
       <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
         <div className="text-center">
@@ -114,8 +113,6 @@ export const HomePage = () => {
       color: "bg-orange-600 hover:bg-orange-700",
       actions: [
         { title: "Nuevo Despacho", path: "/dispatch/new", icon: "🚚" },
-        { title: "Programar Entregas", path: "/dispatch/schedule", icon: "📅" },
-        { title: "Tracking", path: "/dispatch/tracking", icon: "📍" },
         { title: "Historial", path: "/dispatch/history", icon: "📜" },
       ],
     },
