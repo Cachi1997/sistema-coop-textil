@@ -17,7 +17,12 @@ export const OrdersPage = () => {
     handlePageChange,
     totalOrders,
     clients,
+    refetchOrders, // Añadido refetchOrders del hook
   } = useOrdersList();
+
+  const handleOrderDeleted = () => {
+    refetchOrders();
+  };
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-4 sm:p-6">
@@ -27,7 +32,7 @@ export const OrdersPage = () => {
         </h1>
         <button
           onClick={() => navigate("/create-order")}
-          className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 cursor-pointer rounded-md"
+          className="bg-green-600 hover:bg-green-700 text-white px-6 py-2"
         >
           + Nueva Orden
         </button>
@@ -53,6 +58,7 @@ export const OrdersPage = () => {
         totalPages={totalPages}
         onPageChange={handlePageChange}
         totalOrders={totalOrders}
+        onOrderDeleted={handleOrderDeleted} // Añadido callback para refrescar después de eliminar
       />
     </div>
   );
