@@ -62,3 +62,24 @@ export const updateOrder = async (req: Request, res: Response) => {
     res.status(404).json({ message: error.message });
   }
 };
+
+export const completedOrder = async (req: Request, res: Response) => {
+  try {
+    const idOrder = Number(req.params.id);
+    res.status(201);
+  } catch (error) {
+    console.log({ error });
+    res.status(404).json({ message: error.message });
+  }
+};
+
+export const deleteOrder = async (req: Request, res: Response) => {
+  try {
+    const idOrder = Number(req.params.id);
+    const order = await orderServices.deleteOrder(idOrder);
+    res.status(202).json(order);
+  } catch (error) {
+    console.log({ error });
+    res.status(404).json({ message: error.message });
+  }
+};
