@@ -21,20 +21,15 @@ export const OrdersFilters = ({
   const [localClientId, setLocalClientId] = useState<number | "all">(
     filters.clientId
   );
-  const [localStartDate, setLocalStartDate] = useState<string>(
+  const [localCreationDate, setLocalCreationDate] = useState<string>(
     filters.startDate || ""
   );
-  const [localEndDate, setLocalEndDate] = useState<string>(
-    filters.endDate || ""
-  );
 
-  // Sincronizar filtros locales con los props cuando cambian
   useEffect(() => {
     setLocalSearchQuery(filters.searchQuery);
     setLocalStatus(filters.status);
     setLocalClientId(filters.clientId);
-    setLocalStartDate(filters.startDate || "");
-    setLocalEndDate(filters.endDate || "");
+    setLocalCreationDate(filters.startDate || "");
   }, [filters]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -49,12 +44,8 @@ export const OrdersFilters = ({
     setLocalClientId(e.target.value === "all" ? "all" : Number(e.target.value));
   };
 
-  const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setLocalStartDate(e.target.value);
-  };
-
-  const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setLocalEndDate(e.target.value);
+  const handleCreationDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setLocalCreationDate(e.target.value);
   };
 
   const applyFilters = () => {
@@ -62,8 +53,7 @@ export const OrdersFilters = ({
       searchQuery: localSearchQuery,
       status: localStatus,
       clientId: localClientId,
-      startDate: localStartDate || null,
-      endDate: localEndDate || null,
+      startDate: localCreationDate || null,
     });
   };
 
@@ -71,8 +61,7 @@ export const OrdersFilters = ({
     setLocalSearchQuery("");
     setLocalStatus("all");
     setLocalClientId("all");
-    setLocalStartDate("");
-    setLocalEndDate("");
+    setLocalCreationDate("");
     onResetFilters();
   };
 
@@ -153,36 +142,19 @@ export const OrdersFilters = ({
           </select>
         </div>
 
-        {/* Filtro por Fecha de Inicio */}
+        {/* Filtro por Fecha de Creación */}
         <div>
           <label
-            htmlFor="startDate"
+            htmlFor="creationDate"
             className="block text-sm font-medium text-gray-300 mb-1"
           >
-            Fecha Inicio
+            Fecha de Creación
           </label>
           <input
             type="date"
-            id="startDate"
-            value={localStartDate}
-            onChange={handleStartDateChange}
-            className="w-full px-3 py-2 bg-gray-900 border border-gray-600 rounded-md text-white focus:ring-blue-500 focus:border-blue-500"
-          />
-        </div>
-
-        {/* Filtro por Fecha Fin */}
-        <div>
-          <label
-            htmlFor="endDate"
-            className="block text-sm font-medium text-gray-300 mb-1"
-          >
-            Fecha Fin
-          </label>
-          <input
-            type="date"
-            id="endDate"
-            value={localEndDate}
-            onChange={handleEndDateChange}
+            id="creationDate"
+            value={localCreationDate}
+            onChange={handleCreationDateChange}
             className="w-full px-3 py-2 bg-gray-900 border border-gray-600 rounded-md text-white focus:ring-blue-500 focus:border-blue-500"
           />
         </div>
@@ -191,13 +163,13 @@ export const OrdersFilters = ({
       <div className="mt-6 flex justify-end space-x-4">
         <button
           onClick={applyFilters}
-          className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 cursor-pointer rounded-md transition-colors"
+          className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md transition-colors"
         >
           Aplicar Filtros
         </button>
         <button
           onClick={resetAll}
-          className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 cursor-pointer rounded-md transition-colors"
+          className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-md transition-colors"
         >
           Limpiar Filtros
         </button>

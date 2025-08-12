@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect, useMemo, useCallback } from "react";
 import type {
   OrderListItem,
@@ -39,33 +41,32 @@ export const useOrdersList = () => {
     status: "all",
     clientId: "all",
     startDate: null,
-    endDate: null,
   });
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
+  const fetchOrders = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await axios.get<OrderListItem[]>("/orders/orders");
+      setAllOrders(response.data);
+      setIsLoading(false);
+    } catch (err: any) {
+      console.error("Error al obtener órdenes del backend:", err);
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "Error al cargar las órdenes."
+      );
+      setIsLoading(false);
+    }
+  }, []);
+
   // Cargar datos de órdenes desde el backend
   useEffect(() => {
-    const fetchOrders = async () => {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const response = await axios.get<OrderListItem[]>("/orders/orders");
-        setAllOrders(response.data);
-        setIsLoading(false);
-      } catch (err: any) {
-        console.error("Error al obtener órdenes del backend:", err);
-        setError(
-          err.response?.data?.message ||
-            err.message ||
-            "Error al cargar las órdenes."
-        );
-        setIsLoading(false);
-      }
-    };
-
     fetchOrders();
-  }, []); // Se ejecuta una vez al montar el componente
+  }, [fetchOrders]); // Se ejecuta una vez al montar el componente
 
   // Lógica de filtrado y búsqueda
   useEffect(() => {
@@ -111,16 +112,14 @@ export const useOrdersList = () => {
       }
     }
 
-    // Filtrar por rango de fechas
     if (filters.startDate) {
-      currentFilteredOrders = currentFilteredOrders.filter(
-        (order) => order.date >= filters.startDate!
-      );
-    }
-    if (filters.endDate) {
-      currentFilteredOrders = currentFilteredOrders.filter(
-        (order) => order.date <= filters.endDate!
-      );
+      const filterDate = new Date(filters.startDate)
+        .toISOString()
+        .split("T")[0]; // Convertir a formato YYYY-MM-DD
+      currentFilteredOrders = currentFilteredOrders.filter((order) => {
+        const orderDate = order.date; // La fecha de la orden ya está en formato YYYY-MM-DD
+        return orderDate >= filterDate;
+      });
     }
 
     setFilteredOrders(currentFilteredOrders);
@@ -160,7 +159,6 @@ export const useOrdersList = () => {
       status: "all",
       clientId: "all",
       startDate: null,
-      endDate: null,
     });
   }, []);
 
@@ -176,5 +174,6 @@ export const useOrdersList = () => {
     handlePageChange,
     totalOrders: filteredOrders.length,
     clients: selectorsData.clients, // Pasar clientes para el filtro
+    refetchOrders: fetchOrders, // Exponer función para recargar órdenes
   };
 };
