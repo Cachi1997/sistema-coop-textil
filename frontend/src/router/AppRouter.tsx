@@ -16,7 +16,7 @@ export const AppRouter = () => {
           <Route path="/" element={<HomePage />} />
           <Route path="/weighing" element={<WeighingPage />} />
           <Route path="/home" element={<HomePage />} />
-          <Route path="/create-order" element={<CreateOrderPage />} />
+          <Route path="/orders/create" element={<CreateOrderPage />} />
           <Route path="/orders" element={<OrdersPage />} />
           <Route path="/orders/:id" element={<OrderDetailPage />} />
           <Route path="/orders/:id/edit" element={<OrderEditPage />} />
