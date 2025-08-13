@@ -10,8 +10,8 @@ const campos = [
   { name: "clientId", label: "Cliente", type: "select" },
   { name: "rawMaterialId", label: "Origen", type: "select" },
   { name: "truck", label: "Camión", type: "text" },
-  { name: "batch", label: "Lote", type: "number" },
-  { name: "baleNumber", label: "Nro Fardo", type: "text" },
+  { name: "batch", label: "Lote", type: "text" },
+  { name: "baleNumber", label: "Nro Fardo", type: "number" },
   { name: "kilos", label: "Kilos", type: "number" },
   { name: "batchNumber", label: "Partida", type: "number" },
   { name: "colorId", label: "IdColor", type: "select" },
@@ -65,6 +65,8 @@ export const useMaterialForm = () => {
 
   const createMaterial = async (data: MaterialPayload) => {
     try {
+      console.log(data);
+
       const resp = await axios.post("/materials/material", data);
       console.log("Respuesta del backend (éxito):", resp.data);
     } catch (error: any) {
