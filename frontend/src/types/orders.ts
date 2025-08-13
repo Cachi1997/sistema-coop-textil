@@ -230,7 +230,7 @@ export type MaterialFormData = {
   clientId: number; // Cliente (selector del backend)
   rawMaterialId: number; // Origen (select de RawMaterial)
   truck: string; // Camion
-  batch: number | undefined; // Lote (batch en backend)
+  batch: string | undefined; // Lote (batch en backend)
   baleNumber: string; // Nro Fardo
   kilos: number | undefined; // Kilos
   batchNumber: number | undefined; // Partida (batchNumber en backend)
