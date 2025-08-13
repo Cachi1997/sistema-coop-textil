@@ -15,8 +15,6 @@ import { MaterialFormField } from "../components/display/forms/MaterialFormField
 export const MaterialCreationPage = () => {
   const {
     form,
-    modal,
-    navigation,
     selectorsData,
     isLoadingSelectors,
     selectorsError,
@@ -50,7 +48,7 @@ export const MaterialCreationPage = () => {
       setTimeout(() => {
         resetForm();
         setSubmitSuccess(false);
-      }, 2000);
+      }, 3000);
     } catch (error: any) {
       setSubmitError(error.message);
     } finally {
