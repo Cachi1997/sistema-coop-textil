@@ -48,3 +48,21 @@ export type FinishedProductData = {
   batchId: number;
   orderId: number;
 };
+
+export type MaterialReceiptData = {
+  entryDate: string; // fecha de ingreso
+  clientId: number; // Cliente (selector del backend)
+  rawMaterialId: number; // Origen (select de RawMaterial)
+  truck: string; // Camion
+  batch: string; // Lote (batch en backend)
+  baleNumber: string; // Nro Fardo
+  kilos: number | undefined; // Kilos
+  batchNumber: number | undefined; // Partida (batchNumber en backend)
+  colorId: number;
+  color: string;
+  product: string;
+  denier: string;
+  denierTotal: string;
+  luster: string;
+  merge: string;
+};

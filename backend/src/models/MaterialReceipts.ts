@@ -45,7 +45,7 @@ export class MaterialReceipt extends Model {
   })
   declare baleKilos: number;
 
-  //batchNumber
+  //Partida
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
@@ -91,6 +91,7 @@ export class MaterialReceipt extends Model {
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
+    defaultValue: 0,
   })
   declare deliveryNoteNumber: number;
 
