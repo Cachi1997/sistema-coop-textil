@@ -10,7 +10,7 @@ export type OrderFormData = {
   productId: number;
   colorId: number;
   rawMaterialId: number;
-  kilos: number | undefined;
+  kilos: number;
   passedKilos: number | undefined;
   truck1: string;
   truck2: string;
@@ -246,4 +246,25 @@ export type MaterialFormData = {
 // Tipo para el payload que se envía al backend
 export type MaterialPayload = MaterialFormData & {
   timestamp: string;
+};
+
+export type TachaItem = {
+  id: number;
+  batch: string;
+  baleNumber: number;
+  baleKilos: string; // Del backend, es un string
+  denier: string;
+  luster: string;
+  totalDenier: string;
+  dispatched: boolean; // "remitido" en español
+  rawMaterial: {
+    name: string;
+  };
+};
+
+export type TachaFilters = {
+  date: string;
+  clientId: number;
+  truck: string;
+  section: string;
 };

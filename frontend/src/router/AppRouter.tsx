@@ -7,6 +7,7 @@ import { OrdersPage } from "../pages/OrdersPage";
 import { OrderDetailPage } from "../pages/OrderDetailPage";
 import { OrderEditPage } from "../pages/OrderEditPage";
 import { MaterialCreationPage } from "../pages/MaterialCreationPage";
+import { TachasListPage } from "../pages/TachasListPage";
 
 export const AppRouter = () => {
   return (
@@ -21,6 +22,7 @@ export const AppRouter = () => {
           <Route path="/orders/:id" element={<OrderDetailPage />} />
           <Route path="/orders/:id/edit" element={<OrderEditPage />} />
           <Route path="/materials/create" element={<MaterialCreationPage />} />
+          <Route path="/materials/tachas" element={<TachasListPage />} />
           <Route path="*" element={<HomePage />} />
         </Routes>
       </Layout>
