@@ -7,6 +7,7 @@ import { getRawMaterials } from "../controllers/rawMaterialController";
 import { getTones } from "../controllers/toneController";
 import { getLastPPE } from "../controllers/ppeController";
 import { getDashboardData } from "../controllers/dashboardController";
+import { getAllSections } from "../controllers/sectionController";
 
 const utilityRouter = Router();
 
@@ -18,5 +19,6 @@ utilityRouter.get("/products", getProducts);
 utilityRouter.get("/rawMaterials", getRawMaterials);
 utilityRouter.get("/tones", getTones);
 utilityRouter.get("/lastPPE", getLastPPE);
+utilityRouter.get("/sections", getAllSections);
 
 export default utilityRouter;
