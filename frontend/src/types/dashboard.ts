@@ -59,30 +59,6 @@ export interface RecentActivity {
   };
 }
 
-export interface SystemStatus {
-  dataBase: {
-    // Cambiado de 'database' a 'dataBase' para coincidir con el backend
-    status: "online" | "offline" | "warning";
-    message: string;
-  };
-  server: {
-    status: "online" | "offline" | "warning";
-    message: string;
-    cpuUsage?: number;
-    memoryUsage?: number;
-  };
-  network: {
-    status: "online" | "offline" | "warning";
-    message: string;
-    latency?: number;
-  };
-  storage: {
-    status: "online" | "offline" | "warning";
-    message: string;
-    usagePercentage?: number;
-  };
-}
-
 export interface QuickReports {
   dailyReport: {
     available: boolean;
@@ -111,7 +87,6 @@ export interface DashboardData {
   stats: DashboardStats;
   production?: ProductionSummary | {}; // Puede venir vacío como objeto
   recentActivities?: RecentActivity[]; // Puede venir como array vacío
-  systemStatus: SystemStatus;
   quickReports?: QuickReports;
   lastUpdated?: string;
   serverTime?: string;
