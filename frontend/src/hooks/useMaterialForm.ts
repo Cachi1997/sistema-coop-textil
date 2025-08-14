@@ -65,10 +65,7 @@ export const useMaterialForm = () => {
 
   const createMaterial = async (data: MaterialPayload) => {
     try {
-      console.log(data);
-
       const resp = await axios.post("/materials/material", data);
-      console.log("Respuesta del backend (éxito):", resp.data);
     } catch (error: any) {
       console.error(
         "Error al enviar material al backend:",
