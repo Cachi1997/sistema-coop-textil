@@ -1,4 +1,5 @@
 import MaterialReceipt from "../models/MaterialReceipts";
+import RawMaterial from "../models/RawMaterial";
 import { MaterialReceiptData } from "../types";
 
 const createMaterialReceipt = async (data: MaterialReceiptData) => {
@@ -6,7 +7,7 @@ const createMaterialReceipt = async (data: MaterialReceiptData) => {
     const newMReceipt = await MaterialReceipt.create({
       entryDate: data.entryDate,
       clientId: data.clientId,
-      rawMaterial: data.rawMaterialId,
+      rawMaterialId: data.rawMaterialId,
       truck: data.truck,
       batch: data.batch,
       baleNumber: data.baleNumber,
@@ -29,6 +30,30 @@ const createMaterialReceipt = async (data: MaterialReceiptData) => {
   }
 };
 
+const getMaterialReceiptsByTruck = async (truck: string, clientId: number) => {
+  try {
+    const mReceipts = await MaterialReceipt.findAll({
+      where: { truck, clientId, dispatched: false },
+      attributes: [
+        "id",
+        "batch",
+        "baleNumber",
+        "baleKilos",
+        "denier",
+        "luster",
+        "totalDenier",
+        "dispatched",
+      ],
+      include: [{ model: RawMaterial, attributes: ["name"] }],
+    });
+    return mReceipts;
+  } catch (error) {
+    console.error("Error al buscar los fardos:", error);
+    throw new Error("No fue posible obtener los fardos.");
+  }
+};
+
 export default {
   createMaterialReceipt,
+  getMaterialReceiptsByTruck,
 };
