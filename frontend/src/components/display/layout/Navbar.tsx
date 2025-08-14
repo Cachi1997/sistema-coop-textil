@@ -43,6 +43,11 @@ export const Navbar = () => {
           path: "/materials/create",
         },
         { id: "materials-list", label: "Ver Materiales", path: "/materials" },
+        {
+          id: "materials-tachas",
+          label: "Lista de Tachas",
+          path: "/materials/tachas",
+        },
       ],
     },
     {
