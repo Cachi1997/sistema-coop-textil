@@ -1,6 +1,7 @@
 import MaterialReceipt from "../models/MaterialReceipts";
 import RawMaterial from "../models/RawMaterial";
 import { MaterialReceiptData } from "../types";
+import { Op } from "sequelize";
 
 const createMaterialReceipt = async (data: MaterialReceiptData) => {
   try {
@@ -53,7 +54,44 @@ const getMaterialReceiptsByTruck = async (truck: string, clientId: number) => {
   }
 };
 
+/**
+ * Returns the total amount of kilos in the id's objects
+ * @param ids Array de IDs de MaterialReceipt
+ * @returns Total de kilos (number)
+ */
+const sumBaleKilosByIds = async (ids: (string | number)[]): Promise<number> => {
+  const total = await MaterialReceipt.sum("baleKilos", {
+    where: {
+      id: {
+        [Op.in]: ids,
+      },
+    },
+  });
+
+  return Number(total) || 0;
+};
+
+const updateDeliveryNoteFields = async (
+  ids: number[],
+  deliveryNoteNumber: number
+) => {
+  // Actualizamos en lote
+  const [updatedCount] = await MaterialReceipt.update(
+    {
+      deliveryNoteNumber,
+      dispatched: true,
+    },
+    {
+      where: { id: ids },
+    }
+  );
+
+  return updatedCount; // cantidad de registros actualizados
+};
+
 export default {
   createMaterialReceipt,
   getMaterialReceiptsByTruck,
+  sumBaleKilosByIds,
+  updateDeliveryNoteFields,
 };

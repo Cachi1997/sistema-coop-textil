@@ -7,6 +7,7 @@ export const useTachasList = () => {
   const [tachas, setTachas] = useState<TachaItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [hasSearched, setHasSearched] = useState(false);
   const [sections, setSections] = useState<
     Array<{ value: string; label: string }>
@@ -44,6 +45,7 @@ export const useTachasList = () => {
         setSections(sectionsData);
       } catch (err: any) {
         console.error("Error al obtener secciones:", err);
+        setSections([]);
       } finally {
         setIsLoadingSections(false);
       }
@@ -60,6 +62,7 @@ export const useTachasList = () => {
 
     setIsLoading(true);
     setError(null);
+    setSuccessMessage(null);
     setHasSearched(true);
 
     try {
@@ -80,9 +83,7 @@ export const useTachasList = () => {
     setFilters((prev) => ({ ...prev, [key]: value }));
   };
 
-  const toggleDispatched = async (tachaId: number, currentStatus: boolean) => {
-    // Aquí puedes implementar la lógica para actualizar el estado "remitido" en el backend
-    // Por ahora solo actualiza el estado local
+  const toggleDispatched = (tachaId: number, currentStatus: boolean) => {
     setTachas((prev) =>
       prev.map((tacha) =>
         tacha.id === tachaId ? { ...tacha, dispatched: !currentStatus } : tacha
@@ -90,10 +91,56 @@ export const useTachasList = () => {
     );
   };
 
+  const saveDispatchedData = async () => {
+    const selectedIds = tachas
+      .filter((tacha) => tacha.dispatched)
+      .map((tacha) => tacha.id);
+
+    if (selectedIds.length === 0) {
+      setError("Debe seleccionar al menos una tacha para guardar");
+      return;
+    }
+
+    if (!filters.section) {
+      setError("Debe seleccionar una sección para guardar");
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
+    setSuccessMessage(null);
+
+    try {
+      const dataToSend = {
+        ids: selectedIds,
+        truck: filters.truck,
+        clientId: filters.clientId,
+        section: filters.section,
+      };
+
+      await axiosInstance.post("delivery-notes/delivery-note", dataToSend);
+
+      setSuccessMessage(
+        `Se guardaron exitosamente ${selectedIds.length} tachas remitidas`
+      );
+      setError(null);
+      // Limpiar las selecciones después del éxito
+      setTachas((prev) =>
+        prev.map((tacha) => ({ ...tacha, dispatched: false }))
+      );
+    } catch (err: any) {
+      console.error("Error al guardar datos:", err);
+      setError(err.response?.data?.message || "Error al guardar los datos");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return {
     tachas,
     isLoading,
     error,
+    successMessage,
     hasSearched,
     filters,
     truckOptions,
@@ -105,5 +152,6 @@ export const useTachasList = () => {
     updateFilter,
     fetchTachas,
     toggleDispatched,
+    saveDispatchedData,
   };
 };

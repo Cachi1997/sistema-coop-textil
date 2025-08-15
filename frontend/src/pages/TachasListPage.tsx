@@ -5,6 +5,7 @@ export const TachasListPage = () => {
     tachas,
     isLoading,
     error,
+    successMessage,
     hasSearched,
     filters,
     truckOptions,
@@ -15,6 +16,7 @@ export const TachasListPage = () => {
     updateFilter,
     fetchTachas,
     toggleDispatched,
+    saveDispatchedData,
   } = useTachasList();
 
   const handleSubmit = () => {
@@ -22,13 +24,11 @@ export const TachasListPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-4">
+    <div className="min-h-screen bg-gray-800 text-white p-4">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl font-bold text-green-400 mb-4">
-          Lista de Tachas
-        </h1>
+        <h1 className="text-3xl font-bold mb-6">Lista de Tachas</h1>
 
-        <div className="bg-gray-800 rounded-lg p-6 mb-6">
+        <div className="bg-gray-900 rounded-lg p-6 mb-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
             {/* Campo de fecha */}
             <div>
@@ -130,18 +130,34 @@ export const TachasListPage = () => {
           </div>
         )}
 
+        {/* Mensajes de éxito */}
+        {successMessage && (
+          <div className="bg-green-900 border border-green-700 text-green-100 px-4 py-3 rounded mb-4">
+            {successMessage}
+          </div>
+        )}
+
         {hasSearched && (
           <div className="bg-gray-900 rounded-lg overflow-hidden">
-            <div className="px-6 py-4 border-b border-gray-700">
+            <div className="px-6 py-4 border-b border-gray-700 flex justify-between items-center">
               <h2 className="text-xl font-semibold">
                 Resultados ({tachas.length} tachas encontradas)
               </h2>
+              {tachas.length > 0 && (
+                <button
+                  onClick={saveDispatchedData}
+                  disabled={isLoading}
+                  className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isLoading ? "Guardando..." : "Guardar"}
+                </button>
+              )}
             </div>
 
             {tachas.length > 0 ? (
               <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-700">
-                  <thead className="bg-gray-700">
+                <table className="w-full">
+                  <thead className="bg-gray-800">
                     <tr>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                         ID
@@ -172,12 +188,9 @@ export const TachasListPage = () => {
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-700">
+                  <tbody className="bg-gray-900 divide-y divide-gray-700">
                     {tachas.map((tacha) => (
-                      <tr
-                        key={tacha.id}
-                        className="hover:bg-gray-700 transition-colors"
-                      >
+                      <tr key={tacha.id} className="hover:bg-gray-800">
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
                           {tacha.id}
                         </td>
