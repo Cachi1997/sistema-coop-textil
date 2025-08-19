@@ -47,8 +47,8 @@ export const useOrdersList = () => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await axios.get<OrderListItem[]>("/orders/orders");
-      setAllOrders(response.data);
+      const { data } = await axios.get<OrderListItem[]>("/orders/orders");
+      setAllOrders(data);
       setIsLoading(false);
     } catch (err: any) {
       console.error("Error al obtener órdenes del backend:", err);

@@ -59,8 +59,46 @@ export const Navbar = () => {
         { id: "dispatch-list", label: "Ver Despachos", path: "/dispatch" },
       ],
     },
-    { id: "weighing", label: "Pesaje", icon: "⚖️", path: "/weighing" },
+    // { id: "weighing", label: "Pesaje", icon: "⚖️", path: "/weighing" },
     { id: "reports", label: "Reportes", icon: "📈", path: "/reports" },
+    {
+      id: "utilities",
+      label: "Utilidades",
+      icon: "🔧",
+      subItems: [
+        {
+          id: "utilities-clients",
+          label: "Clientes",
+          path: "/utilities/clients",
+        },
+        { id: "utilities-colors", label: "Colores", path: "/utilities/colors" },
+        {
+          id: "utilities-deniers",
+          label: "Denier",
+          path: "/utilities/deniers",
+        },
+        {
+          id: "utilities-rawmaterials",
+          label: "M. Prima/Origenes",
+          path: "/utilities/rawMaterials",
+        },
+        {
+          id: "utilities-products",
+          label: "Productos",
+          path: "/utilities/products",
+        },
+        {
+          id: "utilities-sections",
+          label: "Secciones",
+          path: "/utilities/sections",
+        },
+        {
+          id: "utilities-tones",
+          label: "Tonos/Lustre",
+          path: "/utilities/tones",
+        },
+      ],
+    },
     { id: "settings", label: "Configuración", icon: "⚙️", path: "/settings" },
   ];
 
@@ -99,7 +137,10 @@ export const Navbar = () => {
     if (id === "settings" && currentPath.startsWith("/settings")) {
       return true;
     }
-    if (id === "weighing" && currentPath.startsWith("/weighing")) {
+    // if (id === "weighing" && currentPath.startsWith("/weighing")) {
+    //   return true;
+    // }
+    if (id === "utilities" && currentPath.startsWith("/utilities")) {
       return true;
     }
     return currentPath === path;
@@ -255,7 +296,7 @@ export const Navbar = () => {
                   <div>
                     <button
                       onClick={() => handleDropdownToggle(item.id)}
-                      className={`w-full text-left px-3 py-2 rounded-md text-base font-medium transition-colors flex items-center justify-between ${
+                      className={`w-full text-left block px-3 py-2 rounded-md text-base font-medium transition-colors flex items-center justify-between ${
                         isActive("", item.id)
                           ? "bg-green-600 text-white"
                           : "text-gray-300 hover:bg-gray-600 hover:text-white"

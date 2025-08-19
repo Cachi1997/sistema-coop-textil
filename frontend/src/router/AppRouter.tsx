@@ -8,6 +8,7 @@ import { OrderDetailPage } from "../pages/OrderDetailPage";
 import { OrderEditPage } from "../pages/OrderEditPage";
 import { MaterialCreationPage } from "../pages/MaterialCreationPage";
 import { TachasListPage } from "../pages/TachasListPage";
+import { UtilityPage } from "../pages/UtilityPage";
 
 export const AppRouter = () => {
   return (
@@ -23,6 +24,7 @@ export const AppRouter = () => {
           <Route path="/orders/:id/edit" element={<OrderEditPage />} />
           <Route path="/materials/create" element={<MaterialCreationPage />} />
           <Route path="/materials/tachas" element={<TachasListPage />} />
+          <Route path="/utilities/:type" element={<UtilityPage />} />
           <Route path="*" element={<HomePage />} />
         </Routes>
       </Layout>

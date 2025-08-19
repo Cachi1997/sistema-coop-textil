@@ -235,22 +235,22 @@ export const OrdersTable = ({
                     </span>
                   </td>
                   <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-300">
-                    {order.client.name}
+                    {order.client?.name ?? "-"}
                   </td>
                   <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-300">
-                    {order.product.name}
+                    {order.product?.name ?? "—"}
                   </td>
                   <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-300">
-                    {order.color.colorName}
+                    {order.color?.colorName ?? "—"}
                   </td>
                   <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-300">
-                    {order.denier.denier}
+                    {order.denier?.denier ?? "—"}
                   </td>
                   <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-300">
-                    {order.tone.name}
+                    {order.tone?.name ?? "—"}
                   </td>
                   <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-300">
-                    {order.rawMaterial.name}
+                    {order.rawMaterial?.name ?? "—"}
                   </td>
                   <td className="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <button
