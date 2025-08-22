@@ -60,7 +60,18 @@ export const Navbar = () => {
       ],
     },
     // { id: "weighing", label: "Pesaje", icon: "⚖️", path: "/weighing" },
-    { id: "reports", label: "Reportes", icon: "📈", path: "/reports" },
+    {
+      id: "reports",
+      label: "Reportes",
+      icon: "📈",
+      subItems: [
+        {
+          id: "weighing-reports",
+          label: "Pesajes",
+          path: "/reports/weighing",
+        },
+      ],
+    },
     {
       id: "utilities",
       label: "Utilidades",

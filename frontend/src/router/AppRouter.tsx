@@ -9,6 +9,7 @@ import { OrderEditPage } from "../pages/OrderEditPage";
 import { MaterialCreationPage } from "../pages/MaterialCreationPage";
 import { TachasListPage } from "../pages/TachasListPage";
 import { UtilityPage } from "../pages/UtilityPage";
+import WeighingsReportsPage from "../pages/WeighingReportsPage";
 
 export const AppRouter = () => {
   return (
@@ -25,6 +26,7 @@ export const AppRouter = () => {
           <Route path="/materials/create" element={<MaterialCreationPage />} />
           <Route path="/materials/tachas" element={<TachasListPage />} />
           <Route path="/utilities/:type" element={<UtilityPage />} />
+          <Route path="/reports/weighing" element={<WeighingsReportsPage />} />
           <Route path="*" element={<HomePage />} />
         </Routes>
       </Layout>
