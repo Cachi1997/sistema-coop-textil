@@ -7,6 +7,13 @@ import { getCurrentBatchNumber } from "./batchServices";
 import orderServices from "./orderServices";
 import userServices from "./userServices";
 import { startOfMonth, endOfMonth, startOfWeek, endOfWeek } from "date-fns";
+import Order from "../models/Order";
+import Product from "../models/Product";
+import Client from "../models/Client";
+import Color from "../models/Color";
+import { Denier } from "../models/Denier";
+import Tone from "../models/Tone";
+import RawMaterial from "../models/RawMaterial";
 
 /**
  * Crea un nuevo registro de pesaje en la base de datos.
@@ -173,9 +180,117 @@ const getMonthlyNetWeightSum = async (): Promise<number> => {
   return parseFloat((result as any)?.total || "0");
 };
 
+const getWeighingByBatch = async (batch: number) => {
+  try {
+    const weighings = await Weighing.findAll({
+      where: { batch },
+      attributes: ["id", "date", "time", "netWeight", "batch", "bale"],
+      include: [
+        {
+          model: Order,
+          required: true,
+          attributes: ["id", "ppe", "orderNumber", "batchNumber"],
+          include: [
+            {
+              model: Product,
+              attributes: ["name"],
+            },
+            {
+              model: Client,
+              attributes: ["name"],
+            },
+            {
+              model: Color,
+              attributes: ["idColor", "colorName"],
+            },
+            {
+              model: Denier,
+              attributes: ["denier"],
+            },
+            {
+              model: Tone,
+              attributes: ["name"],
+            },
+            {
+              model: RawMaterial,
+              attributes: ["name"],
+            },
+          ],
+        },
+      ],
+      order: [
+        ["date", "ASC"],
+        ["time", "ASC"],
+      ],
+    });
+    return weighings;
+  } catch (error) {
+    console.error("Error al buscar pesajes entre fechas:", error);
+    throw error;
+  }
+};
+
+const getWeighingsBetweenDates = async (startDate: string, endDate: string) => {
+  try {
+    const weighings = await Weighing.findAll({
+      where: {
+        date: {
+          [Op.between]: [startDate, endDate],
+        },
+      },
+      attributes: ["id", "date", "time", "netWeight", "batch", "bale"],
+      include: [
+        {
+          model: Order,
+          required: true,
+          attributes: ["id", "ppe", "orderNumber", "batchNumber"],
+          include: [
+            {
+              model: Product,
+              attributes: ["name"],
+            },
+            {
+              model: Client,
+              attributes: ["name"],
+            },
+            {
+              model: Color,
+              attributes: ["idColor", "colorName"],
+            },
+            {
+              model: Denier,
+              attributes: ["denier"],
+            },
+            {
+              model: Tone,
+              attributes: ["name"],
+            },
+            {
+              model: RawMaterial,
+              attributes: ["name"],
+            },
+          ],
+        },
+      ],
+
+      order: [
+        ["date", "ASC"],
+        ["time", "ASC"],
+      ],
+    });
+
+    return weighings;
+  } catch (error) {
+    console.error("Error al buscar pesajes entre fechas:", error);
+    throw error;
+  }
+};
+
 export default {
   createWeight,
   getWeighingByOrderId,
   getWeeklyNetWeightSum,
   getMonthlyNetWeightSum,
+  getWeighingsBetweenDates,
+  getWeighingByBatch,
 };
