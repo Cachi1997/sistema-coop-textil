@@ -15,6 +15,15 @@ import { Denier } from "../models/Denier";
 import Tone from "../models/Tone";
 import RawMaterial from "../models/RawMaterial";
 
+const EXCLUDED_COLORS = ["tpco", "hil", "desp", "crudo", "hilach"];
+const EXCLUDED_PRODUCTS = [
+  "desp hilacha",
+  "desp top cru",
+  "desp top col",
+  "desp tow col",
+  "desp tow cru",
+];
+
 /**
  * Crea un nuevo registro de pesaje en la base de datos.
  * @param weightData - Datos del pesaje a crear.
@@ -145,17 +154,7 @@ const getWeeklyNetWeightSum = async (): Promise<number> => {
   const start = startOfWeek(new Date(), { weekStartsOn: 1 }); // Lunes
   const end = endOfWeek(new Date(), { weekStartsOn: 1 }); // Domingo
 
-  const result = await Weighing.findOne({
-    attributes: [[fn("SUM", col("netWeight")), "total"]],
-    where: {
-      date: {
-        [Op.between]: [start, end],
-      },
-    },
-    raw: true,
-  });
-
-  return parseFloat((result as any)?.total || "0");
+  return await calculateTotalWeight(start.toISOString(), end.toISOString());
 };
 
 /**
@@ -167,6 +166,13 @@ const getMonthlyNetWeightSum = async (): Promise<number> => {
   const start = startOfMonth(new Date());
   const end = endOfMonth(new Date());
 
+  return await calculateTotalWeight(start.toISOString(), end.toISOString());
+};
+
+const calculateTotalWeight = async (
+  start: string,
+  end: string
+): Promise<number> => {
   const result = await Weighing.findOne({
     attributes: [[fn("SUM", col("netWeight")), "total"]],
     where: {
@@ -174,6 +180,34 @@ const getMonthlyNetWeightSum = async (): Promise<number> => {
         [Op.between]: [start, end],
       },
     },
+    include: [
+      {
+        model: Order,
+        as: "order",
+        attributes: [], // no traemos columnas de Order
+        required: true,
+        include: [
+          {
+            model: Color,
+            as: "color",
+            attributes: [],
+            required: true,
+            where: {
+              idColor: { [Op.notIn]: EXCLUDED_COLORS },
+            },
+          },
+          {
+            model: Product,
+            as: "product",
+            attributes: [],
+            required: true,
+            where: {
+              name: { [Op.notIn]: EXCLUDED_PRODUCTS },
+            },
+          },
+        ],
+      },
+    ],
     raw: true,
   });
 
