@@ -65,7 +65,7 @@ export const CreateOrderPage = () => {
             {orderForm.isLoadingPPE ? "Cargando..." : orderForm.nextPPE}
           </div>
           <div className="text-gray-400 text-sm">
-            (Último PPE del backend: {orderForm.currentPPE})
+            (Último PPE de la base de datos: {orderForm.currentPPE})
           </div>
           {orderForm.ppeError && (
             <div className="text-red-400 text-sm">
