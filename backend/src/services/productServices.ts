@@ -30,7 +30,7 @@ const createProduct = async (name: string): Promise<Product> => {
       throw new Error("El nombre no debe estar vacío");
     }
     const existingProduct = await Product.findAll({ where: { name } });
-    if (existingProduct) {
+    if (existingProduct.length > 0) {
       throw new Error(`Ya existe un producto con el nombre ${name}`);
     }
     return await Product.create({
