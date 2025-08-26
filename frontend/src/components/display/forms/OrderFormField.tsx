@@ -1,5 +1,6 @@
 import type { SelectorsData } from "../../../types/orders";
 import { LabelDisplay } from "../LabelDisplay";
+import Select from "react-select";
 
 interface OrderFormFieldProps {
   campo: {
@@ -36,72 +37,98 @@ export const OrderFormField = ({
 
     switch (campo.type) {
       case "select": {
-        let options: { id: number; name: string; display?: string }[] = [];
+        let options: { value: number; label: string }[] = [];
 
         switch (campo.name) {
           case "clientId":
             options = selectorsData.clients.map((c) => ({
-              id: c.id,
-              name: c.name,
-              display: `${c.name.toUpperCase()}`,
+              value: c.id,
+              label: c.name.toUpperCase(),
             }));
             break;
           case "denierId":
             options = selectorsData.deniers.map((d) => ({
-              id: d.id,
-              name: d.denier.toString(),
-              display: `${d.denier.toString().toUpperCase()}`,
+              value: d.id,
+              label: d.denier.toString().toUpperCase(),
             }));
             break;
           case "toneId":
             options = selectorsData.tones.map((t) => ({
-              id: t.id,
-              name: t.name,
-              display: `${t.name.toUpperCase()}`,
+              value: t.id,
+              label: t.name.toUpperCase(),
             }));
             break;
           case "productId":
             options = selectorsData.products.map((p) => ({
-              id: p.id,
-              name: p.name,
-              display: `${p.name.toUpperCase()}`,
+              value: p.id,
+              label: p.name.toUpperCase(),
             }));
             break;
           case "colorId":
             options = selectorsData.colors.map((c) => ({
-              id: c.id,
-              name: c.colorName,
-              display: `${c.colorName.toUpperCase()}`,
+              value: c.id,
+              label: c.colorName.toUpperCase(),
             }));
             break;
           case "rawMaterialId":
             options = selectorsData.rawMaterials.map((rM) => ({
-              id: rM.id,
-              name: rM.name,
-              display: `${rM.name.toUpperCase()}`,
+              value: rM.id,
+              label: rM.name.toUpperCase(),
             }));
             break;
         }
 
         return (
-          <select
+          <Select
+            options={options}
+            placeholder={`Seleccione ${campo.label}`}
+            classNamePrefix="react-select"
+            autoFocus={isActive}
+            // Integración con react-hook-form:
             {...register(campo.name, {
               required: `${campo.label} es requerido`,
               valueAsNumber: true,
               validate: (value: number) =>
                 value > 0 || `Debe seleccionar un ${campo.label.toLowerCase()}`,
             })}
-            onKeyDown={(e) => onKeyDown(e, index)}
-            className={baseClassName}
-            autoFocus={isActive}
-          >
-            <option value={0}>Seleccione {campo.label}</option>
-            {options.map((option) => (
-              <option key={option.id} value={option.id}>
-                {option.display || option.name}
-              </option>
-            ))}
-          </select>
+            // Controlar el valor y cambios manualmente
+            onChange={(selectedOption: any) => {
+              const value = selectedOption ? selectedOption.value : 0;
+              // actualizar react-hook-form
+              register(campo.name).onChange({
+                target: { name: campo.name, value },
+              });
+            }}
+            // Estilos: limitar altura del menú
+            styles={{
+              menuList: (provided) => ({
+                ...provided,
+                maxHeight: 150,
+                backgroundColor: "#111827", // bg-gray-900
+              }),
+              control: (provided) => ({
+                ...provided,
+                backgroundColor: "#111827",
+                borderColor: errors[campo.name] ? "#f87171" : "#374151",
+                color: "white",
+              }),
+              singleValue: (provided) => ({
+                ...provided,
+                color: "white",
+              }),
+              option: (provided, state) => ({
+                ...provided,
+                backgroundColor: state.isSelected
+                  ? "#2563eb" // azul (tailwind blue-600)
+                  : state.isFocused
+                  ? "#374151" // gris más claro al hacer hover
+                  : "#111827", // fondo normal
+                color: state.isSelected ? "white" : "white", // texto siempre blanco
+                cursor: "pointer",
+              }),
+            }}
+            isSearchable // habilita búsqueda
+          />
         );
       }
       case "textarea":
