@@ -4,7 +4,7 @@ const getLastPPE = async () => {
   try {
     const currentYear = new Date().getFullYear();
 
-    const lastPPE = await PPE.findAll({
+    const lastPPE = await PPE.findOne({
       where: { period: currentYear },
       attributes: { exclude: ["createdAt", "updatedAt"] },
     });
