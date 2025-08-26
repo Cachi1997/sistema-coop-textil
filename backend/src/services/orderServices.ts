@@ -232,7 +232,7 @@ const createOrder = async (data: OrderData): Promise<Order> => {
       orderNumber: data.orderNumber,
       date: data.date,
       kilos: data.kilos,
-      passedKilos: data.passedKilos,
+      passedKilos: data.passedKilos || 0,
       batchNumber: data.originalBatch,
       cicle: 0,
       endDate: null,
@@ -250,7 +250,10 @@ const createOrder = async (data: OrderData): Promise<Order> => {
       toneId: data.toneId,
       rawMaterialId: data.rawMaterialId,
     });
-    await ppeServices.updatePPE();
+    const lastPPE = await ppeServices.getLastPPE();
+    if (lastPPE.ppe + 1 === data.ppe) {
+      await ppeServices.updatePPE();
+    }
     return newOrder;
   } catch (error: any) {
     console.error("Error creando la orden:", error);
