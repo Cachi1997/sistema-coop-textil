@@ -1,5 +1,3 @@
-"use client";
-
 import { useParams, useNavigate } from "react-router-dom";
 import { useOrderEdit } from "../hooks/useOrderEdit";
 import { ErrorModal } from "../components/display/ModalNotFound";

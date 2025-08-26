@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useEffect } from "react";
 import { X } from "lucide-react";
 import axiosInstance from "../../config/axiosInstance";

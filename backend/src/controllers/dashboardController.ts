@@ -7,7 +7,6 @@ import {
   getCurrentWeekRangeString,
   getCurrentYear,
 } from "../utils/date.utils";
-import systemStatusServices from "../services/systemStatusServices";
 
 export const getDashboardData = async (req: Request, res: Response) => {
   try {
