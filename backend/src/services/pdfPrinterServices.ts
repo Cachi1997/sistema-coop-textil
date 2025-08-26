@@ -27,6 +27,22 @@ const generatePDF = async (data: TicketData) => {
   const x = 12;
   let y = height - 30;
 
+  if (
+    data.colorId.toLowerCase() === "tpco" ||
+    data.colorId.toLowerCase() === "hil" ||
+    data.colorId.toLowerCase() === "hilach" ||
+    data.colorId.toLowerCase() === "desp" ||
+    data.colorId.toLowerCase() === "crudo" ||
+    data.product.toLowerCase() === "desp hilacha" ||
+    data.product.toLowerCase() === "desp lana" ||
+    data.product.toLowerCase() === "desp top col" ||
+    data.product.toLowerCase() === "desp top cru" ||
+    data.product.toLowerCase() === "desp tow col" ||
+    data.product.toLowerCase() === "desp tow cru"
+  ) {
+    data.client = " ";
+  }
+
   const lines = [
     { text: `${data.product}`, font: fontBold, size: 26 },
     {
@@ -47,7 +63,7 @@ const generatePDF = async (data: TicketData) => {
       size: 22,
     },
     {
-      text: `Cliente: ${data.colorId === "tpco" ? " " : data.client}`,
+      text: `Cliente: ${data.client}`,
       font: fontBold,
       size: 22,
     },
