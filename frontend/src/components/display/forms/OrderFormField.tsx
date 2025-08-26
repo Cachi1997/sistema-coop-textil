@@ -194,7 +194,6 @@ export const OrderFormField = ({
             className={baseClassName}
             autoFocus={isActive}
             placeholder={`Ingrese ${campo.label.toLowerCase()}`}
-            readOnly={campo.name === "ppe"} // PPE es solo lectura
           />
         );
       default: // text
