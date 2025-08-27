@@ -130,46 +130,6 @@ export const useDashboardHelpers = (data: DashboardData | null) => {
   }, [data]);
 
   // Obtener el estado del sistema formateado (ajustado para 'dataBase')
-  const formattedSystemStatus = useMemo(() => {
-    if (!data?.systemStatus) return [];
-
-    return [
-      {
-        name: "Base de Datos",
-        status: data.systemStatus.dataBase.status, // Cambiado de 'database' a 'dataBase'
-        message: data.systemStatus.dataBase.message,
-        color: getSystemStatusColor(data.systemStatus.dataBase.status),
-      },
-      {
-        name: "Servidor",
-        status: data.systemStatus.server.status,
-        message: data.systemStatus.server.message,
-        color: getSystemStatusColor(data.systemStatus.server.status),
-        details:
-          data.systemStatus.server.cpuUsage !== undefined
-            ? `CPU: ${data.systemStatus.server.cpuUsage}%`
-            : undefined,
-      },
-      {
-        name: "Red",
-        status: data.systemStatus.network.status,
-        message: data.systemStatus.network.message,
-        color: getSystemStatusColor(data.systemStatus.network.status),
-        details: data.systemStatus.network.latency
-          ? `${data.systemStatus.network.latency}ms`
-          : undefined,
-      },
-      {
-        name: "Almacenamiento",
-        status: data.systemStatus.storage.status,
-        message: data.systemStatus.storage.message,
-        color: getSystemStatusColor(data.systemStatus.storage.status),
-        details: data.systemStatus.storage.usagePercentage
-          ? `${data.systemStatus.storage.usagePercentage}% usado`
-          : undefined,
-      },
-    ];
-  }, [data, getSystemStatusColor]);
 
   return {
     formatNumber,
@@ -180,6 +140,5 @@ export const useDashboardHelpers = (data: DashboardData | null) => {
     monthlyProgress,
     formattedStats,
     formattedActivities,
-    formattedSystemStatus,
   };
 };
