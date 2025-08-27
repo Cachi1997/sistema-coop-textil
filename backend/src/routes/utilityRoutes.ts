@@ -14,8 +14,15 @@ import {
   createSection,
   getAllSections,
 } from "../controllers/sectionController";
+import {
+  createActivationCode,
+  verifyActivationCode,
+} from "../controllers/activationCodeController";
 
 const utilityRouter = Router();
+
+utilityRouter.post("/activation", createActivationCode);
+utilityRouter.post("/activation/validate", verifyActivationCode);
 
 utilityRouter.get("/dashboard/summary", getDashboardData);
 
