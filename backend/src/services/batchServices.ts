@@ -7,7 +7,11 @@ export const generateDailyBatch = async () => {
 
   if (weekDay === 0) return null;
 
-  const existingBatch = await Batch.findOne({ where: { date: today } });
+  const todayStr = today.toISOString().split("T")[0];
+
+  const existingBatch = await Batch.findOne({
+    where: { date: todayStr },
+  });
 
   if (existingBatch) {
     return existingBatch;
