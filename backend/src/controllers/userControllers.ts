@@ -20,3 +20,28 @@ export const getUser = async (req: Request, res: Response) => {
     res.status(404).json({ message: error.message });
   }
 };
+
+export const createUser = async (req: Request, res: Response) => {
+  const { firstName, lastName, dni, code } = req.body;
+  try {
+    const newUser = await userServices.createUser(
+      firstName,
+      lastName,
+      Number(dni),
+      Number(code)
+    );
+    res.status(201).json(newUser);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};
+
+export const deleteUser = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    await userServices.deleteUser(Number(id));
+    res.status(200).json({ message: "Usuario eliminado con exito" });
+  } catch (error) {
+    res.status(404);
+  }
+};
