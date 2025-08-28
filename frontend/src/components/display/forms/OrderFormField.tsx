@@ -84,22 +84,18 @@ export const OrderFormField = ({
             placeholder={`Seleccione ${campo.label}`}
             classNamePrefix="react-select"
             autoFocus={isActive}
-            // Integración con react-hook-form:
             {...register(campo.name, {
               required: `${campo.label} es requerido`,
               valueAsNumber: true,
               validate: (value: number) =>
                 value > 0 || `Debe seleccionar un ${campo.label.toLowerCase()}`,
             })}
-            // Controlar el valor y cambios manualmente
             onChange={(selectedOption: any) => {
               const value = selectedOption ? selectedOption.value : 0;
-              // actualizar react-hook-form
               register(campo.name).onChange({
                 target: { name: campo.name, value },
               });
             }}
-            // Estilos: limitar altura del menú
             styles={{
               menuList: (provided) => ({
                 ...provided,
@@ -116,6 +112,14 @@ export const OrderFormField = ({
                 ...provided,
                 color: "white",
               }),
+              input: (provided) => ({
+                ...provided,
+                color: "white", // 🔥 color al escribir
+              }),
+              placeholder: (provided) => ({
+                ...provided,
+                color: "#9ca3af", // gris clarito (text-gray-400)
+              }),
               option: (provided, state) => ({
                 ...provided,
                 backgroundColor: state.isSelected
@@ -123,11 +127,11 @@ export const OrderFormField = ({
                   : state.isFocused
                   ? "#374151" // gris más claro al hacer hover
                   : "#111827", // fondo normal
-                color: state.isSelected ? "white" : "white", // texto siempre blanco
+                color: "white",
                 cursor: "pointer",
               }),
             }}
-            isSearchable // habilita búsqueda
+            isSearchable
           />
         );
       }
@@ -187,6 +191,7 @@ export const OrderFormField = ({
       case "number":
         return (
           <input
+            onWheel={(e) => (e.target as HTMLElement).blur()}
             {...register(campo.name, {
               required:
                 campo.name === "passedKilos"

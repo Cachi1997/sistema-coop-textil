@@ -69,6 +69,9 @@ export const useOrderForm = () => {
     >,
     index: number
   ) => {
+    if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+      e.preventDefault();
+    }
     if (e.key === "Enter") {
       e.preventDefault();
 

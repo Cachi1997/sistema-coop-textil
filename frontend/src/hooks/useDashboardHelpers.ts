@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import type { DashboardData, SystemStatus } from "../types/dashboard";
+import type { DashboardData } from "../types/dashboard";
 
 export const useDashboardHelpers = (data: DashboardData | null) => {
   // Formatear números con separadores de miles
@@ -36,23 +36,6 @@ export const useDashboardHelpers = (data: DashboardData | null) => {
       if (percentage > 0) return "text-green-400";
       if (percentage < 0) return "text-red-400";
       return "text-gray-400";
-    },
-    []
-  );
-
-  // Obtener el estado del sistema con colores
-  const getSystemStatusColor = useMemo(
-    () => (status: SystemStatus[keyof SystemStatus]["status"]) => {
-      switch (status) {
-        case "online":
-          return "bg-green-500";
-        case "warning":
-          return "bg-yellow-500";
-        case "offline":
-          return "bg-red-500";
-        default:
-          return "bg-gray-500";
-      }
     },
     []
   );
@@ -102,7 +85,7 @@ export const useDashboardHelpers = (data: DashboardData | null) => {
         bgColor: "bg-yellow-900/20",
         borderColor: "border-yellow-500",
         clickPath: "/reports/production",
-        change: data.stats.monthlyKilos.percentageChange,
+        //change: data.stats.monthlyKilos.percentageChange,
       },
       {
         title: "Kilos de la Semana",
@@ -113,7 +96,7 @@ export const useDashboardHelpers = (data: DashboardData | null) => {
         bgColor: "bg-purple-900/20",
         borderColor: "border-purple-500",
         clickPath: "/reports/production",
-        change: data.stats.weeklyKilos.percentageChange,
+        //change: data.stats.weeklyKilos.percentageChange,
       },
     ];
   }, [data, formatNumber, formatKilos]);
@@ -136,7 +119,6 @@ export const useDashboardHelpers = (data: DashboardData | null) => {
     formatKilos,
     formatPercentage,
     getPercentageColor,
-    getSystemStatusColor,
     monthlyProgress,
     formattedStats,
     formattedActivities,
