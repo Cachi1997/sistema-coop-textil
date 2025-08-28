@@ -13,7 +13,7 @@ const getFullUserByCode = async (code: number) => {
   try {
     const user = await User.findOne({
       where: { code },
-      attributes: ["idUser", "firstName", "lastName", "dni", "code"],
+      attributes: ["id", "firstName", "lastName", "dni", "code"],
     });
     if (!user) {
       throw new Error(`User with ID ${code} not found`);
@@ -24,16 +24,18 @@ const getFullUserByCode = async (code: number) => {
   }
 };
 
-const getUserIdByCode = async (code: string): Promise<number> => {
+const getUserIdByCode = async (code: number): Promise<number> => {
   try {
     const codeNumber = Number(code);
     const user = await User.findOne({
       where: { code: codeNumber },
       attributes: ["id"],
     });
+
     if (!user) {
       throw new Error(`Usuario con codigo; ${code} no encontrado`);
     }
+
     return user.id;
   } catch (error) {
     console.error("Error al buscar el usuario:", error);
