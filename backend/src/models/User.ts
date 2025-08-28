@@ -9,14 +9,6 @@ import {
 
 @Table({ tableName: "users", timestamps: true })
 export class User extends Model {
-  @PrimaryKey
-  @Column({
-    type: DataType.INTEGER,
-    autoIncrement: true,
-    allowNull: false,
-  })
-  declare idUser: number;
-
   @Column({
     type: DataType.STRING(50),
     allowNull: false,
@@ -28,12 +20,6 @@ export class User extends Model {
     allowNull: false,
   })
   declare lastName: string;
-
-  @Column({
-    type: DataType.STRING(100),
-    allowNull: false,
-  })
-  declare password: string;
 
   @Column({
     type: DataType.INTEGER,
