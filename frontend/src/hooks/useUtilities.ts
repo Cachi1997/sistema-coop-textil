@@ -1,37 +1,6 @@
 import { useState, useEffect } from "react";
 import axiosInstance from "../config/axiosInstance";
-
-export type UtilityEntity =
-  | "clients"
-  | "colors"
-  | "deniers"
-  | "rawMaterials"
-  | "products"
-  | "sections"
-  | "tones";
-
-export type UtilityItem = {
-  id: number;
-  name: string;
-  code?: string;
-  description?: string;
-  denier?: number | string;
-  colorName?: string;
-  hexCode?: string;
-};
-
-export type UtilityConfig = {
-  entityType: UtilityEntity;
-  title: string;
-  endpoint: string;
-  createEndpoint: string;
-  fields: Array<{
-    key: string;
-    label: string;
-    type: "text" | "number" | "color" | "select";
-    required?: boolean;
-  }>;
-};
+import type { UtilityConfig, UtilityItem } from "../types/utilities";
 
 export const useUtilities = (config: UtilityConfig) => {
   const [items, setItems] = useState<UtilityItem[]>([]);
@@ -77,7 +46,7 @@ export const useUtilities = (config: UtilityConfig) => {
       throw err;
     } finally {
       setIsCreating(false);
-      setInterval(() => {
+      setTimeout(() => {
         clearMessages();
       }, 2000);
     }
