@@ -37,12 +37,6 @@ const createColor = async (
   clientId?: number
 ): Promise<Color> => {
   try {
-    // Verificar si ya existe un color con ese id
-    const existingColor = await Color.findOne({ where: { idColor } });
-    if (existingColor) {
-      throw new Error(`Ya existe un color con ID: ${idColor}`);
-    }
-
     // Si se envió clientId, verificar que el cliente exista
     if (clientId !== undefined && clientId !== null) {
       const client = await clientServices.getClientById(clientId);
