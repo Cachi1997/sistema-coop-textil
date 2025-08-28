@@ -110,7 +110,16 @@ export const Navbar = () => {
         },
       ],
     },
-    { id: "settings", label: "Configuración", icon: "⚙️", path: "/settings" },
+    {
+      id: "settings",
+      label: "Configuración",
+      icon: "⚙️",
+      subItems: [
+        { id: "settings-ppe", label: "PPE", path: "/settings/ppe" },
+        { id: "settings-batch", label: "Lotes", path: "/settings/batch" },
+        { id: "settings-users", label: "Usuarios", path: "/settings/users" },
+      ],
+    },
   ];
 
   useEffect(() => {
