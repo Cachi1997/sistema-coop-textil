@@ -31,6 +31,20 @@ const getClientById = async (id: number): Promise<Client | null> => {
 };
 
 /**
+ * Busca un cliente por su nombre
+ * @param name - Nombre del cliente
+ * @return Cliente
+ */
+const getClientByName = async (name: string): Promise<Client | null> => {
+  try {
+    return await Client.findOne({ where: { name } });
+  } catch (error) {
+    console.error("Ocurrio un error al obtener el cliente:", error);
+    throw error;
+  }
+};
+
+/**
  * Crea un nuevo cliente en la base de datos.
  * @param name - Nombre del cliente.
  * @returns El objeto Cliente creado.
@@ -64,4 +78,5 @@ export default {
   getAllClients,
   createClient,
   getClientById,
+  getClientByName,
 };
