@@ -44,7 +44,7 @@ export class Order extends Model {
 
   @Column({
     type: DataType.DECIMAL(10, 2),
-    allowNull: false,
+    allowNull: true,
   })
   declare passedKilos: number;
 
