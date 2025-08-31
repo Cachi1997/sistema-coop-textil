@@ -31,8 +31,8 @@ export const OrdersPage = () => {
           Gestión de Órdenes
         </h1>
         <button
-          onClick={() => navigate("/create-order")}
-          className="bg-green-600 hover:bg-green-700 text-white px-6 py-2"
+          onClick={() => navigate("/orders/create")}
+          className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-md"
         >
           + Nueva Orden
         </button>

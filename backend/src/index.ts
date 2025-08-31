@@ -2,10 +2,13 @@ import http from "http";
 import server from "./server";
 import { initializeSocketIO } from "./socket/socket.weighing";
 import { connectDB } from "./server"; // <- exportá esto
+import { generateDailyBatch } from "./services/batchServices";
 
 const startServer = async () => {
   try {
-    await connectDB(); // asegurate que esté lista la DB
+    await connectDB();
+
+    await generateDailyBatch();
 
     const httpServer = http.createServer(server);
 

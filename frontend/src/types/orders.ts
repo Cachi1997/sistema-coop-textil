@@ -10,7 +10,7 @@ export type OrderFormData = {
   productId: number;
   colorId: number;
   rawMaterialId: number;
-  kilos: number | undefined;
+  kilos: number;
   passedKilos: number | undefined;
   truck1: string;
   truck2: string;
@@ -223,4 +223,48 @@ export type OrderDetail = {
     name: string;
   };
   weighings: WeighingDetail[]; // Array de pesajes
+};
+
+export type MaterialFormData = {
+  entryDate: string; // fecha de ingreso
+  clientId: number; // Cliente (selector del backend)
+  rawMaterialId: number; // Origen (select de RawMaterial)
+  truck: string; // Camion
+  batch: string | undefined; // Lote (batch en backend)
+  baleNumber: string; // Nro Fardo
+  kilos: number | undefined; // Kilos
+  batchNumber: number | undefined; // Partida (batchNumber en backend)
+  colorId: number;
+  color: string;
+  product: string;
+  denier: string;
+  denierTotal: string;
+  luster: string;
+  merge: string;
+};
+
+// Tipo para el payload que se envía al backend
+export type MaterialPayload = MaterialFormData & {
+  timestamp: string;
+};
+
+export type TachaItem = {
+  id: number;
+  batch: string;
+  baleNumber: number;
+  baleKilos: string; // Del backend, es un string
+  denier: string;
+  luster: string;
+  totalDenier: string;
+  dispatched: boolean; // "remitido" en español
+  rawMaterial: {
+    name: string;
+  };
+};
+
+export type TachaFilters = {
+  date: string;
+  clientId: number;
+  truck: string;
+  section: string;
 };

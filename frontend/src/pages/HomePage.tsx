@@ -88,7 +88,7 @@ export const HomePage = () => {
       icon: "📋",
       color: "bg-blue-600 hover:bg-blue-700",
       actions: [
-        { title: "Crear Orden", path: "/create-order", icon: "➕" },
+        { title: "Crear Orden", path: "/orders/create", icon: "➕" },
         { title: "Ver Órdenes", path: "/orders", icon: "📊" },
         { title: "Modificar Órdenes", path: "/orders/edit", icon: "✏️" },
         { title: "Finalizar Órdenes", path: "/orders/complete", icon: "✅" },
@@ -137,7 +137,7 @@ export const HomePage = () => {
       description: "Generar nueva orden",
       icon: "📋",
       color: "bg-blue-600 hover:bg-blue-700",
-      path: "/create-order",
+      path: "/orders/create",
     },
     {
       title: "Ingreso Material",
@@ -230,15 +230,6 @@ export const HomePage = () => {
                 <p className={`text-3xl font-bold ${stat.color} mt-2`}>
                   {stat.value}
                 </p>
-                {stat.change !== undefined && (
-                  <p
-                    className={`text-sm mt-1 ${getPercentageColor(
-                      stat.change
-                    )}`}
-                  >
-                    {formatPercentage(stat.change)} vs anterior
-                  </p>
-                )}
               </div>
               <div className="text-4xl ml-2">{stat.icon}</div>
             </div>

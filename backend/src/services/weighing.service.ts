@@ -18,7 +18,6 @@ export function startSerialReading() {
   port.on("data", (data) => {
     const raw = data.toString("utf-8").trim();
     const weight = parseFloat(raw);
-    console.log("Peso recibido:", weight);
 
     if (!isNaN(weight)) {
       io?.emit("weight", weight); // envia a todos los clientes

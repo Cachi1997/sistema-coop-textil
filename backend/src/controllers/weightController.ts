@@ -24,6 +24,53 @@ export const createWeight = async (
   }
 };
 
+export const searchWeighings = async (req: Request, res: Response) => {
+  try {
+    const { startDate, endDate, batch } = req.query;
+    let weights;
+    if (batch) {
+      weights = await weightServices.getWeighingByBatch(Number(batch));
+    } else {
+      weights = await weightServices.getWeighingsBetweenDates(
+        startDate.toString(),
+        endDate.toString()
+      );
+    }
+    res.status(200).json(weights);
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+export const exportWeighingsPdf = async (req: Request, res: Response) => {
+  try {
+    const { startDate, endDate, batch } = req.query;
+
+    let weighings;
+    if (batch) {
+      weighings = await weightServices.getWeighingByBatch(Number(batch));
+    } else {
+      weighings = await weightServices.getWeighingsBetweenDates(
+        startDate!.toString(),
+        endDate!.toString()
+      );
+    }
+
+    if (!weighings || weighings.length === 0) {
+      res.status(404).json({ error: "No se encontraron pesajes" });
+    }
+
+    const pdfBuffer = await pdfPrinterServices.generateWeighingsPdf(weighings);
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader("Content-Disposition", "inline; filename=weighings.pdf");
+    res.send(pdfBuffer);
+  } catch (error) {
+    console.error("Error exportando PDF:", error);
+    res.status(500).json({ error: "Error generando el PDF" });
+  }
+};
+
 const saveWeightInOrder = async (
   orderId: number,
   netWeight: number

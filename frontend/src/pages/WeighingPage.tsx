@@ -15,8 +15,10 @@ export const WeighingPage = () => {
   const notificationModal = useNotificationModal(); // Inicializar el nuevo hook
 
   // Calcular peso neto
-  const internalTare = weighingForm.form.watch("internalTare") || 0;
-  const externalTare = weighingForm.form.watch("externalTare") || 0;
+  // const internalTare = weighingForm.form.watch("internalTare") || 0;
+  // const externalTare = weighingForm.form.watch("externalTare") || 0;
+  const internalTare = weighingForm.internalTareNormalized;
+  const externalTare = weighingForm.externalTareNormalized;
   const { netWeight } = useWeightCalculations({
     grossWeight,
     internalTare,
@@ -130,6 +132,7 @@ export const WeighingPage = () => {
                 />
                 <input
                   type={campo.type}
+                  step={campo.step || "1"}
                   {...weighingForm.form.register(campo.name as any, {
                     required:
                       campo.name !== "internalTare" &&

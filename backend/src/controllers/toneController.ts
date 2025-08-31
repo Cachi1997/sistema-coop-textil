@@ -6,6 +6,19 @@ export const getTones = async (req: Request, res: Response) => {
     const tones = await toneServices.getAllTones();
     res.status(200).json(tones);
   } catch (error) {
-    res.status(500).json({ message: `Error fetching tones: ${error.message}` });
+    res.status(404).json({ message: error.message });
+  }
+};
+
+export const createTone = async (req: Request, res: Response) => {
+  try {
+    const { name, description } = req.body;
+    const newTone = await toneServices.createTone(
+      name.toLowerCase(),
+      description
+    );
+    res.status(201).json(newTone);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
   }
 };

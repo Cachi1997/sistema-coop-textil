@@ -11,12 +11,9 @@ import {
 @Table({ tableName: "activation_codes", timestamps: true })
 export class ActivationCodes extends Model {
   @Column({
-    type: DataType.STRING(20),
+    type: DataType.STRING(255),
     allowNull: false,
     unique: true,
-    validate: {
-      len: [1, 10],
-    },
   })
   declare code: string;
   @Column({

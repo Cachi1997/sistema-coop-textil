@@ -1,5 +1,6 @@
 import { Table, Column, Model, DataType, HasMany } from "sequelize-typescript";
 import Order from "./Order";
+import MaterialReceipt from "./MaterialReceipts";
 
 @Table({ tableName: "raw_materials", timestamps: true })
 export class RawMaterial extends Model {
@@ -11,6 +12,9 @@ export class RawMaterial extends Model {
 
   @HasMany(() => Order)
   declare orders: Order[];
+
+  @HasMany(() => MaterialReceipt)
+  declare materialReceipts: MaterialReceipt[];
 }
 
 export default RawMaterial;

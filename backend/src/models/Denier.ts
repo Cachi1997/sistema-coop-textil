@@ -11,8 +11,7 @@ export class Denier extends Model {
 
   @Column({
     type: DataType.INTEGER,
-    allowNull: false,
-    unique: true,
+    allowNull: true,
     validate: {
       len: [1, 20],
     },
@@ -20,7 +19,8 @@ export class Denier extends Model {
   declare key: string;
 
   @Column({
-    type: DataType.FLOAT(10),
+    type: DataType.INTEGER,
+    allowNull: true,
   })
   declare coefficient: number;
 

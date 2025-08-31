@@ -4,11 +4,19 @@ import colors from "colors";
 dotenv.config();
 
 const db = new Sequelize(
-  process.env.DB_NAME,
-  process.env.DB_USER,
-  process.env.DB_PASSWORD,
+  process.env.DB_NAME as string,
+  process.env.DB_USER as string,
+  process.env.DB_PASSWORD as string,
   {
+    host: process.env.DB_HOST || "127.0.0.1",
+    port: Number(process.env.DB_PORT) || 5432,
     dialect: "postgres",
+    pool: {
+      max: 5,
+      min: 0,
+      acquire: 5000, // timeout de conexión: 5s
+      idle: 10000,
+    },
     logging: (msg) => {
       if (msg.includes("SELECT")) {
         console.log(colors.cyan(msg)); // SELECT -> Cyan
@@ -22,7 +30,6 @@ const db = new Sequelize(
         console.log(colors.gray(msg)); // Otros -> Gris
       }
     },
-    //logging: false,
     models: [__dirname + "/../models/**/*.ts"],
   }
 );

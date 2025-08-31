@@ -1,4 +1,3 @@
-import type React from "react";
 import { useForm } from "react-hook-form";
 import type { WeightData } from "../types";
 import { useModal } from "./useModal";
@@ -12,10 +11,9 @@ const campos = [
   { name: "isYarn", label: "Hilado (1) o Top (0)", type: "number" },
   { name: "ppe", label: "P.P.E", type: "number" },
   { name: "batch", label: "Partida", type: "number" },
-  { name: "internalTare", label: "Tara Interna", type: "number" },
-  { name: "externalTare", label: "Tara Externa", type: "number" },
+  { name: "internalTare", label: "Tara Interna", type: "number", step: "any" },
+  { name: "externalTare", label: "Tara Externa", type: "number", step: "any" },
 ];
-
 export const useWeighingForm = () => {
   const form = useForm<WeightData>({
     defaultValues: {
@@ -35,6 +33,20 @@ export const useWeighingForm = () => {
     setFocus: form.setFocus,
     campos,
   });
+
+  // ─────────────────────────────────────────────────────────────
+  // 🔧 SOLO CAMBIO: normalizador para decimales con coma o punto
+  const normalizeDecimal = (v: unknown): number => {
+    if (v === null || v === undefined || v === "") return 0;
+    if (typeof v === "number") return Number.isFinite(v) ? v : 0;
+    const n = parseFloat(String(v).replace(",", "."));
+    return Number.isFinite(n) ? n : 0;
+  };
+
+  // Valores NORMALIZADOS para leer desde la UI
+  const internalTareNormalized = normalizeDecimal(form.watch("internalTare"));
+  const externalTareNormalized = normalizeDecimal(form.watch("externalTare"));
+  // ─────────────────────────────────────────────────────────────
 
   const handleEnterKey = async (
     e: React.KeyboardEvent<HTMLInputElement>,
@@ -89,7 +101,13 @@ export const useWeighingForm = () => {
 
   const registerWeight = async (data: WeightData) => {
     try {
-      await axios.post("/weighings/saveWeight", data);
+      // 👇 Aseguramos que las taras vayan como número (aceptando coma o punto)
+      const payload: WeightData = {
+        ...data,
+        internalTare: normalizeDecimal((data as any).internalTare),
+        externalTare: normalizeDecimal((data as any).externalTare),
+      };
+      await axios.post("/weighings/saveWeight", payload);
     } catch (error: any) {
       console.error(
         "Error al enviar los datos:",
@@ -123,6 +141,10 @@ export const useWeighingForm = () => {
     handleEnterKey,
     registerWeight,
     resetForm,
-    activeFieldIndex: navigation.activeFieldIndex, // Exponer el índice del campo activo
+    activeFieldIndex: navigation.activeFieldIndex,
+
+    // 👇 Exponemos los valores normalizados para que los uses en la página
+    internalTareNormalized,
+    externalTareNormalized,
   };
 };

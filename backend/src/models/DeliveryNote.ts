@@ -9,6 +9,7 @@ import {
 import Client from "./Client";
 import Section from "./Section";
 
+//Remitos
 @Table({ tableName: "delivery_notes", timestamps: true })
 export class DeliveryNote extends Model {
   @Column({
@@ -47,6 +48,20 @@ export class DeliveryNote extends Model {
     defaultValue: false,
   })
   declare sale: boolean;
+
+  //Remito
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: true,
+  })
+  declare deliveryNoteNumber: number;
+
+  //Remito hilanderia
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: true,
+  })
+  declare spinningDeliveryNoteNumber: number;
 
   @ForeignKey(() => Client)
   @Column({

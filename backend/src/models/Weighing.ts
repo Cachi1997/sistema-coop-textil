@@ -53,7 +53,7 @@ export class Weighing extends Model {
     type: DataType.INTEGER(),
     allowNull: true,
   })
-  declare batch: string;
+  declare batch: number;
 
   //Fardo
   @Column({

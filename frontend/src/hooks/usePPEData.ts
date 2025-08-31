@@ -12,7 +12,7 @@ export const usePPEData = () => {
 
     try {
       const response = await axios.get("/utilities/lastPPE");
-      setCurrentPPE(response.data[0].ppe);
+      setCurrentPPE(response.data.ppe);
     } catch (error: any) {
       console.error("Error al cargar PPE actual:", error);
       setError("Error al cargar el PPE actual.");

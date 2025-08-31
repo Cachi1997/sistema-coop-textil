@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import type { DashboardData, SystemStatus } from "../types/dashboard";
+import type { DashboardData } from "../types/dashboard";
 
 export const useDashboardHelpers = (data: DashboardData | null) => {
   // Formatear números con separadores de miles
@@ -36,23 +36,6 @@ export const useDashboardHelpers = (data: DashboardData | null) => {
       if (percentage > 0) return "text-green-400";
       if (percentage < 0) return "text-red-400";
       return "text-gray-400";
-    },
-    []
-  );
-
-  // Obtener el estado del sistema con colores
-  const getSystemStatusColor = useMemo(
-    () => (status: SystemStatus[keyof SystemStatus]["status"]) => {
-      switch (status) {
-        case "online":
-          return "bg-green-500";
-        case "warning":
-          return "bg-yellow-500";
-        case "offline":
-          return "bg-red-500";
-        default:
-          return "bg-gray-500";
-      }
     },
     []
   );
@@ -102,7 +85,7 @@ export const useDashboardHelpers = (data: DashboardData | null) => {
         bgColor: "bg-yellow-900/20",
         borderColor: "border-yellow-500",
         clickPath: "/reports/production",
-        change: data.stats.monthlyKilos.percentageChange,
+        //change: data.stats.monthlyKilos.percentageChange,
       },
       {
         title: "Kilos de la Semana",
@@ -113,7 +96,7 @@ export const useDashboardHelpers = (data: DashboardData | null) => {
         bgColor: "bg-purple-900/20",
         borderColor: "border-purple-500",
         clickPath: "/reports/production",
-        change: data.stats.weeklyKilos.percentageChange,
+        //change: data.stats.weeklyKilos.percentageChange,
       },
     ];
   }, [data, formatNumber, formatKilos]);
@@ -130,56 +113,14 @@ export const useDashboardHelpers = (data: DashboardData | null) => {
   }, [data]);
 
   // Obtener el estado del sistema formateado (ajustado para 'dataBase')
-  const formattedSystemStatus = useMemo(() => {
-    if (!data?.systemStatus) return [];
-
-    return [
-      {
-        name: "Base de Datos",
-        status: data.systemStatus.dataBase.status, // Cambiado de 'database' a 'dataBase'
-        message: data.systemStatus.dataBase.message,
-        color: getSystemStatusColor(data.systemStatus.dataBase.status),
-      },
-      {
-        name: "Servidor",
-        status: data.systemStatus.server.status,
-        message: data.systemStatus.server.message,
-        color: getSystemStatusColor(data.systemStatus.server.status),
-        details:
-          data.systemStatus.server.cpuUsage !== undefined
-            ? `CPU: ${data.systemStatus.server.cpuUsage}%`
-            : undefined,
-      },
-      {
-        name: "Red",
-        status: data.systemStatus.network.status,
-        message: data.systemStatus.network.message,
-        color: getSystemStatusColor(data.systemStatus.network.status),
-        details: data.systemStatus.network.latency
-          ? `${data.systemStatus.network.latency}ms`
-          : undefined,
-      },
-      {
-        name: "Almacenamiento",
-        status: data.systemStatus.storage.status,
-        message: data.systemStatus.storage.message,
-        color: getSystemStatusColor(data.systemStatus.storage.status),
-        details: data.systemStatus.storage.usagePercentage
-          ? `${data.systemStatus.storage.usagePercentage}% usado`
-          : undefined,
-      },
-    ];
-  }, [data, getSystemStatusColor]);
 
   return {
     formatNumber,
     formatKilos,
     formatPercentage,
     getPercentageColor,
-    getSystemStatusColor,
     monthlyProgress,
     formattedStats,
     formattedActivities,
-    formattedSystemStatus,
   };
 };
