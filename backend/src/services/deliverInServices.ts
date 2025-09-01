@@ -22,7 +22,10 @@ const createDeliverIn = async (direction: string): Promise<DeliverIn> => {
     if (error instanceof CustomError) {
       throw error;
     }
-    throw new CustomError(500, `Error al obtener el usuario: ${error.message}`);
+    throw new CustomError(
+      500,
+      `Error al obtener la direccion: ${error.message}`
+    );
   }
 };
 
