@@ -6,7 +6,8 @@ export const getColors = async (req: Request, res: Response) => {
     const colors = await colorServices.getAllColors();
     res.status(200).json(colors);
   } catch (error) {
-    res.status(404).json({ message: error.message });
+    const status = error.statusCode || 500;
+    res.status(status).json({ message: error.message });
   }
 };
 
@@ -21,6 +22,7 @@ export const createColor = async (req: Request, res: Response) => {
     );
     res.status(201).json(colors);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    const status = error.statusCode || 500;
+    res.status(status).json({ message: error.message });
   }
 };
