@@ -14,7 +14,7 @@ export const generateDeliveryNote = async (req: Request, res: Response) => {
 
     res.status(201).json(newDeliveryNote);
   } catch (error) {
-    console.log({ error });
-    res.status(404).json({ message: error.message });
+    const status = error.statusCode || 500;
+    res.status(status).json({ message: error.message });
   }
 };

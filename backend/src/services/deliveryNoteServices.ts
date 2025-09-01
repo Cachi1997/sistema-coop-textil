@@ -1,5 +1,6 @@
 import DeliveryNote from "../models/DeliveryNote";
 import Section from "../models/Section";
+import { CustomError } from "../utils/CustomError";
 import materialReceiptsServices from "./materialReceiptsServices";
 
 const generateDeliveryNote = async (
@@ -15,7 +16,7 @@ const generateDeliveryNote = async (
 
     const section = await Section.findByPk(sectionId);
     if (!section) {
-      throw new Error("La sección no existe");
+      throw new CustomError(404, "La sección no existe");
     }
 
     const noteData: any = {
@@ -47,8 +48,10 @@ const generateDeliveryNote = async (
 
     return newDeliveryNote;
   } catch (error) {
-    console.error("Error al generar remito:", error);
-    throw error;
+    if (error instanceof CustomError) {
+      throw error;
+    }
+    throw new CustomError(500, `Error al obtener el usuario: ${error.message}`);
   }
 };
 

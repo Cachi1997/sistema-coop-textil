@@ -1,9 +1,10 @@
 import DeliverIn from "../models/DeliverIn";
+import { CustomError } from "../utils/CustomError";
 
 const createDeliverIn = async (direction: string): Promise<DeliverIn> => {
   try {
     if (direction.trim() === "") {
-      throw new Error("La dirección no debe estar vacía");
+      throw new CustomError(400, "La dirección no puede estar vacía");
     }
 
     const existingDeliverIn = await DeliverIn.findOne({
@@ -11,15 +12,17 @@ const createDeliverIn = async (direction: string): Promise<DeliverIn> => {
     });
 
     if (existingDeliverIn) {
-      throw new Error("Ya existe una dirección de entrega con ese nombre");
+      throw new CustomError(409, "La dirección ya existe");
     }
 
     return await DeliverIn.create({
       direction,
     });
   } catch (error) {
-    console.error("Error al crear la dirección de entrega: ", error);
-    throw error;
+    if (error instanceof CustomError) {
+      throw error;
+    }
+    throw new CustomError(500, `Error al obtener el usuario: ${error.message}`);
   }
 };
 
