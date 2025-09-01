@@ -1,4 +1,5 @@
 import Client from "../models/Client";
+import { CustomError } from "../utils/CustomError";
 
 /**
  * Obtiene todos los clientes de la base de datos.
@@ -12,7 +13,13 @@ const getAllClients = async (): Promise<Client[]> => {
     });
     return clients;
   } catch (error) {
-    throw new Error(`Error al obtener clientes: ${error.message}`);
+    if (error instanceof CustomError) {
+      throw error;
+    }
+    throw new CustomError(
+      500,
+      `Error al obtener los clientes: ${error.message}`
+    );
   }
 };
 
@@ -25,8 +32,10 @@ const getClientById = async (id: number): Promise<Client | null> => {
   try {
     return await Client.findByPk(id);
   } catch (error) {
-    console.error("Ocurrio un error al obtener el cliente:", error);
-    throw error;
+    if (error instanceof CustomError) {
+      throw error;
+    }
+    throw new CustomError(500, `Error al obtener el usuario: ${error.message}`);
   }
 };
 
@@ -37,10 +46,15 @@ const getClientById = async (id: number): Promise<Client | null> => {
  */
 const getClientByName = async (name: string): Promise<Client | null> => {
   try {
+    if (name.trim() === "") {
+      throw new CustomError(400, "El nombre no debe estar vacío");
+    }
     return await Client.findOne({ where: { name } });
   } catch (error) {
-    console.error("Ocurrio un error al obtener el cliente:", error);
-    throw error;
+    if (error instanceof CustomError) {
+      throw error;
+    }
+    throw new CustomError(500, `Error al obtener el usuario: ${error.message}`);
   }
 };
 
@@ -54,7 +68,7 @@ const getClientByName = async (name: string): Promise<Client | null> => {
 const createClient = async (name: string): Promise<Client> => {
   try {
     if (name.trim() === "") {
-      throw new Error("El nombre no debe estar vacío");
+      throw new CustomError(400, "El nombre no debe estar vacío");
     }
 
     const client = await Client.findOne({
@@ -62,15 +76,20 @@ const createClient = async (name: string): Promise<Client> => {
     });
 
     if (client) {
-      throw new Error("Ya existe un cliente con ese nombre");
+      throw new CustomError(
+        409,
+        `El cliente ${name} ya existe en la base de datos`
+      );
     }
 
     return await Client.create({
       name,
     });
   } catch (error) {
-    console.error("Error al crear el cliente: ", error);
-    throw error;
+    if (error instanceof CustomError) {
+      throw error;
+    }
+    throw new CustomError(500, `Error al crear el usuario: ${error.message}`);
   }
 };
 
