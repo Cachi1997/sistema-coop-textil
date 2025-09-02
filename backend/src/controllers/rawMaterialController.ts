@@ -7,7 +7,8 @@ export const getRawMaterials = async (req: Request, res: Response) => {
     const rawMaterials = await rawMaterial.getAllRawMaterials();
     res.status(200).json(rawMaterials);
   } catch (error) {
-    res.status(404).json({ message: error.message });
+    const status = error.statusCode || 500;
+    res.status(status).json({ message: error.message });
   }
 };
 
@@ -19,6 +20,7 @@ export const createRawMaterial = async (req: Request, res: Response) => {
     );
     res.status(201).json(newRawMaterial);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    const status = error.statusCode || 500;
+    res.status(status).json({ message: error.message });
   }
 };

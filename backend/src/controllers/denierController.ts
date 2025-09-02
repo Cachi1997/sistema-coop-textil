@@ -6,7 +6,8 @@ export const getDeniers = async (req: Request, res: Response) => {
     const deniers = await denierServices.getAllDeniers();
     res.status(200).json(deniers);
   } catch (error) {
-    res.status(404).json({ message: error.message });
+    const status = error.statusCode || 500;
+    res.status(status).json({ message: error.message });
   }
 };
 
@@ -20,6 +21,7 @@ export const createDenier = async (req: Request, res: Response) => {
     );
     res.status(201).json(newDenier);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    const status = error.statusCode || 500;
+    res.status(status).json({ message: error.message });
   }
 };

@@ -1,4 +1,5 @@
 import Product from "../models/Product";
+import { CustomError } from "../utils/CustomError";
 
 /**
  * Devuelve un arreglo de productos
@@ -13,7 +14,13 @@ const getAllProducts = async (): Promise<Product[]> => {
     });
     return products;
   } catch (error) {
-    throw new Error(`Error al obtener productos: ${error.message}`);
+    if (error instanceof CustomError) {
+      throw error;
+    }
+    throw new CustomError(
+      500,
+      `Error al obtener los productos: ${error.message}`
+    );
   }
 };
 
@@ -31,14 +38,16 @@ const createProduct = async (name: string): Promise<Product> => {
     }
     const existingProduct = await Product.findAll({ where: { name } });
     if (existingProduct.length > 0) {
-      throw new Error(`Ya existe un producto con el nombre ${name}`);
+      throw new CustomError(409, `El producto ${name} ya existe`);
     }
     return await Product.create({
       name,
     });
   } catch (error) {
-    console.error("Ocurrio un error al crear el producto", error);
-    throw error;
+    if (error instanceof CustomError) {
+      throw error;
+    }
+    throw new CustomError(500, `Error al crear el producto: ${error.message}`);
   }
 };
 

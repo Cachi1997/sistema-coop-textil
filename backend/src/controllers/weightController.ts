@@ -20,7 +20,8 @@ export const createWeight = async (
     await printTicket(newWeight, weight.ppe, weight.batch, weight.isYarn);
     res.status(201).json(newWeight);
   } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
+    const status = error.statusCode || 500;
+    res.status(status).json({ message: error.message });
   }
 };
 
@@ -38,7 +39,8 @@ export const searchWeighings = async (req: Request, res: Response) => {
     }
     res.status(200).json(weights);
   } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
+    const status = error.statusCode || 500;
+    res.status(status).json({ message: error.message });
   }
 };
 
@@ -66,8 +68,8 @@ export const exportWeighingsPdf = async (req: Request, res: Response) => {
     res.setHeader("Content-Disposition", "inline; filename=weighings.pdf");
     res.send(pdfBuffer);
   } catch (error) {
-    console.error("Error exportando PDF:", error);
-    res.status(500).json({ error: "Error generando el PDF" });
+    const status = error.statusCode || 500;
+    res.status(status).json({ message: error.message });
   }
 };
 

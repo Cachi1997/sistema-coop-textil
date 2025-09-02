@@ -6,7 +6,8 @@ export const getTones = async (req: Request, res: Response) => {
     const tones = await toneServices.getAllTones();
     res.status(200).json(tones);
   } catch (error) {
-    res.status(404).json({ message: error.message });
+    const status = error.statusCode || 500;
+    res.status(status).json({ message: error.message });
   }
 };
 
@@ -19,6 +20,7 @@ export const createTone = async (req: Request, res: Response) => {
     );
     res.status(201).json(newTone);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    const status = error.statusCode || 500;
+    res.status(status).json({ message: error.message });
   }
 };

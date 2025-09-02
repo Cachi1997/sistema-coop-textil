@@ -14,6 +14,7 @@ import Color from "../models/Color";
 import { Denier } from "../models/Denier";
 import Tone from "../models/Tone";
 import RawMaterial from "../models/RawMaterial";
+import { CustomError } from "../utils/CustomError";
 
 const EXCLUDED_COLORS = ["tpco", "hil", "desp", "crudo", "hilach"];
 const EXCLUDED_PRODUCTS = [
@@ -40,7 +41,7 @@ const createWeight = async (weightData: WeightData) => {
       weightData.batch
     );
     const typeWeightId = await getTypeWeightId(weightData.isYarn);
-    const userId = await userServices.getUserIdByCode(weightData.user);
+    const userId = await userServices.getUserIdByCode(Number(weightData.user));
     const baleNumber = await getNextBaleNumber(weightData.isYarn);
     const batchNumber = await getCurrentBatchNumber();
     const newWeigth = await Weighing.create({
@@ -58,8 +59,10 @@ const createWeight = async (weightData: WeightData) => {
     });
     return newWeigth;
   } catch (error) {
-    console.error("Error al crear el pesaje:", error);
-    throw new Error("No se pudo crear el pesaje.");
+    if (error instanceof CustomError) {
+      throw error;
+    }
+    throw new CustomError(500, `Error al crear el pesaje: ${error.message}`);
   }
 };
 
@@ -77,7 +80,7 @@ const getNextBaleNumber = async (isYarn: number): Promise<number> => {
   });
 
   if (!typeWeight) {
-    throw new Error("Tipo de peso no encontrado");
+    throw new CustomError(404, "Tipo de peso no encontrado");
   }
 
   const typeWeightId = typeWeight.id;
@@ -118,12 +121,17 @@ const getTypeWeightId = async (typeNumber: number): Promise<number> => {
       attributes: ["id"],
     });
     if (!typeWeight) {
-      throw new Error("Tipo de peso no encontrado");
+      throw new CustomError(404, "Tipo de peso no encontrado");
     }
     return typeWeight.id;
   } catch (error) {
-    console.error("Error al buscar el Id del tipo de peso:", error);
-    throw new Error("No fue posible devolver el id del tipo de peso.");
+    if (error instanceof CustomError) {
+      throw error;
+    }
+    throw new CustomError(
+      500,
+      `Error al obtener el ID del tipo de usuario: ${error.message}`
+    );
   }
 };
 
@@ -140,8 +148,10 @@ const getWeighingByOrderId = async (orderId: number) => {
     });
     return weighing;
   } catch (error) {
-    console.error("Error al obtener el pesaje por ID de orden:", error);
-    throw new Error("No fue posible obtener el pesaje por ID de orden.");
+    if (error instanceof CustomError) {
+      throw error;
+    }
+    throw new CustomError(500, `Error al obtener el pesaje: ${error.message}`);
   }
 };
 
@@ -259,8 +269,10 @@ const getWeighingByBatch = async (batch: number) => {
     });
     return weighings;
   } catch (error) {
-    console.error("Error al buscar pesajes entre fechas:", error);
-    throw error;
+    if (error instanceof CustomError) {
+      throw error;
+    }
+    throw new CustomError(500, `Error al obtener el pesaje: ${error.message}`);
   }
 };
 
@@ -315,8 +327,10 @@ const getWeighingsBetweenDates = async (startDate: string, endDate: string) => {
 
     return weighings;
   } catch (error) {
-    console.error("Error al buscar pesajes entre fechas:", error);
-    throw error;
+    if (error instanceof CustomError) {
+      throw error;
+    }
+    throw new CustomError(500, `Error al obtener el pesaje: ${error.message}`);
   }
 };
 

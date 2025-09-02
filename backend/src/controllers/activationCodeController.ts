@@ -7,7 +7,8 @@ export const createActivationCode = async (req: Request, res: Response) => {
     const newCode = await activationServices.createActivationCode(code, type);
     res.status(201).json(newCode);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    const status = error.statusCode || 500;
+    res.status(status).json({ message: error.message });
   }
 };
 
@@ -21,6 +22,7 @@ export const verifyActivationCode = async (req: Request, res: Response) => {
       res.status(404).json({ message: "Codigo de activación no encontrado" });
     }
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    const status = error.statusCode || 500;
+    res.status(status).json({ message: error.message });
   }
 };

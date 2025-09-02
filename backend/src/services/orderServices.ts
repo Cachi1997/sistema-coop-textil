@@ -12,6 +12,7 @@ import weightServices from "./weightServices";
 import finishedProduct from "./finishedProductServices";
 import Weighing from "../models/Weighing";
 import User from "../models/User";
+import { CustomError } from "../utils/CustomError";
 
 const getAllOrders = async (): Promise<Order[]> => {
   try {
@@ -47,8 +48,10 @@ const getAllOrders = async (): Promise<Order[]> => {
     });
     return orders;
   } catch (error) {
-    console.error("Error fetching current orders:", error);
-    throw new Error("No fue posible obtener las órdenes.");
+    throw new CustomError(
+      500,
+      `Error al obtener las ordenes: ${error.message}`
+    );
   }
 };
 
@@ -80,8 +83,10 @@ const getCurrentOrders = async (): Promise<Order[]> => {
     });
     return orders;
   } catch (error) {
-    console.error("Error fetching current orders:", error);
-    throw new Error("No fue posible obtener las órdenes actuales.");
+    throw new CustomError(
+      500,
+      `Error al obtener las ordenes actuales: ${error.message}`
+    );
   }
 };
 
@@ -116,11 +121,17 @@ const getOrderForWeighing = async (
       ],
     });
     if (!resp) {
-      throw new Error("Orden no encontrada");
+      throw new CustomError(404, "Orden no encontrada");
     }
     return resp;
   } catch (error) {
-    throw new Error(`Error al buscar la orden: ${error.message}`);
+    if (error instanceof CustomError) {
+      throw error;
+    }
+    throw new CustomError(
+      500,
+      `Error al obtener la orden por ID ${error.message}`
+    );
   }
 };
 
@@ -176,11 +187,17 @@ const getOrderById = async (id: number): Promise<Order> => {
       attributes: { exclude: ["createdAt", "updatedAt"] },
     });
     if (!resp) {
-      throw new Error("Orden no encontrada");
+      throw new CustomError(404, "Orden no encontrada");
     }
     return resp;
   } catch (error) {
-    throw new Error(`Error al buscar la orden: ${error.message}`);
+    if (error instanceof CustomError) {
+      throw error;
+    }
+    throw new CustomError(
+      500,
+      `Error al obtener la orden por ID ${error.message}`
+    );
   }
 };
 
@@ -191,12 +208,17 @@ const getOrderId = async (ppe: number, batch: number): Promise<number> => {
       attributes: ["id"],
     });
     if (!order) {
-      throw new Error("Orden no encontrada");
+      throw new CustomError(404, "Orden no encontrada");
     }
     return order.id;
   } catch (error) {
-    console.error("Error al buscar el Id:", error);
-    throw new Error("No fue posible devolver el id.");
+    if (error instanceof CustomError) {
+      throw error;
+    }
+    throw new CustomError(
+      500,
+      `Error al obtener el ID de la orden ${error.message}`
+    );
   }
 };
 
@@ -207,7 +229,7 @@ const updateKilosProcesed = async (
   try {
     const order = await Order.findByPk(orderId);
     if (!order) {
-      throw new Error("Orden no encontrada");
+      throw new CustomError(404, "Orden no encontrada");
     }
     console.log(order.processedKilos);
 
@@ -220,8 +242,13 @@ const updateKilosProcesed = async (
     }
     await order.save();
   } catch (error) {
-    console.error("Error al actualizar kilos procesados:", error);
-    throw new Error("No fue posible actualizar los kilos procesados.");
+    if (error instanceof CustomError) {
+      throw error;
+    }
+    throw new CustomError(
+      500,
+      `Error al actualizar la suma de la orden ${error.message}`
+    );
   }
 };
 
@@ -256,8 +283,10 @@ const createOrder = async (data: OrderData): Promise<Order> => {
     }
     return newOrder;
   } catch (error: any) {
-    console.error("Error creando la orden:", error);
-    throw new Error(`Ocurrió un error al crear la orden: ${error.message}`);
+    if (error instanceof CustomError) {
+      throw error;
+    }
+    throw new CustomError(500, `Error al crear la orden ${error.message}`);
   }
 };
 
@@ -265,11 +294,12 @@ const updateOrder = async (id: number, data: OrderData): Promise<Order> => {
   try {
     const order = await verifyExistingOrder(id);
     if (!order) {
-      throw new Error("Orden no encontrada");
+      throw new CustomError(404, "Orden no encontrada");
     }
     const weighing = await weightServices.getWeighingByOrderId(id);
     if (weighing) {
-      throw new Error(
+      throw new CustomError(
+        409,
         `No fue posible actualizar la orden, ya se ha realizado un pesaje PPE:${order.ppe} Partida: ${order.batchNumber}.`
       );
     }
@@ -292,8 +322,10 @@ const updateOrder = async (id: number, data: OrderData): Promise<Order> => {
     await order.save();
     return order;
   } catch (error: any) {
-    console.error("Error al actualizar la orden:", error);
-    throw new Error(`Error al actualizar la orden: ${error.message}`);
+    if (error instanceof CustomError) {
+      throw error;
+    }
+    throw new CustomError(500, `Error al actualizar la orden ${error.message}`);
   }
 };
 
@@ -301,12 +333,13 @@ const deleteOrder = async (id: number): Promise<void> => {
   try {
     const order = await verifyExistingOrder(id);
     if (!order) {
-      throw new Error("Orden no encontrada");
+      throw new CustomError(404, "Orden no encontrada");
     }
     const weighing = await weightServices.getWeighingByOrderId(id);
     if (weighing) {
-      throw new Error(
-        `No fue posible eliminar la orden, ya se ha realizado un pesaje PPE:${order.ppe} Partida: ${order.batchNumber}.`
+      throw new CustomError(
+        409,
+        `No fue posible cancelar la orden, ya se ha realizado un pesaje PPE:${order.ppe} Partida: ${order.batchNumber}.`
       );
     }
     await updateStateOrder(order.id, "cancelada");
@@ -314,8 +347,10 @@ const deleteOrder = async (id: number): Promise<void> => {
     order.endDate = new Date();
     await order.save();
   } catch (error: any) {
-    console.error("Error al cancelar la orden:", error);
-    throw new Error(`Error al cancelar la orden: ${error.message}`);
+    if (error instanceof CustomError) {
+      throw error;
+    }
+    throw new CustomError(500, `Error al cancelar la orden ${error.message}`);
   }
 };
 
@@ -324,8 +359,10 @@ const verifyExistingOrder = async (id: number): Promise<Order> => {
     const order = await Order.findByPk(id);
     return order;
   } catch (error) {
-    console.error("Error al verificar la orden existente:", error);
-    throw new Error("No fue posible verificar la orden existente.");
+    if (error instanceof CustomError) {
+      throw error;
+    }
+    throw new CustomError(500, `Error al verificar la orden ${error.message}`);
   }
 };
 
@@ -339,8 +376,13 @@ const getTotalActiveOrders = async (): Promise<number> => {
     });
     return activeOrdersCount;
   } catch (error) {
-    console.error("Error al obtener órdenes activas:", error);
-    throw new Error("No fue posible obtener el conteo de órdenes activas.");
+    if (error instanceof CustomError) {
+      throw error;
+    }
+    throw new CustomError(
+      500,
+      `Error al obtener el total de ordenes activas ${error.message}`
+    );
   }
 };
 
@@ -357,17 +399,20 @@ const updateStateOrder = async (
     ) {
       const order = await verifyExistingOrder(idOrder);
       if (!order) {
-        throw new Error("Orden no encontrada");
+        throw new CustomError(404, "Orden no encontrada");
       }
       order.status = state;
       await order.save();
     } else {
-      throw new Error("Estado incorrecto");
+      throw new CustomError(400, "Estado de orden no valido");
     }
   } catch (error: any) {
-    console.error("Error al actualizar la orden:", error);
-    throw new Error(
-      `Error al actualizar el estado de la orden: ${error.message}`
+    if (error instanceof CustomError) {
+      throw error;
+    }
+    throw new CustomError(
+      500,
+      `Error al actualizar el estado de la orden ${error.message}`
     );
   }
 };

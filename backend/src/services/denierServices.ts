@@ -1,4 +1,5 @@
 import { Denier } from "../models/Denier";
+import { CustomError } from "../utils/CustomError";
 
 /**
  * Devuelve un arreglo de Deniers
@@ -12,7 +13,10 @@ const getAllDeniers = async (): Promise<Denier[]> => {
     });
     return deniers;
   } catch (error) {
-    throw new Error(`Error obteniendo los deniers: ${error.message}`);
+    throw new CustomError(
+      500,
+      `Error al obtener los usuarios: ${error.message}`
+    );
   }
 };
 
@@ -36,7 +40,10 @@ const createDenier = async (
     });
 
     if (existeingDenier) {
-      throw new Error(`Ya existe un Denier del tipo ${denier}`);
+      throw new CustomError(
+        409,
+        `El denier con valor ${denier} ya existe en la base de datos`
+      );
     }
 
     return await Denier.create({
@@ -45,8 +52,10 @@ const createDenier = async (
       coefficient: coefficient || null,
     });
   } catch (error) {
-    console.error("Error al crear el denier", error);
-    throw error;
+    if (error instanceof CustomError) {
+      throw error;
+    }
+    throw new CustomError(500, `Error al crear el denier: ${error.message}`);
   }
 };
 

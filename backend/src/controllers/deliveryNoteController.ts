@@ -12,9 +12,9 @@ export const generateDeliveryNote = async (req: Request, res: Response) => {
       section
     );
 
-    res.status(201).json(newDeliveryNote);
+    res.status(200).json(newDeliveryNote);
   } catch (error) {
-    console.log({ error });
-    res.status(404).json({ message: error.message });
+    const status = error.statusCode || 500;
+    res.status(status).json({ message: error.message });
   }
 };

@@ -1,4 +1,5 @@
 import Color from "../models/Color";
+import { CustomError } from "../utils/CustomError";
 import clientServices from "./clientServices";
 
 /**
@@ -14,7 +15,10 @@ const getAllColors = async (): Promise<Color[]> => {
     });
     return colors;
   } catch (error) {
-    throw new Error(`Error fetching colors: ${error.message}`);
+    throw new CustomError(
+      500,
+      `Error al obtener los colores: ${error.message}`
+    );
   }
 };
 
@@ -41,12 +45,12 @@ const createColor = async (
     if (clientId !== undefined && clientId !== null) {
       const client = await clientServices.getClientById(clientId);
       if (!client) {
-        throw new Error(`No existe el cliente con ID: ${clientId}`);
+        throw new CustomError(404, `Cliente con id ${clientId} no encontrado`);
       }
     }
 
     if (colorName.trim() === "") {
-      throw new Error("El color no puede ser vacio");
+      throw new CustomError(400, "El nombre del color no puede estar vacío");
     }
 
     // Crear el color
@@ -57,8 +61,10 @@ const createColor = async (
       clientId: clientId || null,
     });
   } catch (error) {
-    console.error("Error al crear el color", error);
-    throw error;
+    if (error instanceof CustomError) {
+      throw error;
+    }
+    throw new CustomError(500, `Error al crear el color: ${error.message}`);
   }
 };
 export default {

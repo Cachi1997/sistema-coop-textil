@@ -1,11 +1,15 @@
 import User from "../models/User";
+import { CustomError } from "../utils/CustomError";
 
 const getAllUsers = async () => {
   try {
     const users = await User.findAll();
     return users;
   } catch (error) {
-    throw new Error(`Error fetching users: ${error.message}`);
+    throw new CustomError(
+      500,
+      `Error al obtener los usuarios: ${error.message}`
+    );
   }
 };
 
@@ -15,12 +19,17 @@ const getFullUserByCode = async (code: number) => {
       where: { code },
       attributes: ["id", "firstName", "lastName", "dni", "code"],
     });
+
     if (!user) {
-      throw new Error(`User with ID ${code} not found`);
+      throw new CustomError(404, `Usuario con codigo: ${code} no encontrado`);
     }
+
     return user;
   } catch (error) {
-    throw new Error(`Error fetching user: ${error.message}`);
+    if (error instanceof CustomError) {
+      throw error;
+    }
+    throw new CustomError(500, `Error al obtener el usuario: ${error.message}`);
   }
 };
 
@@ -33,13 +42,15 @@ const getUserIdByCode = async (code: number): Promise<number> => {
     });
 
     if (!user) {
-      throw new Error(`Usuario con codigo; ${code} no encontrado`);
+      throw new CustomError(404, `Usuario con codigo; ${code} no encontrado`);
     }
 
     return user.id;
   } catch (error) {
-    console.error("Error al buscar el usuario:", error);
-    throw new Error("No fue posible encontrar el usuario.");
+    if (error instanceof CustomError) {
+      throw error;
+    }
+    throw new CustomError(500, `Error al obtener el usuario: ${error.message}`);
   }
 };
 
@@ -52,7 +63,8 @@ const createUser = async (
   try {
     const existingUser = await User.findOne({ where: { dni } });
     if (existingUser) {
-      throw new Error(
+      throw new CustomError(
+        409,
         `El usuario con dni ${dni} ya existe en la base de datos`
       );
     }
@@ -64,20 +76,29 @@ const createUser = async (
       isActive: true,
     });
   } catch (error) {
-    throw new Error(`Error al crear el usuario ${error.message}`);
+    if (error instanceof CustomError) {
+      throw error;
+    }
+    throw new CustomError(500, `Error al crear el usuario: ${error.message}`);
   }
 };
 
-const deleteUser = async (idUser: number): Promise<void> => {
+const deleteUser = async (id: number): Promise<void> => {
   try {
-    const user = await User.findByPk(idUser);
+    const user = await User.findByPk(id);
     if (!user) {
-      throw new Error(`Usuario con id; ${idUser} no encontrado`);
+      throw new CustomError(404, `Usuario con id; ${id} no encontrado`);
     }
     user.isActive = false;
     await user.save();
   } catch (error) {
-    throw new Error(`Error al eliminar el usuario ${error.message}`);
+    if (error instanceof CustomError) {
+      throw error;
+    }
+    throw new CustomError(
+      500,
+      `Error al eliminar el usuario: ${error.message}`
+    );
   }
 };
 
