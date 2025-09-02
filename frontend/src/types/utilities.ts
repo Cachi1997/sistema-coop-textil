@@ -46,7 +46,7 @@ export interface ColorItem extends BaseUtilityItem {
 
 export interface DenierItem extends BaseUtilityItem {
   denier: string;
-  key?: number;
+  key: number;
   coefficient?: string;
 }
 

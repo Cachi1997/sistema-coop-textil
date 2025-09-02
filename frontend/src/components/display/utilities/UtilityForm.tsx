@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { UtilityConfig, UtilityItem } from "../../../hooks/useUtilities";
+import type { UtilityConfig, UtilityItem } from "../../../types/utilities";
 
 interface UtilityFormProps {
   config: UtilityConfig;

@@ -48,7 +48,7 @@ export const useUtilities = (config: UtilityConfig) => {
       setIsCreating(false);
       setTimeout(() => {
         clearMessages();
-      }, 2000);
+      }, 3000);
     }
   };
 
