@@ -10,7 +10,8 @@ export const createMaterialReceipt = async (req: Request, res: Response) => {
     );
     res.status(201).json(mReceipts);
   } catch (error) {
-    res.status(404).json({ message: error.message });
+    const status = error.statusCode || 500;
+    res.status(status).json({ message: error.message });
   }
 };
 
@@ -26,6 +27,7 @@ export const getMaterialReceiptsByTruck = async (
     );
     res.status(201).json(mReceipts);
   } catch (error) {
-    res.status(404).json({ message: error.message });
+    const status = error.statusCode || 500;
+    res.status(status).json({ message: error.message });
   }
 };

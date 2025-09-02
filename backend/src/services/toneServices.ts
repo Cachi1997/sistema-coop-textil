@@ -1,4 +1,5 @@
 import Tone from "../models/Tone";
+import { CustomError } from "../utils/CustomError";
 
 /**
  * Devuelve un arreglo de tonos
@@ -12,7 +13,10 @@ const getAllTones = async (): Promise<Tone[]> => {
     });
     return tones;
   } catch (error) {
-    throw new Error(`Error al obtener los tonos: ${error.message}`);
+    if (error instanceof CustomError) {
+      throw error;
+    }
+    throw new CustomError(500, `Error al obtener los tonos: ${error.message}`);
   }
 };
 
@@ -29,7 +33,7 @@ const createTone = async (
 ): Promise<Tone> => {
   try {
     if (name.trim() === "") {
-      throw new Error("El nombre no debe estar vacío");
+      throw new CustomError(400, "El nombre no debe estar vacío");
     }
 
     const tone = await Tone.findOne({
@@ -37,7 +41,7 @@ const createTone = async (
     });
 
     if (tone) {
-      throw new Error("Ya existe un tono con ese nombre");
+      throw new CustomError(409, `El tono ${name} ya existe`);
     }
 
     return await Tone.create({
@@ -45,8 +49,10 @@ const createTone = async (
       description: description || null,
     });
   } catch (error) {
-    console.error("Error al crear el tono: ", error);
-    throw error;
+    if (error instanceof CustomError) {
+      throw error;
+    }
+    throw new CustomError(500, `Error al crear el tono: ${error.message}`);
   }
 };
 

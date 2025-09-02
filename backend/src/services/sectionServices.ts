@@ -1,4 +1,5 @@
 import Section from "../models/Section";
+import { CustomError } from "../utils/CustomError";
 
 /**
  * Devuelve un arreglo de secciones
@@ -12,8 +13,13 @@ const getAllSections = async () => {
     });
     return sections;
   } catch (error) {
-    console.error("Error al buscar las secciones:", error);
-    throw new Error("No fue posible obtener las secciones.");
+    if (error instanceof CustomError) {
+      throw error;
+    }
+    throw new CustomError(
+      500,
+      `Error al obtener las secciones: ${error.message}`
+    );
   }
 };
 
@@ -27,7 +33,7 @@ const getAllSections = async () => {
 const createSection = async (name: string): Promise<Section> => {
   try {
     if (name.trim() === "") {
-      throw new Error("El nombre no debe estar vacío");
+      throw new CustomError(400, "El nombre no debe estar vacío");
     }
 
     const client = await Section.findOne({
@@ -35,15 +41,17 @@ const createSection = async (name: string): Promise<Section> => {
     });
 
     if (client) {
-      throw new Error("Ya existe una sección con ese nombre");
+      throw new CustomError(409, `La sección ${name} ya existe`);
     }
 
     return await Section.create({
       name,
     });
   } catch (error) {
-    console.error("Error al crear la sección: ", error);
-    throw error;
+    if (error instanceof CustomError) {
+      throw error;
+    }
+    throw new CustomError(500, `Error al crear la seccion: ${error.message}`);
   }
 };
 

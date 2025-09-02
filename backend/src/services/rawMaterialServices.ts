@@ -1,4 +1,5 @@
 import RawMaterial from "../models/RawMaterial";
+import { CustomError } from "../utils/CustomError";
 
 /**
  * Devuelve un arreglo de Materia Prima
@@ -12,7 +13,13 @@ const getAllRawMaterials = async (): Promise<RawMaterial[]> => {
     });
     return rawMaterials;
   } catch (error) {
-    throw new Error(`Error fetching raw materials: ${error.message}`);
+    if (error instanceof CustomError) {
+      throw error;
+    }
+    throw new CustomError(
+      500,
+      `Error al obtener las materias prima/origenes: ${error.message}`
+    );
   }
 };
 
@@ -26,7 +33,7 @@ const getAllRawMaterials = async (): Promise<RawMaterial[]> => {
 const createRawMaterial = async (name: string): Promise<RawMaterial> => {
   try {
     if (name.trim() === "") {
-      throw new Error("El nombre no debe estar vacío");
+      throw new CustomError(400, "El nombre no debe estar vacío");
     }
 
     const rawMaterial = await RawMaterial.findOne({
@@ -34,15 +41,20 @@ const createRawMaterial = async (name: string): Promise<RawMaterial> => {
     });
 
     if (rawMaterial) {
-      throw new Error("Ya existe una materia prima con ese nombre");
+      throw new CustomError(409, `La materia prima ${name} ya existe`);
     }
 
     return await RawMaterial.create({
       name,
     });
   } catch (error) {
-    console.error("Error al crear la materia prima: ", error);
-    throw error;
+    if (error instanceof CustomError) {
+      throw error;
+    }
+    throw new CustomError(
+      500,
+      `Error al crear la materia prima/origen: ${error.message}`
+    );
   }
 };
 

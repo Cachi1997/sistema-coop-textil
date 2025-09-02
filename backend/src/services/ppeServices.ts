@@ -1,4 +1,5 @@
 import PPE from "../models/PPE";
+import { CustomError } from "../utils/CustomError";
 
 const getLastPPE = async () => {
   try {
@@ -11,8 +12,13 @@ const getLastPPE = async () => {
 
     return lastPPE;
   } catch (error) {
-    console.error("❌ Error fetching last PPE:", error);
-    throw error;
+    if (error instanceof CustomError) {
+      throw error;
+    }
+    throw new CustomError(
+      500,
+      `Error al obtener el ultimo PPE: ${error.message}`
+    );
   }
 };
 
@@ -24,14 +30,16 @@ const updatePPE = async (): Promise<void> => {
     });
 
     if (!currentPPE) {
-      throw new Error("No PPE found for the current year");
+      throw new CustomError(404, "No se encontro el PPE actual");
     }
 
     currentPPE.ppe += 1;
     await currentPPE.save();
   } catch (error) {
-    console.error("❌ Error updating PPE:", error);
-    throw new Error(`Error updating PPE: ${error.message}`);
+    if (error instanceof CustomError) {
+      throw error;
+    }
+    throw new CustomError(500, `Error al actualizar el PPE: ${error.message}`);
   }
 };
 

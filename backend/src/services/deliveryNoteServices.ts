@@ -51,7 +51,7 @@ const generateDeliveryNote = async (
     if (error instanceof CustomError) {
       throw error;
     }
-    throw new CustomError(500, `Error al obtener el usuario: ${error.message}`);
+    throw new CustomError(500, `Error al generar el remito: ${error.message}`);
   }
 };
 
@@ -66,7 +66,7 @@ const getNextDeliveryNoteNumber = async (
   const section = await Section.findByPk(sectionId);
 
   if (!section) {
-    throw new Error("La sección no existe");
+    throw new CustomError(404, "La sección no existe");
   }
 
   if (section.name.toLowerCase() === "hilanderia") {

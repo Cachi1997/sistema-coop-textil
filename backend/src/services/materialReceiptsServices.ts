@@ -2,6 +2,7 @@ import MaterialReceipt from "../models/MaterialReceipts";
 import RawMaterial from "../models/RawMaterial";
 import { MaterialReceiptData } from "../types";
 import { Op } from "sequelize";
+import { CustomError } from "../utils/CustomError";
 
 const createMaterialReceipt = async (data: MaterialReceiptData) => {
   try {
@@ -24,10 +25,7 @@ const createMaterialReceipt = async (data: MaterialReceiptData) => {
     });
     return newMReceipt;
   } catch (error) {
-    console.error("Error al ingresar el material:", error);
-    throw new Error(
-      `Ocurrió un error al ingresar el material: ${error.message}`
-    );
+    throw new CustomError(500, `Error al crear el remito: ${error.message}`);
   }
 };
 
@@ -49,8 +47,10 @@ const getMaterialReceiptsByTruck = async (truck: string, clientId: number) => {
     });
     return mReceipts;
   } catch (error) {
-    console.error("Error al buscar los fardos:", error);
-    throw new Error("No fue posible obtener los fardos.");
+    throw new CustomError(
+      500,
+      `Error al obtener los remitos: ${error.message}`
+    );
   }
 };
 
