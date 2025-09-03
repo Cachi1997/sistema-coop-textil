@@ -76,7 +76,6 @@ export const utilityConfigs = {
       { key: "description", label: "Descripción", type: "text" },
     ],
   },
-  // ... resto igual
 } as const satisfies Record<string, UtilityConfig>;
 
 export type UtilityType = keyof typeof utilityConfigs;

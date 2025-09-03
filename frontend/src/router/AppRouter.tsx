@@ -14,6 +14,7 @@ import WeighingsReportsPage from "../pages/WeighingReportsPage";
 import { ActivationPage } from "../pages/ActivationCodePage";
 import { CreateUserPage } from "../pages/CreateUserPage";
 import { ListUsersPage } from "../pages/UsersPage";
+import { PPEPage } from "../pages/PPEPage";
 
 export const AppRouter = () => {
   const [activation, setActivation] = useState<null | {
@@ -69,6 +70,7 @@ export const AppRouter = () => {
             />
             <Route path="/settings/users" element={<ListUsersPage />} />
             <Route path="/settings/users/create" element={<CreateUserPage />} />
+            <Route path="/settings/ppe" element={<PPEPage />} />
             <Route path="*" element={<HomePage />} />
           </Routes>
         </Layout>

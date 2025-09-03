@@ -116,7 +116,7 @@ export const Navbar = () => {
       icon: "⚙️",
       subItems: [
         { id: "settings-ppe", label: "PPE", path: "/settings/ppe" },
-        { id: "settings-batch", label: "Lotes", path: "/settings/batch" },
+        // { id: "settings-batch", label: "Lotes", path: "/settings/batch" },
         { id: "settings-users", label: "Usuarios", path: "/settings/users" },
       ],
     },
@@ -316,7 +316,7 @@ export const Navbar = () => {
                   <div>
                     <button
                       onClick={() => handleDropdownToggle(item.id)}
-                      className={`w-full text-left block px-3 py-2 rounded-md text-base font-medium transition-colors flex items-center justify-between ${
+                      className={`w-full text-left px-3 py-2 rounded-md text-base font-medium transition-colors flex items-center justify-between ${
                         isActive("", item.id)
                           ? "bg-green-600 text-white"
                           : "text-gray-300 hover:bg-gray-600 hover:text-white"

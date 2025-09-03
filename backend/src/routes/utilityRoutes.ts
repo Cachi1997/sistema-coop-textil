@@ -8,7 +8,7 @@ import {
   getRawMaterials,
 } from "../controllers/rawMaterialController";
 import { createTone, getTones } from "../controllers/toneController";
-import { getLastPPE } from "../controllers/ppeController";
+import { getLastPPE, resetPPE } from "../controllers/ppeController";
 import { getDashboardData } from "../controllers/dashboardController";
 import {
   createSection,
@@ -45,6 +45,7 @@ utilityRouter.get("/tones", getTones);
 utilityRouter.post("/tones", createTone);
 
 utilityRouter.get("/lastPPE", getLastPPE);
+utilityRouter.post("/resetPPE", resetPPE);
 
 utilityRouter.get("/sections", getAllSections);
 utilityRouter.post("/sections", createSection);
