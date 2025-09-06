@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { OrderListItem, BackendOrderStatus } from "../../types/orders";
+import type { OrderListItem } from "../../types/orders";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { DeleteOrderModal } from "./DeleteOrderModal";
@@ -32,36 +32,6 @@ export const OrdersTable = ({
     orderId: 0,
     orderNumber: 0,
   });
-
-  const getStatusColor = (status: BackendOrderStatus) => {
-    switch (status) {
-      case "pendiente":
-        return "bg-yellow-500/20 text-yellow-400 border-yellow-500";
-      case "en progreso":
-        return "bg-blue-500/20 text-blue-400 border-blue-500";
-      case "completada":
-        return "bg-green-500/20 text-green-400 border-green-500";
-      case "cancelada":
-        return "bg-red-500/20 text-red-400 border-red-500";
-      default:
-        return "bg-gray-500/20 text-gray-400 border-gray-500";
-    }
-  };
-
-  const getStatusLabel = (status: BackendOrderStatus) => {
-    switch (status) {
-      case "pendiente":
-        return "Pendiente";
-      case "en progreso":
-        return "En Progreso";
-      case "completada":
-        return "Completada";
-      case "cancelada":
-        return "Cancelada";
-      default:
-        return "Desconocido";
-    }
-  };
 
   const handleDeleteClick = (orderId: number, orderNumber: number) => {
     setDeleteModal({
@@ -155,12 +125,6 @@ export const OrdersTable = ({
                   scope="col"
                   className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"
                 >
-                  Estado
-                </th>
-                <th
-                  scope="col"
-                  className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"
-                >
                   Cliente
                 </th>
                 <th
@@ -224,15 +188,6 @@ export const OrdersTable = ({
                   </td>
                   <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-300">
                     {Number.parseFloat(order.kilos).toFixed(2)} kg
-                  </td>
-                  <td className="px-4 py-4 whitespace-nowrap">
-                    <span
-                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full border ${getStatusColor(
-                        order.status
-                      )}`}
-                    >
-                      {getStatusLabel(order.status)}
-                    </span>
                   </td>
                   <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-300">
                     {order.client?.name ?? "-"}

@@ -1,32 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
-import type {
-  OrderListItem,
-  OrdersFilter,
-  OrderStatus,
-  BackendOrderStatus,
-} from "../types/orders";
-import { useSelectorsData } from "./useSelectorsData"; // Para obtener la lista de clientes
-import axios from "../config/axiosInstance"; // Importar axiosInstance
-
-// Función para mapear el estado del frontend al estado del backend
-const mapFrontendStatusToBackend = (
-  frontendStatus: OrderStatus | "all"
-): BackendOrderStatus | "all" => {
-  switch (frontendStatus) {
-    case "pending":
-      return "pendiente";
-    case "completed":
-      return "completada";
-    case "in_progress":
-      return "en progreso";
-    case "cancelled":
-      return "cancelada";
-    case "all":
-      return "all";
-    default:
-      return "all"; // Fallback
-  }
-};
+import type { OrderListItem, OrdersFilter } from "../types/orders";
+import { useSelectorsData } from "./useSelectorsData";
+import axios from "../config/axiosInstance";
 
 export const useOrdersList = () => {
   const { selectorsData, isLoading: isLoadingSelectors } = useSelectorsData();
@@ -64,7 +39,7 @@ export const useOrdersList = () => {
   // Cargar datos de órdenes desde el backend
   useEffect(() => {
     fetchOrders();
-  }, [fetchOrders]); // Se ejecuta una vez al montar el componente
+  }, [fetchOrders]);
 
   // Lógica de filtrado y búsqueda
   useEffect(() => {
@@ -75,54 +50,42 @@ export const useOrdersList = () => {
       const query = filters.searchQuery.toLowerCase();
       currentFilteredOrders = currentFilteredOrders.filter(
         (order) =>
-          order.orderNumber.toString().includes(query) ||
-          order.ppe.toString().includes(query) ||
-          order.client.name.toLowerCase().includes(query) || // Acceder a client.name
-          order.product.name.toLowerCase().includes(query) || // Acceder a product.name
-          order.color.colorName.toLowerCase().includes(query) // Acceder a color.colorName
-      );
-    }
-
-    // Filtrar por estado
-    if (filters.status !== "all") {
-      const backendStatusToFilter = mapFrontendStatusToBackend(filters.status);
-      currentFilteredOrders = currentFilteredOrders.filter(
-        (order) => order.status === backendStatusToFilter
+          order.orderNumber?.toString().includes(query) ||
+          order.ppe?.toString().includes(query) ||
+          order.client?.name?.toLowerCase().includes(query) ||
+          order.product?.name?.toLowerCase().includes(query) ||
+          order.color?.colorName?.toLowerCase().includes(query)
       );
     }
 
     // Filtrar por cliente
     if (filters.clientId !== "all") {
-      // Asegurarse de que selectorsData.clients esté cargado antes de intentar filtrar por cliente
       if (selectorsData.clients.length > 0) {
         const selectedClient = selectorsData.clients.find(
           (c) => c.id === filters.clientId
         );
         if (selectedClient) {
           currentFilteredOrders = currentFilteredOrders.filter(
-            (order) => order.client.name === selectedClient.name
+            (order) => order.client?.name === selectedClient.name
           );
         }
-      } else {
-        // Si los clientes no están cargados, no se puede filtrar por cliente,
-        // o se podría mostrar un mensaje de advertencia.
-        // Por ahora, simplemente no se aplica este filtro.
       }
     }
 
+    // Filtrar por fecha
     if (filters.startDate) {
       const filterDate = new Date(filters.startDate)
         .toISOString()
-        .split("T")[0]; // Convertir a formato YYYY-MM-DD
+        .split("T")[0];
       currentFilteredOrders = currentFilteredOrders.filter((order) => {
-        const orderDate = order.date; // La fecha de la orden ya está en formato YYYY-MM-DD
+        const orderDate = order.date;
         return orderDate >= filterDate;
       });
     }
 
     setFilteredOrders(currentFilteredOrders);
-    setCurrentPage(1); // Resetear a la primera página al aplicar filtros
-  }, [allOrders, filters, selectorsData.clients]); // Dependencia de selectorsData.clients para el filtro de cliente
+    setCurrentPage(1);
+  }, [allOrders, filters, selectorsData.clients]);
 
   // Paginación
   const paginatedOrders = useMemo(() => {
@@ -171,7 +134,7 @@ export const useOrdersList = () => {
     totalPages,
     handlePageChange,
     totalOrders: filteredOrders.length,
-    clients: selectorsData.clients, // Pasar clientes para el filtro
-    refetchOrders: fetchOrders, // Exponer función para recargar órdenes
+    clients: selectorsData.clients,
+    refetchOrders: fetchOrders,
   };
 };

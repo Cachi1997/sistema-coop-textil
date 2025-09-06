@@ -15,9 +15,7 @@ export const OrdersFilters = ({
   clients,
 }: OrdersFiltersProps) => {
   const [localSearchQuery, setLocalSearchQuery] = useState(filters.searchQuery);
-  const [localStatus, setLocalStatus] = useState<OrderStatus | "all">(
-    filters.status
-  );
+
   const [localClientId, setLocalClientId] = useState<number | "all">(
     filters.clientId
   );
@@ -27,17 +25,12 @@ export const OrdersFilters = ({
 
   useEffect(() => {
     setLocalSearchQuery(filters.searchQuery);
-    setLocalStatus(filters.status);
     setLocalClientId(filters.clientId);
     setLocalCreationDate(filters.startDate || "");
   }, [filters]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLocalSearchQuery(e.target.value);
-  };
-
-  const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setLocalStatus(e.target.value as OrderStatus | "all");
   };
 
   const handleClientChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -51,7 +44,6 @@ export const OrdersFilters = ({
   const applyFilters = () => {
     onFilterChange({
       searchQuery: localSearchQuery,
-      status: localStatus,
       clientId: localClientId,
       startDate: localCreationDate || null,
     });
@@ -59,19 +51,10 @@ export const OrdersFilters = ({
 
   const resetAll = () => {
     setLocalSearchQuery("");
-    setLocalStatus("all");
     setLocalClientId("all");
     setLocalCreationDate("");
     onResetFilters();
   };
-
-  const statusOptions: { value: OrderStatus | "all"; label: string }[] = [
-    { value: "all", label: "Todos los estados" },
-    { value: "pending", label: "Pendiente" },
-    { value: "in_progress", label: "En Progreso" },
-    { value: "completed", label: "Completada" },
-    { value: "cancelled", label: "Cancelada" },
-  ];
 
   return (
     <div className="bg-gray-800 p-4 rounded-lg shadow-md mb-6">
@@ -95,28 +78,6 @@ export const OrdersFilters = ({
             placeholder="Buscar órdenes..."
             className="w-full px-3 py-2 bg-gray-900 border border-gray-600 rounded-md text-white focus:ring-blue-500 focus:border-blue-500"
           />
-        </div>
-
-        {/* Filtro por Estado */}
-        <div>
-          <label
-            htmlFor="status"
-            className="block text-sm font-medium text-gray-300 mb-1"
-          >
-            Estado
-          </label>
-          <select
-            id="status"
-            value={localStatus}
-            onChange={handleStatusChange}
-            className="w-full px-3 py-2 bg-gray-900 border border-gray-600 rounded-md text-white focus:ring-blue-500 focus:border-blue-500"
-          >
-            {statusOptions.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
         </div>
 
         {/* Filtro por Cliente */}
