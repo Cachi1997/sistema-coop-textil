@@ -4,7 +4,7 @@ import { useSelectorsData } from "./useSelectorsData";
 import axios from "../config/axiosInstance";
 
 export const useOrdersList = () => {
-  const { selectorsData, isLoading: isLoadingSelectors } = useSelectorsData();
+  const { selectorsData } = useSelectorsData();
   const [allOrders, setAllOrders] = useState<OrderListItem[]>([]);
   const [filteredOrders, setFilteredOrders] = useState<OrderListItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);

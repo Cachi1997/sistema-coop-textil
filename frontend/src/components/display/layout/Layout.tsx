@@ -13,7 +13,7 @@ export const Layout = ({ children }: LayoutProps) => {
 
   return (
     <div className="min-h-screen bg-gray-900">
-      {!hideNavbar && <Navbar currentPath={location.pathname} />}
+      {!hideNavbar && <Navbar />}
       <main>{children}</main>
     </div>
   );

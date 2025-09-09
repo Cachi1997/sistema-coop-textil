@@ -12,8 +12,7 @@ export const HomePage = () => {
 
   const data = apiResponse?.data || null;
 
-  const { formattedStats, formatPercentage, getPercentageColor } =
-    useDashboardHelpers(data);
+  const { formattedStats } = useDashboardHelpers(data);
 
   useEffect(() => {
     const timer = setInterval(() => {

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import type { OrdersFilter, OrderStatus, Client } from "../../types/orders";
+import type { OrdersFilter, Client } from "../../types/orders";
 
 interface OrdersFiltersProps {
   filters: OrdersFilter;

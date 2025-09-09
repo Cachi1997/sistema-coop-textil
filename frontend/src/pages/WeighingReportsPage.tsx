@@ -6,7 +6,6 @@ import axios from "../config/axiosInstance";
 export default function WeighingPage() {
   const [data, setData] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
 
   // Guardamos los filtros activos para reutilizarlos en la exportación
   const [activeFilters, setActiveFilters] = useState<{
@@ -57,7 +56,6 @@ export default function WeighingPage() {
 
       // Abrir en nueva pestaña
       window.open(url, "_blank");
-      setPdfUrl(url);
     } catch (error) {
       console.error("Error al exportar PDF:", error);
     }
