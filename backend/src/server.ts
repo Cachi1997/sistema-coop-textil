@@ -35,6 +35,8 @@ app.use((err, req, res, next) => {
 const connectDB = async () => {
   try {
     await db.authenticate();
+
+    await db.sync({ alter: false });
     // await db.sync(); // Solo si necesitás sincronizar tablas
     console.log(colors.bgGreen.bold.italic("Database connected successfully"));
   } catch (error) {

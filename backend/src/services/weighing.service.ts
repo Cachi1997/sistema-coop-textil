@@ -12,15 +12,25 @@ export function attachSocketServer(socket: Server) {
 
 export function startSerialReading() {
   const port = new SerialPort({
-    path: process.env.SOCKET_PATH,
-    baudRate: parseInt(process.env.SOCKET_BAUD_RATE),
+    path: process.env.SOCKET_PATH || "COM4",
+    baudRate: parseInt(process.env.SOCKET_BAUD_RATE ) || 1200,
   });
+
+  
+  port.on("open", () => {
+    console.log(`✅ Puerto serie abierto: ${process.env.SOCKET_PATH}`);
+  });
+
   port.on("data", (data) => {
     const raw = data.toString("utf-8").trim();
-    const weight = parseFloat(raw);
-
-    if (!isNaN(weight)) {
-      io?.emit("weight", weight); // envia a todos los clientes
+    // Extraer los últimos 5 o 6 dígitos numéricos del string
+    const match = raw.match(/[A-Z]?(\d{5,6})$/); // acepta una letra opcional al inicio
+    if (match) {
+      const numericString = match[1];
+      const weight = parseInt(numericString, 10); // ya está en kilogramos
+      io?.emit("weight", weight);
+    } else {
+      console.log("❌ No se pudo interpretar como peso:", raw);
     }
   });
 

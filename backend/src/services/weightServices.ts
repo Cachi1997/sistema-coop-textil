@@ -36,6 +36,8 @@ const createWeight = async (weightData: WeightData) => {
   const timeNow = new Date().toTimeString().slice(0, 5);
 
   try {
+    
+    
     const orderId = await orderServices.getOrderId(
       weightData.ppe,
       weightData.batch

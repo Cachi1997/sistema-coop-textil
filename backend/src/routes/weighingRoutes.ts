@@ -1,9 +1,10 @@
 import { Router } from "express";
 import {
+  createWeight,
   exportWeighingsPdf,
   searchWeighings,
 } from "../controllers/weightController";
-const { createWeight } = require("../controllers/weightController");
+
 
 const weighingRouter = Router();
 

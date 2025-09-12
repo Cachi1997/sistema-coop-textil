@@ -9,6 +9,8 @@ export const createWeight = async (
   req: Request,
   res: Response
 ): Promise<void> => {
+  console.log("ENTREEEE");
+  
   try {
     const weight: WeightData = req.body;
     const newWeight = await weightServices.createWeight(weight);
